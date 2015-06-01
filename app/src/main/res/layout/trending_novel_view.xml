@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.anovelmous.app.ui.novels.TrendingNovelView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="16dp"
+    >
+  <TextView
+      android:id="@+id/trending_novel_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:singleLine="true"
+      android:textColor="?android:attr/textColorPrimary"
+      android:textSize="16sp"
+      />
+  <TextView
+      android:id="@+id/trending_novel_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/trending_novel_name"
+      android:textColor="?android:attr/textColorPrimary"
+      android:textSize="14sp"
+      android:maxLines="3"
+      android:ellipsize="end"
+      />
+</com.anovelmous.app.ui.novels.TrendingNovelView>

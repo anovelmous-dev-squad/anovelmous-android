@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application'
+
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 0
+
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+
+android {
+    signingConfigs {
+        Anovelmous {
+            keyAlias 'android'
+            keyPassword 'android'
+            storeFile file('Anovelmous.keystore')
+            storePassword 'android'
+        }
+    }
+    compileSdkVersion 22
+    buildToolsVersion "22.0.0"
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
+        signingConfig signingConfigs.Anovelmous
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        internal {
+            minSdkVersion 15
+            targetSdkVersion 22
+            applicationId 'com.anovelmous.app.internal'
+        }
+        production {
+            applicationId 'com.anovelmous.app'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-annotations:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    debugCompile 'com.squareup.retrofit:retrofit-mock:1.9.0'
+    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'io.reactivex:rxjava:1.0.8'
+    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'net.danlew:android.joda:2.7.1'
+    internalCompile 'com.mattprecious.telescope:telescope:1.4.0@aar'
+    debugCompile 'com.jakewharton.madge:madge:1.1.1'
+    debugCompile 'com.jakewharton.scalpel:scalpel:1.1.1'
+    compile 'com.jakewharton.byteunits:byteunits:0.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.0'
+}
+
+def installAll = tasks.create('installAll')
+installAll.description = 'Install all applications.'
+android.applicationVariants.all { variant ->
+    installAll.dependsOn(variant.install)
+    // Ensure we end up in the same group as the other install tasks.
+    installAll.group = variant.install.group
+}

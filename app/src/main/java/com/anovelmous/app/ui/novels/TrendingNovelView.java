@@ -37,15 +37,15 @@ public final class TrendingNovelView extends RelativeLayout {
   }
 
   public void bindTo(Novel novel) {
-    nameView.setText(novel.name);
+    nameView.setText(novel.title);
 
     Truss description = new Truss();
 
-    if (novel.updatedAt != null) {
-      description.pushSpan(new ForegroundColorSpan(descriptionColor));
-      description.append("Last Updated — ");
+    description.pushSpan(new ForegroundColorSpan(descriptionColor));
+    if (!novel.isCompleted) {
+      description.append("Began Writing — ");
       DateTimeFormatter fmt = DateTimeFormat.forPattern("d MMMM, yyyy");
-      description.append(novel.updatedAt.toString(fmt));
+      description.append(novel.createdAt.toString(fmt));
       description.popSpan();
     }
 

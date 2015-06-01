@@ -2,7 +2,6 @@ package com.anovelmous.app.data.api;
 
 import android.support.annotation.NonNull;
 
-import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.Novel;
 
 import java.util.Collections;
@@ -15,8 +14,8 @@ import static com.anovelmous.app.data.api.Order.DESC;
  * Created by Greg Ziegan on 5/31/15.
  */
 final class SortUtil {
-    private static final UpdatedComparator UPDATED_ASC = new UpdatedComparator(ASC);
-    private static final UpdatedComparator UPDATED_DESC = new UpdatedComparator(DESC);
+    private static final createdAtComparator UPDATED_ASC = new createdAtComparator(ASC);
+    private static final createdAtComparator UPDATED_DESC = new createdAtComparator(DESC);
 
     static void sort(List<Novel> repositories, Sort sort, Order order) {
         if (repositories == null) return;
@@ -44,13 +43,13 @@ final class SortUtil {
         protected abstract int compareAsc(@NonNull T lhs, @NonNull T rhs);
     }
 
-    private static final class UpdatedComparator extends OrderComparator<Novel> {
-        protected UpdatedComparator(Order order) {
+    private static final class createdAtComparator extends OrderComparator<Novel> {
+        protected createdAtComparator(Order order) {
             super(order);
         }
 
         @Override public int compareAsc(@NonNull Novel lhs, @NonNull Novel rhs) {
-            return lhs.updatedAt.compareTo(rhs.updatedAt);
+            return lhs.createdAt.compareTo(rhs.createdAt);
         }
     }
 

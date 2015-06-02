@@ -15,6 +15,6 @@
     <string name="error_title">Oops!</string>
     <string name="error_message">An error occurred loading the resource.\nPlease try again later.</string>
     <string name="loading_message">loading</string>
-    <string name="novels_title">Novels&#160;</string>
+    <string name="trending_title">Novels&#160;</string>
 
 </resources>

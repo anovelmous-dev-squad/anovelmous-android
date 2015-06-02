@@ -1,6 +1,6 @@
 package com.anovelmous.app.ui;
 
-import com.anovelmous.app.ui.novels.NovelsView;
+import com.anovelmous.app.ui.trending.TrendingView;
 
 import javax.inject.Singleton;
 
@@ -13,7 +13,7 @@ import dagger.Provides;
 @Module(
     injects = {
         MainActivity.class,
-        NovelsView.class
+        TrendingView.class
     },
     complete = false,
     library = true

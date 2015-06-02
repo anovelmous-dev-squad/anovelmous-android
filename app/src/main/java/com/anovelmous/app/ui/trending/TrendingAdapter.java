@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui.novels;
+package com.anovelmous.app.ui.trending;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import rx.functions.Action1;
 
-final class NovelsAdapter extends RecyclerView.Adapter<NovelsAdapter.ViewHolder>
+final class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder>
     implements Action1<List<Novel>> {
   public interface NovelClickListener {
     void onNovelClick(Novel Novel);
@@ -23,7 +23,7 @@ final class NovelsAdapter extends RecyclerView.Adapter<NovelsAdapter.ViewHolder>
 
   private List<Novel> repositories = Collections.emptyList();
 
-  public NovelsAdapter(NovelClickListener NovelClickListener) {
+  public TrendingAdapter(NovelClickListener NovelClickListener) {
     this.NovelClickListener = NovelClickListener;
   }
 
@@ -33,8 +33,8 @@ final class NovelsAdapter extends RecyclerView.Adapter<NovelsAdapter.ViewHolder>
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-    TrendingNovelView view = (TrendingNovelView) LayoutInflater.from(viewGroup.getContext())
-        .inflate(R.layout.trending_novel_view, viewGroup, false);
+    TrendingItemView view = (TrendingItemView) LayoutInflater.from(viewGroup.getContext())
+        .inflate(R.layout.trending_view_novel, viewGroup, false);
     return new ViewHolder(view);
   }
 
@@ -51,10 +51,10 @@ final class NovelsAdapter extends RecyclerView.Adapter<NovelsAdapter.ViewHolder>
   }
 
   public final class ViewHolder extends RecyclerView.ViewHolder {
-    public final TrendingNovelView itemView;
+    public final TrendingItemView itemView;
     private Novel Novel;
 
-    public ViewHolder(TrendingNovelView itemView) {
+    public ViewHolder(TrendingItemView itemView) {
       super(itemView);
       this.itemView = itemView;
       this.itemView.setOnClickListener(new View.OnClickListener() {

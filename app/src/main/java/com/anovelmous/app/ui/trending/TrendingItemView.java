@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui.novels;
+package com.anovelmous.app.ui.trending;
 
 import android.content.Context;
 import android.text.style.ForegroundColorSpan;
@@ -17,13 +17,13 @@ import org.joda.time.format.DateTimeFormatter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class TrendingNovelView extends RelativeLayout {
+public final class TrendingItemView extends RelativeLayout {
   @InjectView(R.id.trending_novel_name) TextView nameView;
   @InjectView(R.id.trending_novel_description) TextView descriptionView;
 
   private final int descriptionColor;
 
-  public TrendingNovelView(Context context, AttributeSet attrs) {
+  public TrendingItemView(Context context, AttributeSet attrs) {
     super(context, attrs);
 
     TypedValue outValue = new TypedValue();

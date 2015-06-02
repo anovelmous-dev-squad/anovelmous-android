@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui.novels;
+package com.anovelmous.app.ui.trending;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -27,8 +27,6 @@ import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.EnumAdapter;
-import com.anovelmous.app.ui.trending.TrendingTimespanAdapter;
-import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
 
@@ -43,20 +41,18 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import com.anovelmous.app.ui.trending.TrendingTimespan;
-
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 
 /**
  * Created by Greg Ziegan on 6/1/15.
  */
-public class NovelsView extends LinearLayout
-        implements SwipeRefreshLayout.OnRefreshListener, NovelsAdapter.NovelClickListener {
+public class TrendingView extends LinearLayout
+        implements SwipeRefreshLayout.OnRefreshListener, TrendingAdapter.NovelClickListener {
     @InjectView(R.id.trending_toolbar) Toolbar toolbarView;
     @InjectView(R.id.trending_timespan) Spinner timespanView;
     @InjectView(R.id.trending_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.trending_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
-    @InjectView(R.id.novels_list) RecyclerView novelsView;
+    @InjectView(R.id.trending_list) RecyclerView novelsView;
     @InjectView(R.id.trending_loading_message) TextView loadingMessageView;
 
     @Inject AnovelmousService anovelmousService;
@@ -67,10 +63,10 @@ public class NovelsView extends LinearLayout
 
     private final PublishSubject<TrendingTimespan> timespanSubject;
     private final EnumAdapter<TrendingTimespan> timespanAdapter;
-    private final NovelsAdapter novelsAdapter;
+    private final TrendingAdapter trendingAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public NovelsView(Context context, AttributeSet attrs) {
+    public TrendingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
@@ -83,7 +79,7 @@ public class NovelsView extends LinearLayout
         timespanAdapter = new TrendingTimespanAdapter(
                 new ContextThemeWrapper(getContext(), R.style.Theme_Anovelmous_TrendingTimespan));
 
-        novelsAdapter = new NovelsAdapter(this);
+        trendingAdapter = new TrendingAdapter(this);
     }
 
     @Override protected void onFinishInflate() {
@@ -107,7 +103,7 @@ public class NovelsView extends LinearLayout
         swipeRefreshView.setColorSchemeResources(R.color.accent);
         swipeRefreshView.setOnRefreshListener(this);
 
-        novelsAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        trendingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 animatorView.setDisplayedChildId(R.id.trending_swipe_refresh);
@@ -118,7 +114,7 @@ public class NovelsView extends LinearLayout
         novelsView.setLayoutManager(new LinearLayoutManager(getContext()));
         novelsView.addItemDecoration(
                 new DividerItemDecoration(getContext(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
-        novelsView.setAdapter(novelsAdapter);
+        novelsView.setAdapter(trendingAdapter);
     }
 
     @Override protected void onAttachedToWindow() {
@@ -127,7 +123,7 @@ public class NovelsView extends LinearLayout
         subscriptions.add(timespanSubject //
                 .flatMap(trendingSearch) //
                 .map(SearchResultToNovelList.instance())
-                .subscribe(novelsAdapter));
+                .subscribe(trendingAdapter));
 
         // Load the default selection.
         onRefresh();

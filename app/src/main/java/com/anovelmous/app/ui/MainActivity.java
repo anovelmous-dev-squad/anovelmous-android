@@ -44,7 +44,7 @@ public final class MainActivity extends Activity {
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.status_bar));
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        inflater.inflate(R.layout.novels_view, content);
+        inflater.inflate(R.layout.trending_view, content);
     }
 }
 

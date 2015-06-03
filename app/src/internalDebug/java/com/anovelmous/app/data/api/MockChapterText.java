@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
  */
 final class MockChapterText {
     static final FormattedNovelToken DADDY = new FormattedNovelToken.Builder()
+            .id(21)
             .url("mock://formatted_novel_tokens/21")
             .content("daddy?")
             .ordinal(4)
@@ -17,6 +18,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken YOUR2 = new FormattedNovelToken.Builder()
+            .id(20)
             .url("mock://formatted_novel_tokens/20")
             .content("your")
             .ordinal(3)
@@ -25,6 +27,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken IS = new FormattedNovelToken.Builder()
+            .id(19)
             .url("mock://formatted_novel_tokens/19")
             .content("is")
             .ordinal(2)
@@ -33,6 +36,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken WHO = new FormattedNovelToken.Builder()
+            .id(18)
             .url("mock://formatted_novel_tokens/18")
             .content("who")
             .ordinal(1)
@@ -41,6 +45,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken NOW = new FormattedNovelToken.Builder()
+            .id(17)
             .url("mock://formatted_novel_tokens/17")
             .content("Now,")
             .ordinal(0)
@@ -49,6 +54,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken LEAVE = new FormattedNovelToken.Builder()
+            .id(16)
             .url("mock://formatted_novel_tokens/16")
             .content("leave!")
             .ordinal(1)
@@ -57,6 +63,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken PLEASE2 = new FormattedNovelToken.Builder()
+            .id(15)
             .url("mock://formatted_novel_tokens/15")
             .content("Please")
             .ordinal(0)
@@ -65,6 +72,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken YOU = new FormattedNovelToken.Builder()
+            .id(14)
             .url("mock://formatted_novel_tokens/14")
             .content("you.")
             .ordinal(2)
@@ -73,6 +81,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken LOVE = new FormattedNovelToken.Builder()
+            .id(13)
             .url("mock://formatted_novel_tokens/13")
             .content("love")
             .ordinal(1)
@@ -81,6 +90,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken I = new FormattedNovelToken.Builder()
+            .id(12)
             .url("mock://formatted_novel_tokens/12")
             .content("I")
             .ordinal(0)
@@ -89,6 +99,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken FACE = new FormattedNovelToken.Builder()
+            .id(11)
             .url("mock://formatted_novel_tokens/11")
             .content("face!")
             .ordinal(0)
@@ -97,6 +108,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken MY = new FormattedNovelToken.Builder()
+            .id(10)
             .url("mock://formatted_novel_tokens/10")
             .content("my")
             .ordinal(0)
@@ -105,6 +117,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken EAT = new FormattedNovelToken.Builder()
+            .id(9)
             .url("mock://formatted_novel_tokens/9")
             .content("Eat")
             .ordinal(0)
@@ -113,6 +126,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken PURITY = new FormattedNovelToken.Builder()
+            .id(8)
             .url("mock://formatted_novel_tokens/8")
             .content("purity.\"")
             .ordinal(4)
@@ -121,6 +135,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken YOUR = new FormattedNovelToken.Builder()
+            .id(7)
             .url("mock://formatted_novel_tokens/7")
             .content("your")
             .ordinal(3)
@@ -129,6 +144,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken SACRIFICE = new FormattedNovelToken.Builder()
+            .id(6)
             .url("mock://formatted_novel_tokens/6")
             .content("sacrifice")
             .ordinal(2)
@@ -137,6 +153,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken DONT = new FormattedNovelToken.Builder()
+            .id(5)
             .url("mock://formatted_novel_tokens/5")
             .content("Don't")
             .ordinal(1)
@@ -145,6 +162,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken STOP = new FormattedNovelToken.Builder()
+            .id(4)
             .url("mock://formatted_novel_tokens/4")
             .content("\"STOP!")
             .ordinal(0)
@@ -153,6 +171,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken AWAY = new FormattedNovelToken.Builder()
+            .id(3)
             .url("mock://formatted_novel_tokens/3")
             .content("Away.")
             .ordinal(0)
@@ -161,6 +180,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken GO = new FormattedNovelToken.Builder()
+            .id(2)
             .url("mock://formatted_novel_tokens/2")
             .content("Go.")
             .ordinal(0)
@@ -169,6 +189,7 @@ final class MockChapterText {
             .build();
 
     static final FormattedNovelToken PLEASE = new FormattedNovelToken.Builder()
+            .id(1)
             .url("mock://formatted_novel_tokens/1")
             .content("Please.")
             .ordinal(0)

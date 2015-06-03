@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
  */
 final class MockNovels {
     static final Novel AMERICAN_GODS = new Novel.Builder()
+            .id(3)
             .url("mock://novels/3")
             .title("American Gods")
             .isCompleted(false)
@@ -16,6 +17,7 @@ final class MockNovels {
             .createdAt(new DateTime().minusHours(2))
             .build();
     static final Novel HUCK_FINN = new Novel.Builder()
+            .id(2)
             .url("mock://novels/2")
             .title("Huck Finn")
             .isCompleted(true)
@@ -23,6 +25,7 @@ final class MockNovels {
             .createdAt(new DateTime().minusDays(6))
             .build();
     static final Novel WAR_AND_PEACE = new Novel.Builder()
+            .id(1)
             .url("mock://novels/1")
             .title("War & Peace")
             .isCompleted(true)

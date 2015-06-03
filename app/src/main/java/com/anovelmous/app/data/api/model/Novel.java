@@ -11,6 +11,7 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
  * Created by Greg Ziegan on 5/31/15.
  */
 public class Novel {
+    public final long id;
     @NonNull public final String url;
 
     @NonNull public final String title;
@@ -25,6 +26,7 @@ public class Novel {
     @NonNull public final DateTime createdAt;
 
     private Novel(Builder builder) {
+        this.id = builder.id;
         this.url = checkNotNull(builder.url, "url == null");
         this.title = checkNotNull(builder.title, "title == null");
         this.isCompleted = builder.isCompleted;
@@ -34,15 +36,21 @@ public class Novel {
 
     @Override
     public String toString() {
-        return "Novel: " + title;
+        return "<Novel: " + title + ">";
     }
 
     public static final class Builder {
+        private long id;
         private String url;
         private String title;
         private boolean isCompleted;
         private int votingDuration;
         private DateTime createdAt;
+
+        public Builder id(long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder url(String url) {
             this.url = url;

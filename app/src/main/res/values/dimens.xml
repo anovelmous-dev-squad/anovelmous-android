@@ -2,4 +2,7 @@
 <resources>
   <!-- Item start padding (16) + avatar width (40) + avatar margin (16). -->
   <dimen name="trending_divider_padding_start">72dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>

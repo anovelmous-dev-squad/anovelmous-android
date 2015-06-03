@@ -17,12 +17,12 @@ final class SortUtil {
     private static final createdAtComparator UPDATED_ASC = new createdAtComparator(ASC);
     private static final createdAtComparator UPDATED_DESC = new createdAtComparator(DESC);
 
-    static void sort(List<Novel> repositories, Sort sort, Order order) {
-        if (repositories == null) return;
+    static void sort(List<Novel> novels, Sort sort, Order order) {
+        if (novels == null) return;
 
         switch (sort) {
             case UPDATED:
-                Collections.sort(repositories, order == ASC ? UPDATED_ASC : UPDATED_DESC);
+                Collections.sort(novels, order == ASC ? UPDATED_ASC : UPDATED_DESC);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown sort: " + sort);

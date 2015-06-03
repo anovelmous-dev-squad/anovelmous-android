@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.model.Chapter;
 import com.anovelmous.app.data.api.model.Novel;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ import rx.functions.Action1;
 final class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder>
     implements Action1<List<Novel>> {
   public interface NovelClickListener {
-    void onNovelClick(Novel Novel);
+    void onNovelClick(Novel novel);
   }
 
   private final NovelClickListener NovelClickListener;
@@ -52,21 +53,21 @@ final class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHol
 
   public final class ViewHolder extends RecyclerView.ViewHolder {
     public final TrendingItemView itemView;
-    private Novel Novel;
+    private Novel novel;
 
     public ViewHolder(TrendingItemView itemView) {
       super(itemView);
       this.itemView = itemView;
       this.itemView.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
-          NovelClickListener.onNovelClick(Novel);
+          NovelClickListener.onNovelClick(novel);
         }
       });
     }
 
-    public void bindTo(Novel Novel) {
-      this.Novel = Novel;
-      itemView.bindTo(Novel);
+    public void bindTo(Novel novel) {
+      this.novel = novel;
+      itemView.bindTo(novel);
     }
   }
 }

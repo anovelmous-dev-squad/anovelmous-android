@@ -16,5 +16,8 @@
     <string name="error_message">An error occurred loading the resource.\nPlease try again later.</string>
     <string name="loading_message">loading</string>
     <string name="trending_title">Novels&#160;</string>
+    <string name="title_activity_chapter_select">ChapterSelectActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

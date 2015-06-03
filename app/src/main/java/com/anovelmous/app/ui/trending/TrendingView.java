@@ -2,6 +2,7 @@ package com.anovelmous.app.ui.trending;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,9 +25,11 @@ import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.Novel;
 import com.anovelmous.app.data.api.model.NovelsResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
+import com.anovelmous.app.ui.ChapterSelectActivity;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.EnumAdapter;
+import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
 
@@ -59,7 +62,6 @@ public class TrendingView extends LinearLayout
     @Inject IntentFactory intentFactory;
 
     private final float dividerPaddingStart;
-
 
     private final PublishSubject<TrendingTimespan> timespanSubject;
     private final EnumAdapter<TrendingTimespan> timespanAdapter;
@@ -154,7 +156,8 @@ public class TrendingView extends LinearLayout
     }
 
     @Override public void onNovelClick(Novel novel) {
-        //Intents.maybeStartActivity(getContext(), intentFactory.createUrlIntent(novel.htmlUrl));
+        Intent intent = new Intent(getContext(), ChapterSelectActivity.class);
+        //Intents.maybeStartActivity(getContext(), intent);
     }
 
     private boolean safeIsRtl() {

@@ -28,6 +28,7 @@ public final class MockAnovelmousService implements AnovelmousService {
         this.preferences = preferences;
 
         loadResponse(MockNovelsResponse.class, MockNovelsResponse.SUCCESS);
+        loadResponse(MockChaptersResponse.class, MockChaptersResponse.SUCCESS);
     }
 
     /**
@@ -56,8 +57,9 @@ public final class MockAnovelmousService implements AnovelmousService {
         return Observable.just(response);
     }
 
-    @Override
-    public Observable<ChaptersResponse> chapters(@Query("sort") Sort sort, @Query("order") Order order) {
+    @Override public Observable<ChaptersResponse> chapters(@Query("novel") long novelId,
+                                                 @Query("sort") Sort sort,
+                                                 @Query("order") Order order) {
         ChaptersResponse response = getResponse(MockChaptersResponse.class).response;
         // TODO: sorting chapters
 

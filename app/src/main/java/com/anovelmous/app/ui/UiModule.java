@@ -1,6 +1,8 @@
 package com.anovelmous.app.ui;
 
-import com.anovelmous.app.ui.trending.TrendingView;
+import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
+import com.anovelmous.app.ui.chapters.ChapterSelectView;
+import com.anovelmous.app.ui.novels.NovelSelectView;
 
 import javax.inject.Singleton;
 
@@ -13,7 +15,9 @@ import dagger.Provides;
 @Module(
     injects = {
         MainActivity.class,
-        TrendingView.class
+        NovelSelectView.class,
+        ChapterSelectActivity.class,
+        ChapterSelectView.class
     },
     complete = false,
     library = true

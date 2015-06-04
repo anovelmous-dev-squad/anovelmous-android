@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui.trending;
+package com.anovelmous.app.ui.novels;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -25,10 +25,12 @@ import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.Novel;
 import com.anovelmous.app.data.api.model.NovelsResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
-import com.anovelmous.app.ui.ChapterSelectActivity;
+import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.EnumAdapter;
+import com.anovelmous.app.ui.trending.TrendingTimespan;
+import com.anovelmous.app.ui.trending.TrendingTimespanAdapter;
 import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
@@ -49,14 +51,16 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 /**
  * Created by Greg Ziegan on 6/1/15.
  */
-public class TrendingView extends LinearLayout
-        implements SwipeRefreshLayout.OnRefreshListener, TrendingAdapter.NovelClickListener {
-    @InjectView(R.id.trending_toolbar) Toolbar toolbarView;
+public class NovelSelectView extends LinearLayout
+        implements SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
+    public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
+
+    @InjectView(R.id.novels_select_toolbar) Toolbar toolbarView;
     @InjectView(R.id.trending_timespan) Spinner timespanView;
-    @InjectView(R.id.trending_animator) BetterViewAnimator animatorView;
-    @InjectView(R.id.trending_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
-    @InjectView(R.id.trending_list) RecyclerView novelsView;
-    @InjectView(R.id.trending_loading_message) TextView loadingMessageView;
+    @InjectView(R.id.novels_animator) BetterViewAnimator animatorView;
+    @InjectView(R.id.novels_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
+    @InjectView(R.id.novels_list) RecyclerView novelsView;
+    @InjectView(R.id.novels_loading_message) TextView loadingMessageView;
 
     @Inject AnovelmousService anovelmousService;
     @Inject IntentFactory intentFactory;
@@ -65,10 +69,10 @@ public class TrendingView extends LinearLayout
 
     private final PublishSubject<TrendingTimespan> timespanSubject;
     private final EnumAdapter<TrendingTimespan> timespanAdapter;
-    private final TrendingAdapter trendingAdapter;
+    private final NovelSelectAdapter novelSelectAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public TrendingView(Context context, AttributeSet attrs) {
+    public NovelSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
@@ -81,7 +85,7 @@ public class TrendingView extends LinearLayout
         timespanAdapter = new TrendingTimespanAdapter(
                 new ContextThemeWrapper(getContext(), R.style.Theme_Anovelmous_TrendingTimespan));
 
-        trendingAdapter = new TrendingAdapter(this);
+        novelSelectAdapter = new NovelSelectAdapter(this);
     }
 
     @Override protected void onFinishInflate() {
@@ -105,10 +109,10 @@ public class TrendingView extends LinearLayout
         swipeRefreshView.setColorSchemeResources(R.color.accent);
         swipeRefreshView.setOnRefreshListener(this);
 
-        trendingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        novelSelectAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                animatorView.setDisplayedChildId(R.id.trending_swipe_refresh);
+                animatorView.setDisplayedChildId(R.id.novels_swipe_refresh);
                 swipeRefreshView.setRefreshing(false);
             }
         });
@@ -116,7 +120,7 @@ public class TrendingView extends LinearLayout
         novelsView.setLayoutManager(new LinearLayoutManager(getContext()));
         novelsView.addItemDecoration(
                 new DividerItemDecoration(getContext(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
-        novelsView.setAdapter(trendingAdapter);
+        novelsView.setAdapter(novelSelectAdapter);
     }
 
     @Override protected void onAttachedToWindow() {
@@ -125,9 +129,8 @@ public class TrendingView extends LinearLayout
         subscriptions.add(timespanSubject //
                 .flatMap(trendingSearch) //
                 .map(SearchResultToNovelList.instance())
-                .subscribe(trendingAdapter));
+                .subscribe(novelSelectAdapter));
 
-        // Load the default selection.
         onRefresh();
     }
 
@@ -141,8 +144,6 @@ public class TrendingView extends LinearLayout
             animatorView.setDisplayedChildId(R.id.trending_loading);
         }
 
-        // For whatever reason, the SRL's spinner does not draw itself when we call setRefreshing(true)
-        // unless it is posted.
         post(new Runnable() {
             @Override public void run() {
                 swipeRefreshView.setRefreshing(true);
@@ -157,7 +158,8 @@ public class TrendingView extends LinearLayout
 
     @Override public void onNovelClick(Novel novel) {
         Intent intent = new Intent(getContext(), ChapterSelectActivity.class);
-        //Intents.maybeStartActivity(getContext(), intent);
+        intent.putExtra(NOVEL_ID, novel.id);
+        Intents.maybeStartActivity(getContext(), intent);
     }
 
     private boolean safeIsRtl() {
@@ -180,7 +182,7 @@ public class TrendingView extends LinearLayout
 
     private final Action1<Throwable> trendingError = new Action1<Throwable>() {
         @Override public void call(Throwable throwable) {
-            Timber.e(throwable, "Failed to get trending repositories");
+            Timber.e(throwable, "Failed to get trending novels");
             swipeRefreshView.setRefreshing(false);
             animatorView.setDisplayedChildId(R.id.trending_error);
         }

@@ -19,6 +19,7 @@ public interface AnovelmousService {
 
     @GET("/chapters")
     Observable<ChaptersResponse> chapters(
+            @Query("novel") long id,
             @Query("sort") Sort sort,
             @Query("order") Order order);
 }

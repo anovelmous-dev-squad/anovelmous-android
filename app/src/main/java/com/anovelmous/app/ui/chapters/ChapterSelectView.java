@@ -1,6 +1,7 @@
-package com.anovelmous.app.ui;
+package com.anovelmous.app.ui.chapters;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -8,11 +9,11 @@ import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
@@ -21,10 +22,10 @@ import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.Chapter;
 import com.anovelmous.app.data.api.model.ChaptersResponse;
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
-import com.anovelmous.app.ui.trending.TrendingTimespan;
+import com.anovelmous.app.ui.novels.NovelSelectView;
 
 import javax.inject.Inject;
 
@@ -44,19 +45,22 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
  * Created by Greg Ziegan on 6/2/15.
  */
 public class ChapterSelectView extends LinearLayout
-        implements SwipeRefreshLayout.OnRefreshListener, ChapterClickListener {
+        implements SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener{
 
-    @InjectView(R.id.trending_toolbar) Toolbar toolbarView;
-    @InjectView(R.id.trending_animator) BetterViewAnimator animatorView;
-    @InjectView(R.id.trending_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
-    @InjectView(R.id.trending_list) RecyclerView chaptersView;
-    @InjectView(R.id.trending_loading_message) TextView loadingMessageView;
+    @InjectView(R.id.chapters_select_toolbar) Toolbar toolbarView;
+    @InjectView(R.id.chapters_animator) BetterViewAnimator animatorView;
+    @InjectView(R.id.chapters_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
+    @InjectView(R.id.chapter_list) RecyclerView chaptersView;
+    @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
     @Inject AnovelmousService anovelmousService;
 
     private final float dividerPaddingStart;
-    private final PublishSubject<Chapter> chapterIndexSubject;
+    private final PublishSubject<Long> novelIdSubject;
+    private final ChapterSelectAdapter chapterSelectAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
+
+    private final long novelId;
 
     public ChapterSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -64,9 +68,13 @@ public class ChapterSelectView extends LinearLayout
             AnovelmousApp.get(context).inject(this);
         }
 
+        Intent intent = ((Activity) context).getIntent();
+        novelId = intent.getLongExtra(NovelSelectView.NOVEL_ID, 1);
+
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
-        chapterIndexSubject = PublishSubject.create();
+        novelIdSubject = PublishSubject.create();
+        chapterSelectAdapter = new ChapterSelectAdapter(this);
     }
 
     @Override protected void onFinishInflate() {
@@ -87,10 +95,37 @@ public class ChapterSelectView extends LinearLayout
 
         swipeRefreshView.setColorSchemeResources(R.color.accent);
         swipeRefreshView.setOnRefreshListener(this);
+
+        chapterSelectAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                animatorView.setDisplayedChildId(R.id.chapters_swipe_refresh);
+                swipeRefreshView.setRefreshing(false);
+            }
+        });
+
         chaptersView.setLayoutManager(new LinearLayoutManager(getContext()));
         chaptersView.addItemDecoration(
                 new DividerItemDecoration(getContext(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
-        //chaptersView.setAdapter(trendingAdapter);
+        chaptersView.setAdapter(chapterSelectAdapter);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        subscriptions.add(novelIdSubject
+                .flatMap(chaptersRequest)
+                .map(SearchResultToChapterList.instance())
+                .subscribe(chapterSelectAdapter));
+
+        onRefresh();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        subscriptions.unsubscribe();
     }
 
     private boolean safeIsRtl() {
@@ -102,21 +137,41 @@ public class ChapterSelectView extends LinearLayout
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        subscriptions.add(chapterIndexSubject
-            .subscribe());
-        onRefresh();
-    }
-
-    @Override
     public void onChapterClick(Chapter chapter) {
 
     }
 
     @Override
     public void onRefresh() {
+        if (animatorView.getDisplayedChildId() == R.id.trending_error) {
+            animatorView.setDisplayedChildId(R.id.trending_loading);
+        }
 
+        post(new Runnable() {
+            @Override public void run() {
+                swipeRefreshView.setRefreshing(true);
+                novelIdSubject.onNext(novelId);
+            }
+        });
     }
+
+    private final Func1<Long, Observable<ChaptersResponse>> chaptersRequest =
+            new Func1<Long, Observable<ChaptersResponse>>() {
+                @Override
+                public Observable<ChaptersResponse> call(Long novelId) {
+                    return anovelmousService.chapters(novelId, Sort.UPDATED, Order.DESC)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnError(chapterLoadError)
+                            .onErrorResumeNext(Observable.<ChaptersResponse>empty());
+                }
+            };
+
+    private final Action1<Throwable> chapterLoadError = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            Timber.e(throwable, "Failed to get the novel's chapters");
+            swipeRefreshView.setRefreshing(false);
+            animatorView.setDisplayedChildId(R.id.trending_error);
+        }
+    };
 }

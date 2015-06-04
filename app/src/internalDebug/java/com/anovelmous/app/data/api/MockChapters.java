@@ -98,4 +98,8 @@ final class MockChapters {
             .novel("mock://novels/1")
             .createdAt(new DateTime().minusDays(7).minusHours(8))
             .build();
+
+    private MockChapters() {
+        throw new AssertionError("No instances.");
+    }
 }

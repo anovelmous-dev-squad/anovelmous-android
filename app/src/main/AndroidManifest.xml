@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ChapterSelectActivity"
+            android:name=".ui.chapters.ChapterSelectActivity"
             android:label="@string/title_activity_chapter_select"
             android:parentActivityName=".ui.MainActivity" >
             <meta-data

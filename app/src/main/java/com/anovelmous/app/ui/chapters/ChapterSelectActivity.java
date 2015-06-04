@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui;
+package com.anovelmous.app.ui.chapters;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
+import com.anovelmous.app.ui.AppContainer;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class ChapterSelectActivity extends AppCompatActivity {
-    @Inject AppContainer appContainer;
+    @Inject
+    AppContainer appContainer;
 
     @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
     @InjectView(R.id.main_content) ViewGroup content;
@@ -46,6 +48,6 @@ public class ChapterSelectActivity extends AppCompatActivity {
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.status_bar));
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        inflater.inflate(R.layout.trending_view, content);
+        inflater.inflate(R.layout.activity_chapter_select, content);
     }
 }

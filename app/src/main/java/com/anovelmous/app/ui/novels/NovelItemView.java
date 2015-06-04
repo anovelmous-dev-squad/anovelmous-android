@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui.trending;
+package com.anovelmous.app.ui.novels;
 
 import android.content.Context;
 import android.text.style.ForegroundColorSpan;
@@ -17,13 +17,13 @@ import org.joda.time.format.DateTimeFormatter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class TrendingItemView extends RelativeLayout {
-  @InjectView(R.id.trending_novel_name) TextView nameView;
-  @InjectView(R.id.trending_novel_description) TextView descriptionView;
+public final class NovelItemView extends RelativeLayout {
+  @InjectView(R.id.novel_item_name) TextView nameView;
+  @InjectView(R.id.novel_item_description) TextView descriptionView;
 
   private final int descriptionColor;
 
-  public TrendingItemView(Context context, AttributeSet attrs) {
+  public NovelItemView(Context context, AttributeSet attrs) {
     super(context, attrs);
 
     TypedValue outValue = new TypedValue();
@@ -46,8 +46,8 @@ public final class TrendingItemView extends RelativeLayout {
       description.append("Began Writing — ");
       DateTimeFormatter fmt = DateTimeFormat.forPattern("d MMMM, yyyy");
       description.append(novel.createdAt.toString(fmt));
-      description.popSpan();
     }
+    description.popSpan();
 
     descriptionView.setText(description.build());
   }

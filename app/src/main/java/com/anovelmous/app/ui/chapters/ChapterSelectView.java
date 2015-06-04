@@ -26,6 +26,7 @@ import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.novels.NovelSelectView;
+import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
 
@@ -45,7 +46,8 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
  * Created by Greg Ziegan on 6/2/15.
  */
 public class ChapterSelectView extends LinearLayout
-        implements SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener{
+        implements SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {
+    public final static String CHAPTER_ID = "com.anovelmous.app.ui.chapters.CHAPTER_ID";
 
     @InjectView(R.id.chapters_select_toolbar) Toolbar toolbarView;
     @InjectView(R.id.chapters_animator) BetterViewAnimator animatorView;
@@ -138,7 +140,9 @@ public class ChapterSelectView extends LinearLayout
 
     @Override
     public void onChapterClick(Chapter chapter) {
-
+        Intent intent = new Intent(getContext(), ChapterSelectActivity.class);
+        intent.putExtra(CHAPTER_ID, chapter.id);
+        Intents.maybeStartActivity(getContext(), intent);
     }
 
     @Override

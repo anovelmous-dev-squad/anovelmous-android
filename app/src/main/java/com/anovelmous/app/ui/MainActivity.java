@@ -17,32 +17,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class MainActivity extends Activity {
-    @Inject AppContainer appContainer;
-
-    @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
-    @InjectView(R.id.main_drawer) NavDrawerView drawer;
+public final class MainActivity extends BaseActivity {
     @InjectView(R.id.main_content) ViewGroup content;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = getLayoutInflater();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Remove the status bar color. The DrawerLayout is responsible for drawing it from now on.
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        AnovelmousApp app = AnovelmousApp.get(this);
-        app.inject(this);
-
-        ViewGroup container = appContainer.get(this);
-
-        inflater.inflate(R.layout.main_activity, container);
-        ButterKnife.inject(this, container);
-
-        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.status_bar));
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         inflater.inflate(R.layout.activity_novel_select, content);
     }

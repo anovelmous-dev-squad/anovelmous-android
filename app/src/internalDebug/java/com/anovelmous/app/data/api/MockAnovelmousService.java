@@ -2,6 +2,7 @@ package com.anovelmous.app.data.api;
 
 import android.content.SharedPreferences;
 
+import com.anovelmous.app.data.api.model.ChapterTextResponse;
 import com.anovelmous.app.data.api.model.ChaptersResponse;
 import com.anovelmous.app.data.api.model.NovelsResponse;
 import com.anovelmous.app.util.EnumPreferences;
@@ -63,6 +64,14 @@ public final class MockAnovelmousService implements AnovelmousService {
         ChaptersResponse response = getResponse(MockChaptersResponse.class).response;
         // TODO: sorting chapters
 
+        return Observable.just(response);
+    }
+
+    @Override public Observable<ChapterTextResponse> chapterText(@Query("chapter") long chapterId,
+                                                       @Query("sort") Sort sort,
+                                                       @Query("order") Order order) {
+        ChapterTextResponse response = getResponse(MockChapterTextResponse.class).response;
+        // TODO: sort/order chapterText
         return Observable.just(response);
     }
 }

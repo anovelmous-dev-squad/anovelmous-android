@@ -13,5 +13,5 @@
     android:paddingRight="16dp"
     android:drawablePadding="32dp"
     android:background="?android:attr/selectableItemBackground"
-    tools:text="Trending"
+    tools:items="Trending"
     />

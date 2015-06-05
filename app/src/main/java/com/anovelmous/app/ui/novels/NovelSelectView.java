@@ -159,7 +159,7 @@ public class NovelSelectView extends LinearLayout
     @Override public void onNovelClick(Novel novel) {
         Intent intent = new Intent(getContext(), ChapterSelectActivity.class);
         intent.putExtra(NOVEL_ID, novel.id);
-        Intents.maybeStartActivity(getContext(), intent);
+        getContext().startActivity(intent);
     }
 
     private boolean safeIsRtl() {

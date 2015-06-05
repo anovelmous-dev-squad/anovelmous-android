@@ -22,15 +22,14 @@
         </activity>
         <activity
             android:name=".ui.chapters.ChapterSelectActivity"
-            android:label="@string/title_activity_chapter_select"
-            android:parentActivityName=".ui.MainActivity" >
+            android:label="@string/title_activity_chapter_select">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.anovelmous.app.ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.reading.ReadingActivity"
-            android:label="@string/title_activity_read" >
+            android:label="@string/title_activity_read">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.anovelmous.app.ui.chapters.ChapterSelectActivity"/>

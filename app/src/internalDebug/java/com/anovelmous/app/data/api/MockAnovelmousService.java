@@ -30,6 +30,7 @@ public final class MockAnovelmousService implements AnovelmousService {
 
         loadResponse(MockNovelsResponse.class, MockNovelsResponse.SUCCESS);
         loadResponse(MockChaptersResponse.class, MockChaptersResponse.SUCCESS);
+        loadResponse(MockChapterTextResponse.class, MockChapterTextResponse.SUCCESS);
     }
 
     /**

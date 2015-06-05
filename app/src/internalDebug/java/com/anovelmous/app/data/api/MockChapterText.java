@@ -196,4 +196,8 @@ final class MockChapterText {
             .chapter("mock://chapters/1")
             .createdAt(new DateTime().minusDays(7).minusHours(6))
             .build();
+
+    private MockChapterText() {
+        throw new AssertionError("No instances.");
+    }
 }

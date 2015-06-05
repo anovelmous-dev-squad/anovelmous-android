@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,10 @@ import com.anovelmous.app.data.api.model.ChaptersResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
+import com.anovelmous.app.ui.misc.GoUpClickListener;
 import com.anovelmous.app.ui.novels.NovelSelectView;
+import com.anovelmous.app.ui.reading.ReadingActivity;
+import com.anovelmous.app.ui.reading.ReadingView;
 import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
@@ -56,6 +60,7 @@ public class ChapterSelectView extends LinearLayout
     @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
     @Inject AnovelmousService anovelmousService;
+    private final GoUpClickListener goUpClickListener;
 
     private final float dividerPaddingStart;
     private final PublishSubject<Long> novelIdSubject;
@@ -66,17 +71,19 @@ public class ChapterSelectView extends LinearLayout
 
     public ChapterSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         if (!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
-        }
-
-        Intent intent = ((Activity) context).getIntent();
-        novelId = intent.getLongExtra(NovelSelectView.NOVEL_ID, 1);
+            Intent intent = ((Activity) context).getIntent();
+            novelId = intent.getLongExtra(NovelSelectView.NOVEL_ID, 1);
+        } else
+            novelId = 1;
 
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
         novelIdSubject = PublishSubject.create();
         chapterSelectAdapter = new ChapterSelectAdapter(this);
+        goUpClickListener = new GoUpClickListener(context);
     }
 
     @Override protected void onFinishInflate() {
@@ -88,15 +95,11 @@ public class ChapterSelectView extends LinearLayout
         loadingMessageView.setCompoundDrawablesWithIntrinsicBounds(null, null, ellipsis, null);
         ellipsis.start();
 
-        toolbarView.setNavigationIcon(R.drawable.menu_icon);
-        toolbarView.setNavigationOnClickListener(new OnClickListener() {
-            @Override public void onClick(View v) {
-                // TODO bind to drawer with... injection?
-            }
-        });
-
         swipeRefreshView.setColorSchemeResources(R.color.accent);
         swipeRefreshView.setOnRefreshListener(this);
+
+        toolbarView.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbarView.setNavigationOnClickListener(goUpClickListener);
 
         chapterSelectAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -140,9 +143,9 @@ public class ChapterSelectView extends LinearLayout
 
     @Override
     public void onChapterClick(Chapter chapter) {
-        Intent intent = new Intent(getContext(), ChapterSelectActivity.class);
+        Intent intent = new Intent(getContext(), ReadingActivity.class);
         intent.putExtra(CHAPTER_ID, chapter.id);
-        Intents.maybeStartActivity(getContext(), intent);
+        getContext().startActivity(intent);
     }
 
     @Override

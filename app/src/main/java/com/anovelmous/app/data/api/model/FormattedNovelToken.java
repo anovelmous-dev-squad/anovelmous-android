@@ -32,6 +32,11 @@ public class FormattedNovelToken {
         this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
     }
 
+    @Override
+    public String toString() {
+        return content;
+    }
+
     public static final class Builder {
         private long id;
         private String url;

@@ -29,6 +29,6 @@ public class ChapterSelectActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = getLayoutInflater();
 
-        inflater.inflate(R.layout.activity_chapter_select, content);
+        inflater.from(this).inflate(R.layout.activity_chapter_select, content);
     }
 }

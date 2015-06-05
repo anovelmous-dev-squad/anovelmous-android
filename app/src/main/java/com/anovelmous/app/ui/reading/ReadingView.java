@@ -4,13 +4,16 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,10 +24,16 @@ import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.ChapterTextResponse;
+import com.anovelmous.app.data.api.model.FormattedNovelToken;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.ui.chapters.ChapterSelectView;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
+import com.anovelmous.app.ui.misc.GoUpClickListener;
+
+import java.text.Normalizer;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,12 +51,14 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 /**
  * Created by Greg Ziegan on 6/4/15.
  */
-public class ReadingView extends LinearLayout {
+public class ReadingView extends LinearLayout
+    implements SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.reading_toolbar) Toolbar toolbarView;
     @InjectView(R.id.reading_animator) BetterViewAnimator animatorView;
-    @InjectView(R.id.reading_window) RecyclerView readingView;
+    @InjectView(R.id.reading_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
     @InjectView(R.id.reading_loading_message) TextView loadingMessageView;
+    @InjectView(R.id.reading_text_content) TextView textContent;
 
     @Inject AnovelmousService anovelmousService;
 
@@ -56,22 +67,25 @@ public class ReadingView extends LinearLayout {
     private final PublishSubject<Long> chapterIdSubject;
     private final ReadingAdapter readingAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final GoUpClickListener goUpClickListener;
+    private List<FormattedNovelToken> chapterText = Collections.emptyList();
 
     public ReadingView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         if(!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
-        }
-
-        Intent intent = ((Activity) context).getIntent();
-        chapterId = intent.getLongExtra(ChapterSelectView.CHAPTER_ID, 1);
+            Intent intent = ((Activity) context).getIntent();
+            chapterId = intent.getLongExtra(ChapterSelectView.CHAPTER_ID, 1);
+        } else
+            chapterId = 1;
 
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
 
         chapterIdSubject = PublishSubject.create();
-        readingAdapter = new ReadingAdapter();
+        readingAdapter = new ReadingAdapter(context, R.id.reading_text_content, chapterText);
+        goUpClickListener = new GoUpClickListener(context);
     }
 
     @Override
@@ -84,22 +98,20 @@ public class ReadingView extends LinearLayout {
         loadingMessageView.setCompoundDrawablesWithIntrinsicBounds(null, null, ellipsis, null);
         ellipsis.start();
 
-        toolbarView.setNavigationIcon(R.drawable.menu_icon);
-        toolbarView.setNavigationOnClickListener(new OnClickListener() {
-            @Override public void onClick(View v) {
-                // TODO bind to drawer with... injection?
-            }
-        });
+        swipeRefreshView.setColorSchemeResources(R.color.accent);
+        swipeRefreshView.setOnRefreshListener(this);
 
-        /*readingAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        toolbarView.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbarView.setNavigationOnClickListener(goUpClickListener);
+
+        readingAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
+                super.onChanged();
+                animatorView.setDisplayedChildId(R.id.reading_swipe_refresh);
+                swipeRefreshView.setRefreshing(false);
             }
-        });*/
-        readingView.setLayoutManager(new LinearLayoutManager(getContext()));
-        readingView.addItemDecoration(
-                new DividerItemDecoration(getContext(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
-        readingView.setAdapter(readingAdapter);
+        });
     }
 
     @Override
@@ -111,7 +123,17 @@ public class ReadingView extends LinearLayout {
                 .map(SearchResultToFormattedNovelTokenList.instance())
                 .subscribe(readingAdapter));
 
-        chapterIdSubject.onNext(chapterId);
+        onRefresh();
+    }
+
+    @Override
+    public void onRefresh() {
+        post(new Runnable() {
+            @Override public void run() {
+                swipeRefreshView.setRefreshing(true);
+                chapterIdSubject.onNext(chapterId);
+            }
+        });
     }
 
     @Override
@@ -143,6 +165,7 @@ public class ReadingView extends LinearLayout {
         @Override
         public void call(Throwable throwable) {
             Timber.e(throwable, "Failed to get the Chapter's items.");
+            swipeRefreshView.setRefreshing(false);
             animatorView.setDisplayedChildId(R.id.reading_error);
         }
     };

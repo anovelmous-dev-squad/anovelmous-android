@@ -8,14 +8,9 @@ import android.database.DataSetObserver;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.anovelmous.app.AnovelmousApp;
@@ -28,11 +23,9 @@ import com.anovelmous.app.data.api.model.FormattedNovelToken;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.ui.chapters.ChapterSelectView;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
-import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.GoUpClickListener;
 
-import java.text.Normalizer;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,28 +40,24 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 /**
  * Created by Greg Ziegan on 6/4/15.
  */
-public class ReadingView extends LinearLayout
-    implements SwipeRefreshLayout.OnRefreshListener {
+public class ReadingView extends LinearLayout {
 
     @InjectView(R.id.reading_toolbar) Toolbar toolbarView;
     @InjectView(R.id.reading_animator) BetterViewAnimator animatorView;
-    @InjectView(R.id.reading_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
     @InjectView(R.id.reading_loading_message) TextView loadingMessageView;
     @InjectView(R.id.reading_text_content) TextView textContent;
 
     @Inject AnovelmousService anovelmousService;
 
     private final long chapterId;
-    private final float dividerPaddingStart;
     private final PublishSubject<Long> chapterIdSubject;
-    private final ReadingAdapter readingAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final GoUpClickListener goUpClickListener;
-    private List<FormattedNovelToken> chapterText = Collections.emptyList();
+    private List<FormattedNovelToken> chapterTokens = new ArrayList<>();
+    private String chapterText;
 
     public ReadingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -80,11 +69,7 @@ public class ReadingView extends LinearLayout
         } else
             chapterId = 1;
 
-        dividerPaddingStart =
-                getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
-
         chapterIdSubject = PublishSubject.create();
-        readingAdapter = new ReadingAdapter(context, R.id.reading_text_content, chapterText);
         goUpClickListener = new GoUpClickListener(context);
     }
 
@@ -93,25 +78,11 @@ public class ReadingView extends LinearLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
 
-        AnimationDrawable ellipsis =
-                (AnimationDrawable) getResources().getDrawable(R.drawable.dancing_ellipsis);
-        loadingMessageView.setCompoundDrawablesWithIntrinsicBounds(null, null, ellipsis, null);
-        ellipsis.start();
-
-        swipeRefreshView.setColorSchemeResources(R.color.accent);
-        swipeRefreshView.setOnRefreshListener(this);
+        loadingMessageView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
         toolbarView.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbarView.setNavigationOnClickListener(goUpClickListener);
 
-        readingAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                animatorView.setDisplayedChildId(R.id.reading_swipe_refresh);
-                swipeRefreshView.setRefreshing(false);
-            }
-        });
     }
 
     @Override
@@ -121,16 +92,23 @@ public class ReadingView extends LinearLayout
         subscriptions.add(chapterIdSubject
                 .flatMap(chapterTextRequest)
                 .map(SearchResultToFormattedNovelTokenList.instance())
-                .subscribe(readingAdapter));
-
-        onRefresh();
-    }
-
-    @Override
-    public void onRefresh() {
+                .subscribe(new Action1<List<FormattedNovelToken>>() {
+                    @Override
+                    public void call(List<FormattedNovelToken> formattedNovelTokens) {
+                        chapterTokens.clear();
+                        chapterTokens.addAll(formattedNovelTokens);
+                        StringBuilder sb = new StringBuilder();
+                        for (FormattedNovelToken token : formattedNovelTokens) {
+                            sb.append(token.toString());
+                            sb.append(" ");
+                        }
+                        chapterText = sb.toString();
+                        textContent.setText(chapterText);
+                        animatorView.setDisplayedChildId(R.id.reading_text_content);
+                    }
+                }));
         post(new Runnable() {
             @Override public void run() {
-                swipeRefreshView.setRefreshing(true);
                 chapterIdSubject.onNext(chapterId);
             }
         });
@@ -165,7 +143,6 @@ public class ReadingView extends LinearLayout
         @Override
         public void call(Throwable throwable) {
             Timber.e(throwable, "Failed to get the Chapter's items.");
-            swipeRefreshView.setRefreshing(false);
             animatorView.setDisplayedChildId(R.id.reading_error);
         }
     };

@@ -102,15 +102,12 @@
                 android:textColor="?android:attr/textColorSecondary"
                 />
         </RelativeLayout>
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/reading_swipe_refresh"
+        <TextView
+            android:id="@+id/reading_text_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/reading_text_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?android:attr/textColorPrimary"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="@string/lorem_ipsum"
+            android:textSize="16sp" />
     </com.anovelmous.app.ui.misc.BetterViewAnimator>
 </com.anovelmous.app.ui.reading.ReadingView>

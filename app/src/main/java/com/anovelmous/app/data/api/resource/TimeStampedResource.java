@@ -10,7 +10,7 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
  * Author: Greg Ziegan on 6/7/15.
  */
 abstract class TimeStampedResource extends BaseResource {
-    @NonNull public DateTime createdAt;
+    @NonNull public final DateTime createdAt;
 
     public TimeStampedResource(Builder builder) {
         super(builder);

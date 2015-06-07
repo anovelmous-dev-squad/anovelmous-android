@@ -8,7 +8,7 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
  * Author: Greg Ziegan on 6/7/15.
  */
 public class Group extends BaseResource {
-    @NonNull public String name;
+    @NonNull public final String name;
 
     public Group(Builder builder) {
         super(builder);

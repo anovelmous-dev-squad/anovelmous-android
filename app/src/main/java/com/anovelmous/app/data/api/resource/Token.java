@@ -9,40 +9,22 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
 /**
  * Created by Greg Ziegan on 6/7/15.
  */
-public class Token {
-    public long id;
-    @NonNull public String url;
-    @NonNull public String content;
-    public boolean isValid;
-    public boolean isPunctuation;
-    @NonNull public DateTime createdAt;
+public class Token extends TimeStampedResource {
+    @NonNull public final String content;
+    public final boolean isValid;
+    public final boolean isPunctuation;
 
     private Token(Builder builder) {
-        this.id = builder.id;
-        this.url = checkNotNull(builder.url, "url == null");
+        super(builder);
         this.content = checkNotNull(builder.content, "content == null");
         this.isValid = builder.isValid;
         this.isPunctuation = builder.isPunctuation;
-        this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
     }
 
-    public static final class Builder {
-        private long id;
-        private String url;
+    public static final class Builder extends TimeStampedResource.Builder {
         private String content;
         private boolean isValid;
         private boolean isPunctuation;
-        private DateTime createdAt;
-
-        public Builder id(long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
 
         public Builder content(String content) {
             this.content = content;
@@ -56,11 +38,6 @@ public class Token {
 
         public Builder isPunctuation(boolean isPunctuation) {
             this.isPunctuation = isPunctuation;
-            return this;
-        }
-
-        public Builder createdAt(DateTime createdAt) {
-            this.createdAt = createdAt;
             return this;
         }
 

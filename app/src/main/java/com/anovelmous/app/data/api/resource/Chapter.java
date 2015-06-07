@@ -10,10 +10,7 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
 /**
  * Created by Greg Ziegan on 6/2/15.
  */
-public class Chapter {
-    public final long id;
-    @NonNull public final String url;
-
+public class Chapter extends TimeStampedResource {
     @NonNull public final String title;
 
     @SerializedName("is_completed")
@@ -24,36 +21,19 @@ public class Chapter {
 
     @NonNull public final String novel;
 
-    @NonNull public final DateTime createdAt;
-
     private Chapter(Builder builder) {
-        this.id = builder.id;
-        this.url = checkNotNull(builder.url, "url == null");
+        super(builder);
         this.title = checkNotNull(builder.title, "title == null");
         this.isCompleted = checkNotNull(builder.isCompleted, "isCompleted == null");
         this.votingDuration = checkNotNull(builder.votingDuration, "votingDuration == null");
         this.novel = checkNotNull(builder.novel, "novel == null");
-        this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
     }
 
-    public static final class Builder {
-        private long id;
-        private String url;
+    public static final class Builder extends TimeStampedResource.Builder {
         private String title;
         private boolean isCompleted;
         private int votingDuration;
         private String novel;
-        private DateTime createdAt;
-
-        public Builder id(long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
 
         public Builder title(String title) {
             this.title = title;
@@ -72,11 +52,6 @@ public class Chapter {
 
         public Builder novel(String novel) {
             this.novel = novel;
-            return this;
-        }
-
-        public Builder createdAt(DateTime createdAt) {
-            this.createdAt = createdAt;
             return this;
         }
 

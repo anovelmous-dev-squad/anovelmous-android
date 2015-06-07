@@ -13,15 +13,15 @@ import static com.anovelmous.app.data.api.Order.DESC;
  * Created by Greg Ziegan on 5/31/15.
  */
 final class NovelUtil {
-    private static final createdAtComparator UPDATED_ASC = new createdAtComparator(ASC);
-    private static final createdAtComparator UPDATED_DESC = new createdAtComparator(DESC);
+    private static final createdAtComparator CREATED_AT_ASC = new createdAtComparator(ASC);
+    private static final createdAtComparator CREATED_AT_DESC = new createdAtComparator(DESC);
 
     static void sort(List<Novel> novels, Sort sort, Order order) {
         if (novels == null) return;
 
         switch (sort) {
             case CREATED_AT:
-                Collections.sort(novels, order == ASC ? UPDATED_ASC : UPDATED_DESC);
+                Collections.sort(novels, order == ASC ? CREATED_AT_ASC : CREATED_AT_DESC);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown sort: " + sort);

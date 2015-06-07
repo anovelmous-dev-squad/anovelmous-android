@@ -31,7 +31,6 @@ import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.EnumAdapter;
 import com.anovelmous.app.ui.trending.TrendingTimespan;
 import com.anovelmous.app.ui.trending.TrendingTimespanAdapter;
-import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
 
@@ -173,7 +172,7 @@ public class NovelSelectView extends LinearLayout
     private final Func1<TrendingTimespan, Observable<NovelsResponse>> trendingSearch =
             new Func1<TrendingTimespan, Observable<NovelsResponse>>() {
                 @Override public Observable<NovelsResponse> call(TrendingTimespan trendingTimespan) {
-                    return anovelmousService.novels(Sort.UPDATED, Order.DESC)
+                    return anovelmousService.novels(Sort.CREATED_AT, Order.DESC)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnError(trendingError)
                             .onErrorResumeNext(Observable.<NovelsResponse>empty());

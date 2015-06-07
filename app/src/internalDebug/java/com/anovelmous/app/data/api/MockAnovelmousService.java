@@ -54,7 +54,7 @@ public final class MockAnovelmousService implements AnovelmousService {
     @Override public Observable<NovelsResponse> novels(@Query("sort") Sort sort,
                                                        @Query("order") Order order) {
         NovelsResponse response = getResponse(MockNovelsResponse.class).response;
-        SortUtil.sort(response.items, sort, order);
+        NovelUtil.sort(response.items, sort, order);
 
         return Observable.just(response);
     }
@@ -63,7 +63,7 @@ public final class MockAnovelmousService implements AnovelmousService {
                                                  @Query("sort") Sort sort,
                                                  @Query("order") Order order) {
         ChaptersResponse response = getResponse(MockChaptersResponse.class).response;
-        // TODO: sorting chapters
+        ChapterUtil.sort(response.items, sort, order);
 
         return Observable.just(response);
     }
@@ -72,7 +72,8 @@ public final class MockAnovelmousService implements AnovelmousService {
                                                        @Query("sort") Sort sort,
                                                        @Query("order") Order order) {
         ChapterTextResponse response = getResponse(MockChapterTextResponse.class).response;
-        // TODO: sort/order chapterText
+        FormattedNovelTokenUtil.sort(response.items, sort, order);
+
         return Observable.just(response);
     }
 }

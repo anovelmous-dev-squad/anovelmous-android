@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,8 +27,6 @@ import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.GoUpClickListener;
 import com.anovelmous.app.ui.novels.NovelSelectView;
 import com.anovelmous.app.ui.reading.ReadingActivity;
-import com.anovelmous.app.ui.reading.ReadingView;
-import com.anovelmous.app.util.Intents;
 
 import javax.inject.Inject;
 
@@ -166,7 +162,7 @@ public class ChapterSelectView extends LinearLayout
             new Func1<Long, Observable<ChaptersResponse>>() {
                 @Override
                 public Observable<ChaptersResponse> call(Long novelId) {
-                    return anovelmousService.chapters(novelId, Sort.UPDATED, Order.DESC)
+                    return anovelmousService.chapters(novelId, Sort.CREATED_AT, Order.DESC)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnError(chapterLoadError)
                             .onErrorResumeNext(Observable.<ChaptersResponse>empty());

@@ -6,7 +6,7 @@ package com.anovelmous.app.data.api;
 public enum Sort {
     ID("id"),
     CREATED("created"),
-    UPDATED("updated");
+    CREATED_AT("updated");
 
     private final String value;
 

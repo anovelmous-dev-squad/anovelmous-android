@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.anovelmous.app.data.api.model.Novel;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.anovelmous.app.data.api.Order.ASC;
@@ -13,7 +12,7 @@ import static com.anovelmous.app.data.api.Order.DESC;
 /**
  * Created by Greg Ziegan on 5/31/15.
  */
-final class SortUtil {
+final class NovelUtil {
     private static final createdAtComparator UPDATED_ASC = new createdAtComparator(ASC);
     private static final createdAtComparator UPDATED_DESC = new createdAtComparator(DESC);
 
@@ -21,26 +20,12 @@ final class SortUtil {
         if (novels == null) return;
 
         switch (sort) {
-            case UPDATED:
+            case CREATED_AT:
                 Collections.sort(novels, order == ASC ? UPDATED_ASC : UPDATED_DESC);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown sort: " + sort);
         }
-    }
-
-    private static abstract class OrderComparator<T> implements Comparator<T> {
-        private final Order order;
-
-        protected OrderComparator(Order order) {
-            this.order = order;
-        }
-
-        @Override public final int compare(@NonNull T lhs, @NonNull T rhs) {
-            return order == ASC ? compareAsc(lhs, rhs) : -compareAsc(lhs, rhs);
-        }
-
-        protected abstract int compareAsc(@NonNull T lhs, @NonNull T rhs);
     }
 
     private static final class createdAtComparator extends OrderComparator<Novel> {
@@ -53,6 +38,6 @@ final class SortUtil {
         }
     }
 
-    private SortUtil() {
+    private NovelUtil() {
     }
 }

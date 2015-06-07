@@ -4,10 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.DataSetObserver;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -132,7 +129,7 @@ public class ReadingView extends LinearLayout {
             new Func1<Long, Observable<ChapterTextResponse>>() {
                 @Override
                 public Observable<ChapterTextResponse> call(Long aLong) {
-                    return anovelmousService.chapterText(chapterId, Sort.UPDATED, Order.DESC)
+                    return anovelmousService.chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnError(chapterTextLoadError)
                             .onErrorResumeNext(Observable.<ChapterTextResponse>empty());

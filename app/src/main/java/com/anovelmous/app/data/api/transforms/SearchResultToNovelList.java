@@ -1,7 +1,7 @@
 package com.anovelmous.app.data.api.transforms;
 
-import com.anovelmous.app.data.api.model.Novel;
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.data.api.resource.NovelsResponse;
 
 import java.util.Collections;
 import java.util.List;

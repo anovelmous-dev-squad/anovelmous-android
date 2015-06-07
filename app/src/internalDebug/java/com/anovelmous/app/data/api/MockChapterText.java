@@ -1,6 +1,6 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.FormattedNovelToken;
+import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 
 import org.joda.time.DateTime;
 

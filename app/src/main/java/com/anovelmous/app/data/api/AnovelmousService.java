@@ -1,11 +1,10 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.ChapterTextResponse;
-import com.anovelmous.app.data.api.model.ChaptersResponse;
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.resource.ChapterTextResponse;
+import com.anovelmous.app.data.api.resource.ChaptersResponse;
+import com.anovelmous.app.data.api.resource.NovelsResponse;
 
 import retrofit.http.GET;
-import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 

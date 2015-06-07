@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.model.Chapter;
+import com.anovelmous.app.data.api.resource.Chapter;
 
 import java.util.Collections;
 import java.util.List;

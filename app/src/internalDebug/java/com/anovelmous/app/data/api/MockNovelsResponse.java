@@ -1,6 +1,6 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.resource.NovelsResponse;
 
 import java.util.Arrays;
 

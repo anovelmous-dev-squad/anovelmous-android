@@ -2,9 +2,9 @@ package com.anovelmous.app.data.api;
 
 import android.content.SharedPreferences;
 
-import com.anovelmous.app.data.api.model.ChapterTextResponse;
-import com.anovelmous.app.data.api.model.ChaptersResponse;
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.resource.ChapterTextResponse;
+import com.anovelmous.app.data.api.resource.ChaptersResponse;
+import com.anovelmous.app.data.api.resource.NovelsResponse;
 import com.anovelmous.app.util.EnumPreferences;
 
 import java.util.LinkedHashMap;

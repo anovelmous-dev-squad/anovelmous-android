@@ -22,8 +22,8 @@ import com.anovelmous.app.data.IntentFactory;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
-import com.anovelmous.app.data.api.model.Novel;
-import com.anovelmous.app.data.api.model.NovelsResponse;
+import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.data.api.resource.NovelsResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
@@ -84,7 +84,7 @@ public class NovelSelectView extends LinearLayout
         timespanAdapter = new TrendingTimespanAdapter(
                 new ContextThemeWrapper(getContext(), R.style.Theme_Anovelmous_TrendingTimespan));
 
-        novelSelectAdapter = new NovelSelectAdapter(this);
+        novelSelectAdapter = new NovelSelectAdapter(this, context);
     }
 
     @Override protected void onFinishInflate() {

@@ -1,4 +1,4 @@
-package com.anovelmous.app.data.api.model;
+package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
 
@@ -8,9 +8,9 @@ import org.joda.time.DateTime;
 
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
 /**
- * Created by Greg Ziegan on 5/31/15.
+ * Created by Greg Ziegan on 6/2/15.
  */
-public class Novel {
+public class Chapter {
     public final long id;
     @NonNull public final String url;
 
@@ -22,21 +22,18 @@ public class Novel {
     @SerializedName("voting_duration")
     public final int votingDuration;
 
-    @SerializedName("created_at")
+    @NonNull public final String novel;
+
     @NonNull public final DateTime createdAt;
 
-    private Novel(Builder builder) {
+    private Chapter(Builder builder) {
         this.id = builder.id;
         this.url = checkNotNull(builder.url, "url == null");
         this.title = checkNotNull(builder.title, "title == null");
-        this.isCompleted = builder.isCompleted;
-        this.votingDuration = builder.votingDuration;
+        this.isCompleted = checkNotNull(builder.isCompleted, "isCompleted == null");
+        this.votingDuration = checkNotNull(builder.votingDuration, "votingDuration == null");
+        this.novel = checkNotNull(builder.novel, "novel == null");
         this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
-    }
-
-    @Override
-    public String toString() {
-        return "<Novel: " + title + ">";
     }
 
     public static final class Builder {
@@ -45,6 +42,7 @@ public class Novel {
         private String title;
         private boolean isCompleted;
         private int votingDuration;
+        private String novel;
         private DateTime createdAt;
 
         public Builder id(long id) {
@@ -72,13 +70,19 @@ public class Novel {
             return this;
         }
 
+        public Builder novel(String novel) {
+            this.novel = novel;
+            return this;
+        }
+
         public Builder createdAt(DateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
-        public Novel build() {
-            return new Novel(this);
+        public Chapter build() {
+            return new Chapter(this);
         }
     }
+
 }

@@ -1,6 +1,6 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.Novel;
+import com.anovelmous.app.data.api.resource.Novel;
 
 import org.joda.time.DateTime;
 

@@ -1,48 +1,37 @@
-package com.anovelmous.app.data.api.model;
+package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
-
-import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
 
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
+
 /**
- * Created by Greg Ziegan on 6/2/15.
+ * Created by Greg Ziegan on 6/7/15.
  */
-public class FormattedNovelToken {
-    public final long id;
-    @NonNull public final String url;
+public class Token {
+    public long id;
+    @NonNull public String url;
+    @NonNull public String content;
+    public boolean isValid;
+    public boolean isPunctuation;
+    @NonNull public DateTime createdAt;
 
-    @NonNull public final String content;
-
-    public final int ordinal;
-
-    @NonNull public final String chapter;
-
-    @SerializedName("created_at")
-    @NonNull public final DateTime createdAt;
-
-    public FormattedNovelToken(Builder builder) {
+    private Token(Builder builder) {
         this.id = builder.id;
         this.url = checkNotNull(builder.url, "url == null");
         this.content = checkNotNull(builder.content, "content == null");
-        this.ordinal = builder.ordinal;
-        this.chapter = checkNotNull(builder.chapter, "chapter == null");
+        this.isValid = builder.isValid;
+        this.isPunctuation = builder.isPunctuation;
         this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
-    }
-
-    @Override
-    public String toString() {
-        return content;
     }
 
     public static final class Builder {
         private long id;
         private String url;
         private String content;
-        private int ordinal;
-        private String chapter;
+        private boolean isValid;
+        private boolean isPunctuation;
         private DateTime createdAt;
 
         public Builder id(long id) {
@@ -60,13 +49,13 @@ public class FormattedNovelToken {
             return this;
         }
 
-        public Builder ordinal(int ordinal) {
-            this.ordinal = ordinal;
+        public Builder isValid(boolean isValid) {
+            this.isValid = isValid;
             return this;
         }
 
-        public Builder chapter(String chapter) {
-            this.chapter = chapter;
+        public Builder isPunctuation(boolean isPunctuation) {
+            this.isPunctuation = isPunctuation;
             return this;
         }
 
@@ -75,8 +64,8 @@ public class FormattedNovelToken {
             return this;
         }
 
-        public FormattedNovelToken build() {
-            return new FormattedNovelToken(this);
+        public Token build() {
+            return new Token(this);
         }
     }
 }

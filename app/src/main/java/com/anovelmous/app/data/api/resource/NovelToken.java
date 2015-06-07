@@ -1,4 +1,4 @@
-package com.anovelmous.app.data.api.model;
+package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
 

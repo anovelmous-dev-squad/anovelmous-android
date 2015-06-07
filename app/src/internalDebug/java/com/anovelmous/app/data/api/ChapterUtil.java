@@ -2,7 +2,7 @@ package com.anovelmous.app.data.api;
 
 import android.support.annotation.NonNull;
 
-import com.anovelmous.app.data.api.model.Chapter;
+import com.anovelmous.app.data.api.resource.Chapter;
 
 import java.util.Collections;
 import java.util.Iterator;

@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.model.Novel;
+import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.ui.misc.Truss;
 
 import org.joda.time.format.DateTimeFormat;

@@ -2,7 +2,7 @@ package com.anovelmous.app.data.api;
 
 import android.support.annotation.NonNull;
 
-import com.anovelmous.app.data.api.model.FormattedNovelToken;
+import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 
 import java.util.Collections;
 import java.util.List;

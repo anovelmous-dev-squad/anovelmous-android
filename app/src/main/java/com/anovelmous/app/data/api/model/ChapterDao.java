@@ -1,31 +1,26 @@
 package com.anovelmous.app.data.api.model;
 
-import com.anovelmous.app.data.api.resource.Novel;
-
-import java.util.Date;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import com.anovelmous.app.data.api.resource.Chapter;
 
 /**
- * Created by Greg Ziegan on 6/7/15.
+ * Created by IntelliJ
+ * Author: Greg Ziegan on 6/7/15.
  */
-public class NovelDao extends TimeStampedDao {
+public class ChapterDao extends TimeStampedDao {
     private String title;
     private boolean isCompleted;
     private int votingDuration;
+    private String novel;
 
-    public NovelDao() {
+    public ChapterDao() {
 
     }
 
-    public NovelDao(Novel novel) {
-        id = novel.id;
-        url = novel.url;
-        title = novel.title;
-        isCompleted = novel.isCompleted;
-        votingDuration = novel.votingDuration;
-        createdAt = novel.createdAt.toDate();
+    public ChapterDao(Chapter chapter) {
+        title = chapter.title;
+        isCompleted = chapter.isCompleted;
+        votingDuration = chapter.votingDuration;
+        novel = chapter.novel;
     }
 
     public String getTitle() {
@@ -52,4 +47,11 @@ public class NovelDao extends TimeStampedDao {
         this.votingDuration = votingDuration;
     }
 
+    public String getNovel() {
+        return novel;
+    }
+
+    public void setNovel(String novel) {
+        this.novel = novel;
+    }
 }

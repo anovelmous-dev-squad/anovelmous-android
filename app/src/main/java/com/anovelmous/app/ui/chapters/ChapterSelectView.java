@@ -43,7 +43,8 @@ import timber.log.Timber;
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 
 /**
- * Created by Greg Ziegan on 6/2/15.
+ * Created by IntelliJ
+ * Author: Greg Ziegan on 6/2/15.
  */
 public class ChapterSelectView extends LinearLayout
         implements SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {

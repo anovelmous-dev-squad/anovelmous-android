@@ -14,7 +14,8 @@ import java.util.List;
 import rx.functions.Action1;
 
 /**
- * Created by Greg Ziegan on 6/4/15.
+ * Created by IntelliJ
+ * Author: Greg Ziegan on 6/4/15.
  */
 final class ChapterSelectAdapter extends RecyclerView.Adapter<ChapterSelectAdapter.ViewHolder>
     implements Action1<List<Chapter>> {

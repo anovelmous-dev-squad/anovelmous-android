@@ -7,31 +7,35 @@ import com.google.gson.annotations.SerializedName;
 import org.joda.time.DateTime;
 
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
+
 /**
  * Created by Greg Ziegan on 6/7/15.
  */
-public class Vote {
-    public long id;
+public class NovelToken {
+    public final long id;
+    @NonNull public final String url;
 
-    @NonNull public String url;
-    @NonNull public String token;
-    public int ordinal;
-    public boolean selected;
-    @NonNull public String chapter;
-    @NonNull public String user;
+    @NonNull public final String token;
+
+    public final int ordinal;
+
+    @NonNull public final String chapter;
 
     @SerializedName("created_at")
-    @NonNull public DateTime createdAt;
+    @NonNull public final DateTime createdAt;
 
-    private Vote(Builder builder) {
+    public NovelToken(Builder builder) {
         this.id = builder.id;
         this.url = checkNotNull(builder.url, "url == null");
         this.token = checkNotNull(builder.token, "token == null");
         this.ordinal = builder.ordinal;
-        this.selected = builder.selected;
         this.chapter = checkNotNull(builder.chapter, "chapter == null");
-        this.user = checkNotNull(builder.user, "user == null");
         this.createdAt = checkNotNull(builder.createdAt, "createdAt == null");
+    }
+
+    @Override
+    public String toString() {
+        return "<NovelToken: " + url + ">";
     }
 
     public static final class Builder {
@@ -39,11 +43,8 @@ public class Vote {
         private String url;
         private String token;
         private int ordinal;
-        private boolean selected;
         private String chapter;
-        private String user;
         private DateTime createdAt;
-
         public Builder id(long id) {
             this.id = id;
             return this;
@@ -64,19 +65,8 @@ public class Vote {
             return this;
         }
 
-        public Builder selected(boolean selected) {
-            this.selected = selected;
-            return this;
-        }
-
         public Builder chapter(String chapter) {
             this.chapter = chapter;
-            return this;
-
-        }
-
-        public Builder user(String user) {
-            this.user = user;
             return this;
         }
 
@@ -85,8 +75,8 @@ public class Vote {
             return this;
         }
 
-        public Vote build() {
-            return new Vote(this);
+        public NovelToken build() {
+            return new NovelToken(this);
         }
     }
 }

@@ -193,24 +193,19 @@ public class NovelSelectView extends LinearLayout
         }
     };
 
-    private void requestAllNovels() {
+    private void requestCachedNovels() {
         Subscription subscription = dataService.novels()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                new Action1<List<Novel>>() {
-                    @Override
-                    public void call(List<Novel> novels) {
-                        Timber.d("Novels received with size " + novels.size());
-                    }
-                },
-                new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Timber.d("Request all novels error", throwable);
-                    }
-                }
-            );
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        novelSelectAdapter,
+                        new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Timber.d("Request cached novels error", throwable);
+                            }
+                        }
+                );
         if (subscriptions != null) {
             subscriptions.add(subscription);
         }

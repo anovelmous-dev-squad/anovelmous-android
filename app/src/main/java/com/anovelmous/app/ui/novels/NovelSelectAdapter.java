@@ -16,76 +16,78 @@ import java.util.List;
 
 import io.realm.Realm;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 final class NovelSelectAdapter extends RecyclerView.Adapter<NovelSelectAdapter.ViewHolder>
-    implements Action1<List<Novel>> {
-  public interface NovelClickListener {
-      void onNovelClick(Novel novel);
-  }
+        implements Action1<List<Novel>> {
+    public interface NovelClickListener {
+        void onNovelClick(Novel novel);
+    }
 
     private final NovelClickListener novelClickListener;
     private List<Novel> novels = Collections.emptyList();
     private final Context context;
 
-  public NovelSelectAdapter(NovelClickListener novelClickListener, Context context) {
-    this.novelClickListener = novelClickListener;
-    this.context = context;
-  }
+    public NovelSelectAdapter(NovelClickListener novelClickListener, Context context) {
+        this.novelClickListener = novelClickListener;
+        this.context = context;
+    }
 
-  @Override public void call(final List<Novel> novels) {
-    this.novels = novels;
-    notifyDataSetChanged();
-      new Thread(new Runnable() {
-          public void run() {
-              Realm realm = Realm.getInstance(context);
-              realm.beginTransaction();
+    @Override public void call(final List<Novel> novels) {
+        Timber.d("Novels received with size " + novels.size());
+        this.novels = novels;
+        notifyDataSetChanged();
+        new Thread(new Runnable() {
+            public void run() {
+                Realm realm = Realm.getInstance(context);
+                realm.beginTransaction();
 
-              List<RealmNovel> realmNovels = new ArrayList<>(novels.size());
-              for (Novel novel : novels) {
-                  RealmNovel realmNovel = new RealmNovel(novel);
-                  realmNovels.add(realmNovel);
-              }
-              realm.copyToRealmOrUpdate(realmNovels);
-              realm.commitTransaction();
-          }
-      }).start();
-  }
+                List<RealmNovel> realmNovels = new ArrayList<>(novels.size());
+                for (Novel novel : novels) {
+                    RealmNovel realmNovel = new RealmNovel(novel);
+                    realmNovels.add(realmNovel);
+                }
+                realm.copyToRealmOrUpdate(realmNovels);
+                realm.commitTransaction();
+            }
+        }).start();
+    }
 
-  @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-    NovelItemView view = (NovelItemView) LayoutInflater.from(viewGroup.getContext())
-        .inflate(R.layout.view_item_novel, viewGroup, false);
-    return new ViewHolder(view);
-  }
+    @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        NovelItemView view = (NovelItemView) LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.view_item_novel, viewGroup, false);
+        return new ViewHolder(view);
+    }
 
-  @Override public void onBindViewHolder(ViewHolder viewHolder, int i) {
-    viewHolder.bindTo(novels.get(i));
-  }
+    @Override public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        viewHolder.bindTo(novels.get(i));
+    }
 
-  @Override public long getItemId(int position) {
-    return position;
-  }
+    @Override public long getItemId(int position) {
+        return position;
+    }
 
-  @Override public int getItemCount() {
-    return novels.size();
-  }
+    @Override public int getItemCount() {
+        return novels.size();
+    }
 
-  public final class ViewHolder extends RecyclerView.ViewHolder {
-    public final NovelItemView itemView;
-    private Novel novel;
+    public final class ViewHolder extends RecyclerView.ViewHolder {
+        public final NovelItemView itemView;
+        private Novel novel;
 
-    public ViewHolder(NovelItemView itemView) {
-      super(itemView);
-      this.itemView = itemView;
-      this.itemView.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          novelClickListener.onNovelClick(novel);
+        public ViewHolder(NovelItemView itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            this.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    novelClickListener.onNovelClick(novel);
+                }
+            });
         }
-      });
-    }
 
-    public void bindTo(Novel novel) {
-      this.novel = novel;
-      itemView.bindTo(novel);
+        public void bindTo(Novel novel) {
+            this.novel = novel;
+            itemView.bindTo(novel);
+        }
     }
-  }
 }

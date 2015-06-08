@@ -1,8 +1,8 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.resource.ChapterTextResponse;
-import com.anovelmous.app.data.api.resource.ChaptersResponse;
-import com.anovelmous.app.data.api.resource.NovelsResponse;
+import com.anovelmous.app.data.api.response.ChapterTextResponse;
+import com.anovelmous.app.data.api.response.ChaptersResponse;
+import com.anovelmous.app.data.api.response.NovelsResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Query;

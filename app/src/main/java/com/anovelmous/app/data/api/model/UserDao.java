@@ -6,12 +6,16 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class UserDao extends BaseDao {
+public class UserDao extends RealmObject {
+    private long id;
+    @PrimaryKey private String url;
     private String username;
     private String email;
     private RealmList<GroupDao> groups;
@@ -67,5 +71,21 @@ public class UserDao extends BaseDao {
 
     public void setDateJoined(Date dateJoined) {
         this.dateJoined = dateJoined;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

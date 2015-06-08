@@ -11,23 +11,23 @@ abstract class BaseResource {
     public final long id;
     @NonNull public final String url;
 
-    public BaseResource(Builder builder) {
+    protected BaseResource(Builder builder) {
         id = builder.id;
         url = checkNotNull(builder.url, "url == null");
     }
 
-    protected static class Builder {
+    public abstract static class Builder<T extends Builder>{
         protected long id;
         protected String url;
 
-        public Builder id(long id) {
+        public T id(long id) {
             this.id = id;
-            return this;
+            return (T) this;
         }
 
-        public Builder url(String url) {
+        public T url(String url) {
             this.url = url;
-            return this;
+            return (T) this;
         }
     }
 

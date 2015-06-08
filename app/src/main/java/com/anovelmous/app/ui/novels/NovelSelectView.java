@@ -23,7 +23,7 @@ import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Novel;
-import com.anovelmous.app.data.api.resource.NovelsResponse;
+import com.anovelmous.app.data.api.response.NovelsResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;

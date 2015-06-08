@@ -1,5 +1,6 @@
 package com.anovelmous.app.data.api;
 
+
 import com.anovelmous.app.data.api.resource.Chapter;
 
 import org.joda.time.DateTime;

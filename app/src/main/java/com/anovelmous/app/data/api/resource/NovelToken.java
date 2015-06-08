@@ -28,7 +28,7 @@ public class NovelToken extends TimeStampedResource {
         return "<NovelToken: " + url + ">";
     }
 
-    public static final class Builder extends TimeStampedResource.Builder {
+    public static final class Builder extends TimeStampedResource.Builder<Builder> {
         private String token;
         private int ordinal;
         private String chapter;

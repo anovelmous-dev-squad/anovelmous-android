@@ -15,7 +15,7 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
-import com.anovelmous.app.data.api.resource.ChapterTextResponse;
+import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.ui.chapters.ChapterSelectView;

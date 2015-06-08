@@ -1,4 +1,6 @@
-package com.anovelmous.app.data.api.resource;
+package com.anovelmous.app.data.api.response;
+
+import com.anovelmous.app.data.api.resource.Chapter;
 
 import java.util.List;
 

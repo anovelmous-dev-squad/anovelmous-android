@@ -20,7 +20,7 @@ import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Chapter;
-import com.anovelmous.app.data.api.resource.ChaptersResponse;
+import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;

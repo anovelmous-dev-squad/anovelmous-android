@@ -12,17 +12,17 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
 abstract class TimeStampedResource extends BaseResource {
     @NonNull public final DateTime createdAt;
 
-    public TimeStampedResource(Builder builder) {
+    protected TimeStampedResource(Builder builder) {
         super(builder);
         createdAt = checkNotNull(builder.createdAt, "createdAt == null");
     }
 
-    protected static class Builder extends BaseResource.Builder {
+    public abstract static class Builder<T extends Builder> extends BaseResource.Builder<T> {
         protected DateTime createdAt;
 
-        public Builder createdAt(DateTime createdAt) {
+        public T createdAt(DateTime createdAt) {
             this.createdAt = createdAt;
-            return this;
+            return (T) this;
         }
     }
 }

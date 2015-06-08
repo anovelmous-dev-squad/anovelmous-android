@@ -10,10 +10,13 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Greg Ziegan on 6/7/15.
  */
-public class NovelDao extends TimeStampedDao {
+public class NovelDao extends RealmObject {
+    private long id;
+    @PrimaryKey private String url;
     private String title;
     private boolean isCompleted;
     private int votingDuration;
+    private Date createdAt;
 
     public NovelDao() {
 
@@ -52,4 +55,27 @@ public class NovelDao extends TimeStampedDao {
         this.votingDuration = votingDuration;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 }

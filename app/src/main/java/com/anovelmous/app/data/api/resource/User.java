@@ -29,7 +29,7 @@ public class User extends BaseResource {
         this.dateJoined = checkNotNull(builder.dateJoined, "dateJoined == null");
     }
 
-    private static final class Builder extends BaseResource.Builder {
+    private static final class Builder extends BaseResource.Builder<Builder> {
         private String username;
         private String email;
         private List<String> groups;

@@ -1,6 +1,6 @@
 package com.anovelmous.app.data.api.transforms;
 
-import com.anovelmous.app.data.api.resource.ChapterTextResponse;
+import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 
 import java.util.Collections;

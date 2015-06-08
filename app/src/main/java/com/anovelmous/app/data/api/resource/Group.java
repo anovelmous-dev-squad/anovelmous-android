@@ -15,7 +15,7 @@ public class Group extends BaseResource {
         this.name = checkNotNull(builder.name, "name == null");
     }
 
-    private static final class Builder extends BaseResource.Builder {
+    private static final class Builder extends BaseResource.Builder<Builder> {
         private String name;
 
         public Builder name(String name) {

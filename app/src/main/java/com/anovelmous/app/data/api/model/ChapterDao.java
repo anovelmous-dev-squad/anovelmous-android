@@ -2,25 +2,37 @@ package com.anovelmous.app.data.api.model;
 
 import com.anovelmous.app.data.api.resource.Chapter;
 
+import java.util.Date;
+
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class ChapterDao extends TimeStampedDao {
+public class ChapterDao extends RealmObject {
+    private long id;
+    @PrimaryKey private String url;
     private String title;
     private boolean isCompleted;
     private int votingDuration;
-    private String novel;
+    private NovelDao novel;
+    private Date createdAt;
 
     public ChapterDao() {
 
     }
 
-    public ChapterDao(Chapter chapter) {
+    public ChapterDao(Chapter chapter, Realm realm) {
+        id = chapter.id;
+        url = chapter.url;
         title = chapter.title;
         isCompleted = chapter.isCompleted;
         votingDuration = chapter.votingDuration;
-        novel = chapter.novel;
+        novel = realm.where(NovelDao.class).equalTo("url", chapter.novel).findFirst();
+        createdAt = chapter.createdAt.toDate();
     }
 
     public String getTitle() {
@@ -47,11 +59,35 @@ public class ChapterDao extends TimeStampedDao {
         this.votingDuration = votingDuration;
     }
 
-    public String getNovel() {
+    public NovelDao getNovel() {
         return novel;
     }
 
-    public void setNovel(String novel) {
+    public void setNovel(NovelDao novel) {
         this.novel = novel;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

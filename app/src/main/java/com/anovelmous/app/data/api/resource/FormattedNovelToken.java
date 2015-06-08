@@ -27,7 +27,7 @@ public class FormattedNovelToken extends TimeStampedResource {
         return content;
     }
 
-    public static final class Builder extends TimeStampedResource.Builder {
+    public static final class Builder extends TimeStampedResource.Builder<Builder> {
         private String content;
         private int ordinal;
         private String chapter;

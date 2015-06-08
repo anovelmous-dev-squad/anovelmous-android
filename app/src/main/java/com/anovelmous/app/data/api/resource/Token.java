@@ -21,7 +21,7 @@ public class Token extends TimeStampedResource {
         this.isPunctuation = builder.isPunctuation;
     }
 
-    public static final class Builder extends TimeStampedResource.Builder {
+    public static final class Builder extends TimeStampedResource.Builder<Builder> {
         private String content;
         private boolean isValid;
         private boolean isPunctuation;

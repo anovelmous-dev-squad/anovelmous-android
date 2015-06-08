@@ -1,7 +1,7 @@
 package com.anovelmous.app.data.api.transforms;
 
 import com.anovelmous.app.data.api.resource.Chapter;
-import com.anovelmous.app.data.api.resource.ChaptersResponse;
+import com.anovelmous.app.data.api.response.ChaptersResponse;
 
 import java.util.Collections;
 import java.util.List;

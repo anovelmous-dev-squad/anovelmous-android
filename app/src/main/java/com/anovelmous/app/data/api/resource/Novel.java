@@ -29,7 +29,7 @@ public class Novel extends TimeStampedResource {
         return "<Novel: " + title + ">";
     }
 
-    public static final class Builder extends TimeStampedResource.Builder {
+    public static final class Builder extends TimeStampedResource.Builder<Builder> {
         private String title;
         private boolean isCompleted;
         private int votingDuration;

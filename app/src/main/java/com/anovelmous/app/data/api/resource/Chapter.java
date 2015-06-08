@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
-
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
 /**
  * Created by Greg Ziegan on 6/2/15.
@@ -29,7 +27,7 @@ public class Chapter extends TimeStampedResource {
         this.novel = checkNotNull(builder.novel, "novel == null");
     }
 
-    public static final class Builder extends TimeStampedResource.Builder {
+    public static final class Builder extends TimeStampedResource.Builder<Builder> {
         private String title;
         private boolean isCompleted;
         private int votingDuration;

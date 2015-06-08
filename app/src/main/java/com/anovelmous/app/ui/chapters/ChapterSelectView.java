@@ -79,7 +79,7 @@ public class ChapterSelectView extends LinearLayout
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
         novelIdSubject = PublishSubject.create();
-        chapterSelectAdapter = new ChapterSelectAdapter(this);
+        chapterSelectAdapter = new ChapterSelectAdapter(this, context);
         goUpClickListener = new GoUpClickListener(context);
     }
 

@@ -15,7 +15,7 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
-import com.anovelmous.app.data.api.model.FormattedNovelTokenDao;
+import com.anovelmous.app.data.api.model.RealmFormattedNovelToken;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
@@ -111,10 +111,10 @@ public class ReadingView extends LinearLayout {
                                 Realm realm = Realm.getInstance(getContext());
                                 realm.beginTransaction();
 
-                                List<FormattedNovelTokenDao> chapterTextDaos = new ArrayList<>(formattedNovelTokens.size());
+                                List<RealmFormattedNovelToken> chapterTextDaos = new ArrayList<>(formattedNovelTokens.size());
                                 for (FormattedNovelToken formattedNovelToken : formattedNovelTokens) {
                                     chapterTextDaos.add(
-                                            new FormattedNovelTokenDao(formattedNovelToken, realm));
+                                            new RealmFormattedNovelToken(formattedNovelToken, realm));
                                 }
 
                                 realm.copyToRealmOrUpdate(chapterTextDaos);

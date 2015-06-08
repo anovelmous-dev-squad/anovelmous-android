@@ -11,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class TokenDao extends RealmObject {
+public class RealmToken extends RealmObject {
     private long id;
     @PrimaryKey private String url;
     private String content;
@@ -19,11 +19,11 @@ public class TokenDao extends RealmObject {
     private boolean isPunctuation;
     private Date createdAt;
 
-    public TokenDao() {
+    public RealmToken() {
 
     }
 
-    public TokenDao(Token token) {
+    public RealmToken(Token token) {
         id = token.id;
         url = token.url;
         content = token.content;

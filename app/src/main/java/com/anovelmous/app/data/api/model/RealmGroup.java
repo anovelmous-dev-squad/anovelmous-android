@@ -9,16 +9,16 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class GroupDao extends RealmObject {
+public class RealmGroup extends RealmObject {
     private long id;
     @PrimaryKey private String url;
     private String name;
 
-    public GroupDao() {
+    public RealmGroup() {
 
     }
 
-    public GroupDao(Group group) {
+    public RealmGroup(Group group) {
         id = group.id;
         url = group.url;
         name = group.name;

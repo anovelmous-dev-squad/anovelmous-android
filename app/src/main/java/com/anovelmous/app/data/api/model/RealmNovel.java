@@ -1,38 +1,34 @@
 package com.anovelmous.app.data.api.model;
 
-import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Novel;
 
 import java.util.Date;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by IntelliJ
- * Author: Greg Ziegan on 6/7/15.
+ * Created by Greg Ziegan on 6/7/15.
  */
-public class ChapterDao extends RealmObject {
+public class RealmNovel extends RealmObject {
     private long id;
     @PrimaryKey private String url;
     private String title;
     private boolean isCompleted;
     private int votingDuration;
-    private NovelDao novel;
     private Date createdAt;
 
-    public ChapterDao() {
+    public RealmNovel() {
 
     }
 
-    public ChapterDao(Chapter chapter, Realm realm) {
-        id = chapter.id;
-        url = chapter.url;
-        title = chapter.title;
-        isCompleted = chapter.isCompleted;
-        votingDuration = chapter.votingDuration;
-        novel = realm.where(NovelDao.class).equalTo("url", chapter.novel).findFirst();
-        createdAt = chapter.createdAt.toDate();
+    public RealmNovel(Novel novel) {
+        id = novel.id;
+        url = novel.url;
+        title = novel.title;
+        isCompleted = novel.isCompleted;
+        votingDuration = novel.votingDuration;
+        createdAt = novel.createdAt.toDate();
     }
 
     public String getTitle() {
@@ -57,14 +53,6 @@ public class ChapterDao extends RealmObject {
 
     public void setVotingDuration(int votingDuration) {
         this.votingDuration = votingDuration;
-    }
-
-    public NovelDao getNovel() {
-        return novel;
-    }
-
-    public void setNovel(NovelDao novel) {
-        this.novel = novel;
     }
 
     public long getId() {

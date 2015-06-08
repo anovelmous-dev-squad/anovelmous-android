@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.model.ChapterDao;
+import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.resource.Chapter;
 
 import java.util.ArrayList;
@@ -48,12 +48,12 @@ final class ChapterSelectAdapter extends RecyclerView.Adapter<ChapterSelectAdapt
                 Realm realm = Realm.getInstance(context);
                 realm.beginTransaction();
 
-                List<ChapterDao> chapterDaos = new ArrayList<>(chapters.size());
+                List<RealmChapter> realmChapters = new ArrayList<>(chapters.size());
                 for (Chapter chapter : chapters) {
-                    ChapterDao chapterDao = new ChapterDao(chapter, realm);
-                    chapterDaos.add(chapterDao);
+                    RealmChapter realmChapter = new RealmChapter(chapter, realm);
+                    realmChapters.add(realmChapter);
                 }
-                realm.copyToRealmOrUpdate(chapterDaos);
+                realm.copyToRealmOrUpdate(realmChapters);
                 realm.commitTransaction();
             }
         }).start();

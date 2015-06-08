@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.model.NovelDao;
+import com.anovelmous.app.data.api.model.RealmNovel;
 import com.anovelmous.app.data.api.resource.Novel;
 
 import java.util.ArrayList;
@@ -40,12 +40,12 @@ final class NovelSelectAdapter extends RecyclerView.Adapter<NovelSelectAdapter.V
               Realm realm = Realm.getInstance(context);
               realm.beginTransaction();
 
-              List<NovelDao> novelDaos = new ArrayList<>(novels.size());
+              List<RealmNovel> realmNovels = new ArrayList<>(novels.size());
               for (Novel novel : novels) {
-                  NovelDao novelDao = new NovelDao(novel);
-                  novelDaos.add(novelDao);
+                  RealmNovel realmNovel = new RealmNovel(novel);
+                  realmNovels.add(realmNovel);
               }
-              realm.copyToRealmOrUpdate(novelDaos);
+              realm.copyToRealmOrUpdate(realmNovels);
               realm.commitTransaction();
           }
       }).start();

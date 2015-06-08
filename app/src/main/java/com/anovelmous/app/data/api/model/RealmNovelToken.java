@@ -12,24 +12,24 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class NovelTokenDao extends RealmObject {
+public class RealmNovelToken extends RealmObject {
     private long id;
     @PrimaryKey private String url;
     private String token;
     private int ordinal;
-    private ChapterDao chapter;
+    private RealmChapter chapter;
     private Date createdAt;
 
-    public NovelTokenDao() {
+    public RealmNovelToken() {
 
     }
 
-    public NovelTokenDao(NovelToken novelToken, Realm realm) {
+    public RealmNovelToken(NovelToken novelToken, Realm realm) {
         id = novelToken.id;
         url = novelToken.url;
         token = novelToken.token;
         ordinal = novelToken.ordinal;
-        chapter = realm.where(ChapterDao.class).equalTo("url", novelToken.chapter).findFirst();
+        chapter = realm.where(RealmChapter.class).equalTo("url", novelToken.chapter).findFirst();
         createdAt = novelToken.createdAt.toDate();
     }
 
@@ -49,11 +49,11 @@ public class NovelTokenDao extends RealmObject {
         this.ordinal = ordinal;
     }
 
-    public ChapterDao getChapter() {
+    public RealmChapter getChapter() {
         return chapter;
     }
 
-    public void setChapter(ChapterDao chapter) {
+    public void setChapter(RealmChapter chapter) {
         this.chapter = chapter;
     }
 

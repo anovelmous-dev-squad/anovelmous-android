@@ -13,26 +13,26 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class UserDao extends RealmObject {
+public class RealmUser extends RealmObject {
     private long id;
     @PrimaryKey private String url;
     private String username;
     private String email;
-    private RealmList<GroupDao> groups;
+    private RealmList<RealmGroup> groups;
     private Date dateJoined;
 
-    public UserDao() {
+    public RealmUser() {
 
     }
 
-    public UserDao(User user, Realm realm) {
+    public RealmUser(User user, Realm realm) {
         id = user.id;
         url = user.url;
         username = user.username;
         email = user.email;
 
         for (String groupId : user.groups) {
-            groups.add(realm.where(GroupDao.class)
+            groups.add(realm.where(RealmGroup.class)
                             .equalTo("url", groupId)
                             .findFirst()
             );
@@ -57,11 +57,11 @@ public class UserDao extends RealmObject {
         this.email = email;
     }
 
-    public RealmList<GroupDao> getGroups() {
+    public RealmList<RealmGroup> getGroups() {
         return groups;
     }
 
-    public void setGroups(RealmList<GroupDao> groups) {
+    public void setGroups(RealmList<RealmGroup> groups) {
         this.groups = groups;
     }
 

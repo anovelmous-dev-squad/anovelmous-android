@@ -1,5 +1,9 @@
 package com.anovelmous.app.data.api;
 
+import android.app.Application;
+import android.content.Context;
+
+import com.anovelmous.app.AnovelmousApp;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -44,5 +48,9 @@ public final class ApiModule {
 
     @Provides @Singleton AnovelmousService provideAnovelmousService(RestAdapter restAdapter) {
         return restAdapter.create(AnovelmousService.class);
+    }
+
+    @Provides @Singleton DataService provideDataService() {
+        return new RealmDataService(AnovelmousApp.getContext());
     }
 }

@@ -20,6 +20,7 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.IntentFactory;
 import com.anovelmous.app.data.api.AnovelmousService;
+import com.anovelmous.app.data.api.DataService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Novel;
@@ -32,15 +33,19 @@ import com.anovelmous.app.ui.misc.EnumAdapter;
 import com.anovelmous.app.ui.trending.TrendingTimespan;
 import com.anovelmous.app.ui.trending.TrendingTimespanAdapter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemSelected;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -63,6 +68,7 @@ public class NovelSelectView extends LinearLayout
 
     @Inject AnovelmousService anovelmousService;
     @Inject IntentFactory intentFactory;
+    @Inject DataService dataService;
 
     private final float dividerPaddingStart;
 
@@ -186,4 +192,27 @@ public class NovelSelectView extends LinearLayout
             animatorView.setDisplayedChildId(R.id.trending_error);
         }
     };
+
+    private void requestAllNovels() {
+        Subscription subscription = dataService.novels()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                new Action1<List<Novel>>() {
+                    @Override
+                    public void call(List<Novel> novels) {
+                        Timber.d("Novels received with size " + novels.size());
+                    }
+                },
+                new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Timber.d("Request all novels error", throwable);
+                    }
+                }
+            );
+        if (subscriptions != null) {
+            subscriptions.add(subscription);
+        }
+    }
 }

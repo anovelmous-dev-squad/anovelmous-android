@@ -56,7 +56,7 @@ final class ChapterSelectAdapter extends RecyclerView.Adapter<ChapterSelectAdapt
                 realm.copyToRealmOrUpdate(chapterDaos);
                 realm.commitTransaction();
             }
-        });
+        }).start();
     }
 
     @Override

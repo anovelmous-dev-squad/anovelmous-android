@@ -15,6 +15,7 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
+import com.anovelmous.app.data.api.model.FormattedNovelTokenDao;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import io.realm.Realm;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -91,7 +93,7 @@ public class ReadingView extends LinearLayout {
                 .map(SearchResultToFormattedNovelTokenList.instance())
                 .subscribe(new Action1<List<FormattedNovelToken>>() {
                     @Override
-                    public void call(List<FormattedNovelToken> formattedNovelTokens) {
+                    public void call(final List<FormattedNovelToken> formattedNovelTokens) {
                         chapterTokens.clear();
                         chapterTokens.addAll(formattedNovelTokens);
                         StringBuilder sb = new StringBuilder();
@@ -102,6 +104,23 @@ public class ReadingView extends LinearLayout {
                         chapterText = sb.toString();
                         textContent.setText(chapterText);
                         animatorView.setDisplayedChildId(R.id.reading_text_content);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Realm realm = Realm.getInstance(getContext());
+                                realm.beginTransaction();
+
+                                List<FormattedNovelTokenDao> chapterTextDaos = new ArrayList<>(formattedNovelTokens.size());
+                                for (FormattedNovelToken formattedNovelToken : formattedNovelTokens) {
+                                    chapterTextDaos.add(
+                                            new FormattedNovelTokenDao(formattedNovelToken, realm));
+                                }
+
+                                realm.copyToRealmOrUpdate(chapterTextDaos);
+                                realm.commitTransaction();
+                            }
+                        }).start();
                     }
                 }));
         post(new Runnable() {

@@ -12,4 +12,5 @@ import rx.Observable;
  */
 public interface DataService {
     public Observable<List<Novel>> novels();
+    public Observable<Novel> saveNovel(Novel novel);
 }

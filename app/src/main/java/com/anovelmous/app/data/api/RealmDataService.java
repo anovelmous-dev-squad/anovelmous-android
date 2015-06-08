@@ -56,4 +56,19 @@ public class RealmDataService implements DataService {
                 .build();
     }
 
+    @Override
+    public Observable<Novel> saveNovel(final Novel novel) {
+        return RealmObservable.object(context, new Func1<Realm, RealmNovel>() {
+            @Override
+            public RealmNovel call(Realm realm) {
+                RealmNovel realmNovel = new RealmNovel(novel);
+                return realm.copyToRealmOrUpdate(realmNovel);
+            }
+        }).map(new Func1<RealmNovel, Novel>() {
+            @Override
+            public Novel call(RealmNovel realmNovel) {
+                return novelFromRealm(realmNovel);
+            }
+        });
+    }
 }

@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api.rx;
 import android.content.Context;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
@@ -34,6 +35,24 @@ public final class RealmObservable {
         return Observable.create(new OnSubscribeRealm<T>(context, dbFileName) {
             @Override
             public T get(Realm realm) {
+                return function.call(realm);
+            }
+        });
+    }
+
+    public static <T extends RealmObject> Observable<RealmList<T>> list(Context context, final Func1<Realm, RealmList<T>> function) {
+        return Observable.create(new OnSubscribeRealmList<T>(context) {
+            @Override
+            public RealmList<T> get(Realm realm) {
+                return function.call(realm);
+            }
+        });
+    }
+
+    public static <T extends RealmObject> Observable<RealmList<T>> list(Context context, String dbFileName, final Func1<Realm, RealmList<T>> function) {
+        return Observable.create(new OnSubscribeRealmList<T>(context, dbFileName) {
+            @Override
+            public RealmList<T> get(Realm realm) {
                 return function.call(realm);
             }
         });

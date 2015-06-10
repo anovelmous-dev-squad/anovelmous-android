@@ -9,6 +9,7 @@ import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
@@ -36,8 +37,18 @@ public class AnovelmousService implements RestService {
                     @Override
                     public Observable<List<Novel>> call(Boolean needsUpdating) {
                         if (needsUpdating) {
-                            return networkService.novels(100, 1, Sort.CREATED_AT, Order.DESC)
+                            Observable<List<Novel>> novels =  networkService.novels(100, 1, Sort.CREATED_AT, Order.DESC)
                                     .map(SearchResultToNovelList.instance());
+
+                            // Persist new novels
+                            novels.subscribe(new Action1<List<Novel>>() {
+                                @Override
+                                public void call(List<Novel> novels) {
+                                    for (Novel novel : novels)
+                                        persistenceService.saveNovel(novel);
+                                }
+                            });
+                            return novels;
                         } else {
                             return persistenceService.novels();
                         }

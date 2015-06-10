@@ -37,20 +37,6 @@ final class NovelSelectAdapter extends RecyclerView.Adapter<NovelSelectAdapter.V
         Timber.d("Novels received with size " + novels.size());
         this.novels = novels;
         notifyDataSetChanged();
-        new Thread(new Runnable() {
-            public void run() {
-                Realm realm = Realm.getInstance(context);
-                realm.beginTransaction();
-
-                List<RealmNovel> realmNovels = new ArrayList<>(novels.size());
-                for (Novel novel : novels) {
-                    RealmNovel realmNovel = new RealmNovel(novel);
-                    realmNovels.add(realmNovel);
-                }
-                realm.copyToRealmOrUpdate(realmNovels);
-                realm.commitTransaction();
-            }
-        }).start();
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {

@@ -40,7 +40,9 @@ import butterknife.InjectView;
 import butterknife.OnItemSelected;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -129,11 +131,8 @@ public class NovelSelectView extends LinearLayout
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        subscriptions.add(restService.getAllNovels()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(trendingError)
-                .onErrorResumeNext(Observable.<List<Novel>>empty())
+        subscriptions.add(timespanSubject
+                .flatMap(getNovels)
                 .subscribe(novelSelectAdapter));
 
         onRefresh();
@@ -174,6 +173,17 @@ public class NovelSelectView extends LinearLayout
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) private boolean isRtl() {
         return getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
+
+    private final Func1<TrendingTimespan, Observable<List<Novel>>> getNovels =
+            new Func1<TrendingTimespan, Observable<List<Novel>>>() {
+                @Override public Observable<List<Novel>> call(TrendingTimespan trendingTimespan) {
+                    return restService.getAllNovels()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .doOnError(trendingError)
+                            .onErrorResumeNext(Observable.<List<Novel>>empty());
+                }
+            };
 
     private final Action1<Throwable> trendingError = new Action1<Throwable>() {
         @Override public void call(Throwable throwable) {

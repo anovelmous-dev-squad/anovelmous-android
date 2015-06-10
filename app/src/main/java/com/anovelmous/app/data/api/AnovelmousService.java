@@ -4,6 +4,7 @@ import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 
 import java.util.List;
@@ -25,30 +26,36 @@ public class AnovelmousService implements RestService {
         this.persistenceService = persistenceService;
     }
 
+    private final Func2<ResourceCount, ResourceCount, Boolean> hasRemoteResourceCountChange =
+            new Func2<ResourceCount, ResourceCount, Boolean>() {
+                @Override
+                public Boolean call(ResourceCount remoteRes, ResourceCount localRes) {
+                    return remoteRes.count != localRes.count;
+                }
+            };
+
+    @Override
     public Observable<List<Novel>> getAllNovels() {
-        return Observable.combineLatest(networkService.novelsCount(), persistenceService.novelsCount(),
-                new Func2<ResourceCount, ResourceCount, Boolean>() {
-                    @Override
-                    public Boolean call(ResourceCount resourceCount, ResourceCount resourceCount2) {
-                        return resourceCount.count != resourceCount2.count;
-                    }
-                })
+        return Observable.combineLatest(
+                networkService.novelsCount(), persistenceService.novelsCount(),
+                hasRemoteResourceCountChange)
                 .flatMap(new Func1<Boolean, Observable<List<Novel>>>() {
                     @Override
                     public Observable<List<Novel>> call(Boolean needsUpdating) {
                         if (needsUpdating) {
-                            Observable<List<Novel>> novels =  networkService.novels(100, 1, Sort.CREATED_AT, Order.DESC)
+                            Observable<List<Novel>> novelsStream = networkService.
+                                    novels(100, 1, Sort.CREATED_AT, Order.DESC)
                                     .map(SearchResultToNovelList.instance());
 
                             // Persist new novels
-                            novels.subscribe(new Action1<List<Novel>>() {
+                            novelsStream.subscribe(new Action1<List<Novel>>() {
                                 @Override
                                 public void call(List<Novel> novels) {
                                     for (Novel novel : novels)
                                         persistenceService.saveNovel(novel);
                                 }
                             });
-                            return novels;
+                            return novelsStream;
                         } else {
                             return persistenceService.novels();
                         }
@@ -56,8 +63,32 @@ public class AnovelmousService implements RestService {
                 });
     }
 
-    public List<Chapter> getNovelChapters(long novelId) {
-        return null;
+    @Override
+    public Observable<List<Chapter>> getNovelChapters(final long novelId) {
+        return Observable.combineLatest(
+                networkService.chaptersCount(), persistenceService.chaptersCount(),
+                hasRemoteResourceCountChange)
+                .flatMap(new Func1<Boolean, Observable<List<Chapter>>>() {
+                    @Override
+                    public Observable<List<Chapter>> call(Boolean needsUpdating) {
+                        if (needsUpdating) {
+                            Observable<List<Chapter>> chaptersStream = networkService.
+                                    chapters(novelId, Sort.CREATED_AT, Order.DESC)
+                                    .map(SearchResultToChapterList.instance());
+
+                            chaptersStream.subscribe(new Action1<List<Chapter>>() {
+                                @Override
+                                public void call(List<Chapter> chapters) {
+                                    for (Chapter chapter : chapters)
+                                        persistenceService.saveChapter(chapter);
+                                }
+                            });
+                            return chaptersStream;
+                        } else {
+                            return persistenceService.chapters(novelId);
+                        }
+                    }
+                });
     }
 
     List<FormattedNovelToken> getChapterText(long chapterId) {

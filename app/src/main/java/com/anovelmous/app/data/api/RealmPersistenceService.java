@@ -2,7 +2,9 @@ package com.anovelmous.app.data.api;
 
 import android.content.Context;
 
+import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.model.RealmNovel;
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.rx.RealmObservable;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Func1;
@@ -87,5 +90,59 @@ public class RealmPersistenceService implements PersistenceService {
                 return novelFromRealm(realmNovel);
             }
         });
+    }
+
+    private Observable<RealmResults<RealmChapter>> getRealmNovelChapters() {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
+            @Override
+            public RealmResults<RealmChapter> call(Realm realm) {
+                return realm.where(RealmChapter.class).findAll();
+            }
+        });
+    }
+
+    private static Chapter chapterFromRealm(RealmChapter realmChapter) {
+        return new Chapter.Builder()
+                .id(realmChapter.getId())
+                .url(realmChapter.getUrl())
+                .title(realmChapter.getTitle())
+                .isCompleted(realmChapter.isCompleted())
+                .votingDuration(realmChapter.getVotingDuration())
+                .novel(realmChapter.getNovel().getUrl())
+                .createdAt(new DateTime(realmChapter.getCreatedAt()))
+                .build();
+    }
+
+    @Override
+    public Observable<List<Chapter>> chapters(long novelId) {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
+            @Override
+            public RealmResults<RealmChapter> call(Realm realm) {
+                return realm.where(RealmChapter.class).findAll(); // TODO: filter by novelId
+            }
+        }).map(new Func1<RealmResults<RealmChapter>, List<Chapter>>() {
+            @Override
+            public List<Chapter> call(RealmResults<RealmChapter> realmChapters) {
+                final List<Chapter> chapters = new ArrayList<>(realmChapters.size());
+                for (RealmChapter realmChapter : realmChapters)
+                    chapters.add(chapterFromRealm(realmChapter));
+                return chapters;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ResourceCount> chaptersCount() {
+        return getRealmNovelChapters().map(new Func1<RealmResults<RealmChapter>, ResourceCount>() {
+            @Override
+            public ResourceCount call(RealmResults<RealmChapter> realmChapters) {
+                return new ResourceCount.Builder().count(realmChapters.size()).build();
+            }
+        });
+    }
+
+    @Override
+    public Observable<Chapter> saveChapter(Chapter chapter) {
+        return null;
     }
 }

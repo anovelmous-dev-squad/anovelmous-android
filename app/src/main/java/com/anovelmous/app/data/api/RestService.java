@@ -1,5 +1,6 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Novel;
 
 import java.util.List;
@@ -11,4 +12,5 @@ import rx.Observable;
  */
 public interface RestService {
     Observable<List<Novel>> getAllNovels();
+    Observable<List<Chapter>> getNovelChapters(long novelId);
 }

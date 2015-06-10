@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.NetworkService;
 import com.anovelmous.app.data.api.Order;
+import com.anovelmous.app.data.api.PersistenceService;
+import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
@@ -28,6 +31,8 @@ import com.anovelmous.app.ui.misc.GoUpClickListener;
 import com.anovelmous.app.ui.novels.NovelSelectView;
 import com.anovelmous.app.ui.reading.ReadingActivity;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -36,6 +41,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -56,14 +62,15 @@ public class ChapterSelectView extends LinearLayout
     @InjectView(R.id.chapter_list) RecyclerView chaptersView;
     @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
-    @Inject
-    NetworkService networkService;
+    @Inject NetworkService networkService;
+    @Inject PersistenceService persistenceService;
     private final GoUpClickListener goUpClickListener;
 
     private final float dividerPaddingStart;
     private final PublishSubject<Long> novelIdSubject;
     private final ChapterSelectAdapter chapterSelectAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final RestService restService;
 
     private final long novelId;
 
@@ -82,6 +89,7 @@ public class ChapterSelectView extends LinearLayout
         novelIdSubject = PublishSubject.create();
         chapterSelectAdapter = new ChapterSelectAdapter(this, context);
         goUpClickListener = new GoUpClickListener(context);
+        restService = new AnovelmousService(networkService, persistenceService);
     }
 
     @Override protected void onFinishInflate() {
@@ -119,7 +127,6 @@ public class ChapterSelectView extends LinearLayout
 
         subscriptions.add(novelIdSubject
                 .flatMap(chaptersRequest)
-                .map(SearchResultToChapterList.instance())
                 .subscribe(chapterSelectAdapter));
 
         onRefresh();
@@ -160,14 +167,15 @@ public class ChapterSelectView extends LinearLayout
         });
     }
 
-    private final Func1<Long, Observable<ChaptersResponse>> chaptersRequest =
-            new Func1<Long, Observable<ChaptersResponse>>() {
+    private final Func1<Long, Observable<List<Chapter>>> chaptersRequest =
+            new Func1<Long, Observable<List<Chapter>>>() {
                 @Override
-                public Observable<ChaptersResponse> call(Long novelId) {
-                    return networkService.chapters(novelId, Sort.CREATED_AT, Order.DESC)
+                public Observable<List<Chapter>> call(Long novelId) {
+                    return restService.getNovelChapters(novelId)
                             .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
                             .doOnError(chapterLoadError)
-                            .onErrorResumeNext(Observable.<ChaptersResponse>empty());
+                            .onErrorResumeNext(Observable.<List<Chapter>>empty());
                 }
             };
 

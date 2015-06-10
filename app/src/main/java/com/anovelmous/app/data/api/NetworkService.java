@@ -29,6 +29,9 @@ public interface NetworkService {
             @Query("sort") Sort sort,
             @Query("order") Order order);
 
+    @GET("/chapters?page_size=1")
+    Observable<ResourceCount> chaptersCount();
+
     @GET("/formatted_novel_tokens")
     Observable<ChapterTextResponse> chapterText(
             @Query("chapter") long id,

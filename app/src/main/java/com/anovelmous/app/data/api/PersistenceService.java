@@ -1,5 +1,6 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 
@@ -15,4 +16,8 @@ public interface PersistenceService {
     Observable<List<Novel>> novels();
     Observable<ResourceCount> novelsCount();
     Observable<Novel> saveNovel(Novel novel);
+
+    Observable<List<Chapter>> chapters(long novelId);
+    Observable<ResourceCount> chaptersCount();
+    Observable<Chapter> saveChapter(Chapter chapter);
 }

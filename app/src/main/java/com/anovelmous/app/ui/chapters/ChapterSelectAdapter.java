@@ -41,22 +41,6 @@ final class ChapterSelectAdapter extends RecyclerView.Adapter<ChapterSelectAdapt
     public void call(final List<Chapter> chapters) {
         this.chapters = chapters;
         notifyDataSetChanged();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Realm realm = Realm.getInstance(context);
-                realm.beginTransaction();
-
-                List<RealmChapter> realmChapters = new ArrayList<>(chapters.size());
-                for (Chapter chapter : chapters) {
-                    RealmChapter realmChapter = new RealmChapter(chapter, realm);
-                    realmChapters.add(realmChapter);
-                }
-                realm.copyToRealmOrUpdate(realmChapters);
-                realm.commitTransaction();
-            }
-        }).start();
     }
 
     @Override

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
+import com.anovelmous.app.data.api.NetworkService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.model.RealmFormattedNovelToken;
@@ -49,7 +49,8 @@ public class ReadingView extends LinearLayout {
     @InjectView(R.id.reading_loading_message) TextView loadingMessageView;
     @InjectView(R.id.reading_text_content) TextView textContent;
 
-    @Inject AnovelmousService anovelmousService;
+    @Inject
+    NetworkService networkService;
 
     private final long chapterId;
     private final PublishSubject<Long> chapterIdSubject;
@@ -148,7 +149,7 @@ public class ReadingView extends LinearLayout {
             new Func1<Long, Observable<ChapterTextResponse>>() {
                 @Override
                 public Observable<ChapterTextResponse> call(Long aLong) {
-                    return anovelmousService.chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
+                    return networkService.chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnError(chapterTextLoadError)
                             .onErrorResumeNext(Observable.<ChapterTextResponse>empty());

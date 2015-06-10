@@ -17,7 +17,6 @@ import timber.log.Timber;
  * Created by Greg Ziegan on 5/31/15.
  */
 public final class AnovelmousApp extends Application {
-    private static Context mContext;
     private ObjectGraph objectGraph;
 
     @Inject ActivityHierarchyServer activityHierarchyServer;
@@ -52,9 +51,5 @@ public final class AnovelmousApp extends Application {
 
     public static AnovelmousApp get(Context context) {
         return (AnovelmousApp) context.getApplicationContext();
-    }
-
-    public static Context getContext(){
-        return mContext;
     }
 }

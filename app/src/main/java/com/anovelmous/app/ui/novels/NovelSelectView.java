@@ -20,12 +20,10 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.IntentFactory;
 import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.DataService;
-import com.anovelmous.app.data.api.Order;
-import com.anovelmous.app.data.api.Sort;
+import com.anovelmous.app.data.api.NetworkService;
+import com.anovelmous.app.data.api.PersistenceService;
+import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Novel;
-import com.anovelmous.app.data.api.response.NovelsResponse;
-import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
@@ -41,10 +39,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemSelected;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -66,9 +62,9 @@ public class NovelSelectView extends LinearLayout
     @InjectView(R.id.novels_list) RecyclerView novelsView;
     @InjectView(R.id.novels_loading_message) TextView loadingMessageView;
 
-    @Inject AnovelmousService anovelmousService;
+    @Inject NetworkService networkService;
+    @Inject PersistenceService persistenceService;
     @Inject IntentFactory intentFactory;
-    @Inject DataService dataService;
 
     private final float dividerPaddingStart;
 
@@ -76,6 +72,7 @@ public class NovelSelectView extends LinearLayout
     private final EnumAdapter<TrendingTimespan> timespanAdapter;
     private final NovelSelectAdapter novelSelectAdapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final RestService restService;
 
     public NovelSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -91,6 +88,7 @@ public class NovelSelectView extends LinearLayout
                 new ContextThemeWrapper(getContext(), R.style.Theme_Anovelmous_TrendingTimespan));
 
         novelSelectAdapter = new NovelSelectAdapter(this, context);
+        restService = new AnovelmousService(networkService, persistenceService);
     }
 
     @Override protected void onFinishInflate() {
@@ -131,9 +129,11 @@ public class NovelSelectView extends LinearLayout
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        subscriptions.add(timespanSubject //
-                .flatMap(trendingSearch) //
-                .map(SearchResultToNovelList.instance())
+        subscriptions.add(restService.getAllNovels()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(trendingError)
+                .onErrorResumeNext(Observable.<List<Novel>>empty())
                 .subscribe(novelSelectAdapter));
 
         onRefresh();
@@ -175,16 +175,6 @@ public class NovelSelectView extends LinearLayout
         return getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
-    private final Func1<TrendingTimespan, Observable<NovelsResponse>> trendingSearch =
-            new Func1<TrendingTimespan, Observable<NovelsResponse>>() {
-                @Override public Observable<NovelsResponse> call(TrendingTimespan trendingTimespan) {
-                    return anovelmousService.novels(Sort.CREATED_AT, Order.DESC)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError(trendingError)
-                            .onErrorResumeNext(Observable.<NovelsResponse>empty());
-                }
-            };
-
     private final Action1<Throwable> trendingError = new Action1<Throwable>() {
         @Override public void call(Throwable throwable) {
             Timber.e(throwable, "Failed to get trending novels");
@@ -192,22 +182,4 @@ public class NovelSelectView extends LinearLayout
             animatorView.setDisplayedChildId(R.id.trending_error);
         }
     };
-
-    private void requestCachedNovels() {
-        Subscription subscription = dataService.novels()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        novelSelectAdapter,
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                Timber.d("Request cached novels error", throwable);
-                            }
-                        }
-                );
-        if (subscriptions != null) {
-            subscriptions.add(subscription);
-        }
-    }
 }

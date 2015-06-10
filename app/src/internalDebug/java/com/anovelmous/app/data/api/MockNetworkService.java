@@ -2,6 +2,7 @@ package com.anovelmous.app.data.api;
 
 import android.content.SharedPreferences;
 
+import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
@@ -20,12 +21,14 @@ import rx.Observable;
  * Created by Greg Ziegan on 5/31/15.
  */
 @Singleton
-public final class MockAnovelmousService implements AnovelmousService {
+public final class MockNetworkService implements NetworkService {
+    private static final int NOVEL_COUNT = 3;
+
     private final SharedPreferences preferences;
     private final Map<Class<? extends Enum<?>>, Enum<?>> responses = new LinkedHashMap<>();
 
     @Inject
-    MockAnovelmousService(SharedPreferences preferences) {
+    MockNetworkService(SharedPreferences preferences) {
         this.preferences = preferences;
 
         loadResponse(MockNovelsResponse.class, MockNovelsResponse.SUCCESS);
@@ -51,7 +54,9 @@ public final class MockAnovelmousService implements AnovelmousService {
         EnumPreferences.saveEnumValue(preferences, responseClass.getCanonicalName(), value);
     }
 
-    @Override public Observable<NovelsResponse> novels(@Query("sort") Sort sort,
+    @Override public Observable<NovelsResponse> novels(@Query("page_size") int pageSize,
+                                                       @Query("page") int page,
+                                                       @Query("sort") Sort sort,
                                                        @Query("order") Order order) {
         NovelsResponse response = getResponse(MockNovelsResponse.class).response;
         NovelUtil.sort(response.items, sort, order);
@@ -59,9 +64,14 @@ public final class MockAnovelmousService implements AnovelmousService {
         return Observable.just(response);
     }
 
+    @Override
+    public Observable<ResourceCount> novelsCount() {
+        return Observable.just(new ResourceCount.Builder().count(NOVEL_COUNT).build());
+    }
+
     @Override public Observable<ChaptersResponse> chapters(@Query("novel") long novelId,
-                                                 @Query("sort") Sort sort,
-                                                 @Query("order") Order order) {
+                                                           @Query("sort") Sort sort,
+                                                           @Query("order") Order order) {
         ChaptersResponse response = getResponse(MockChaptersResponse.class).response;
         ChapterUtil.sort(response.items, sort, order);
 
@@ -69,8 +79,8 @@ public final class MockAnovelmousService implements AnovelmousService {
     }
 
     @Override public Observable<ChapterTextResponse> chapterText(@Query("chapter") long chapterId,
-                                                       @Query("sort") Sort sort,
-                                                       @Query("order") Order order) {
+                                                                 @Query("sort") Sort sort,
+                                                                 @Query("order") Order order) {
         ChapterTextResponse response = getResponse(MockChapterTextResponse.class).response;
         FormattedNovelTokenUtil.sort(response.items, sort, order);
 

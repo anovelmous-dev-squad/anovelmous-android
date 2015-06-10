@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.anovelmous.app.data.api.model.RealmNovel;
 import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 
 import org.joda.time.DateTime;
@@ -20,27 +21,43 @@ import rx.functions.Func1;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/8/15.
  */
-public class RealmDataService implements DataService {
+public class RealmPersistenceService implements PersistenceService {
     private final Context context;
 
-    public RealmDataService(Context context) {
+    public RealmPersistenceService(Context context) {
         this.context = context;
     }
 
-    @Override
-    public Observable<List<Novel>> novels() {
+    private Observable<RealmResults<RealmNovel>> getRealmNovels() {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmNovel>>() {
             @Override
             public RealmResults<RealmNovel> call(Realm realm) {
                 return realm.where(RealmNovel.class).findAll();
             }
-        }).map(new Func1<RealmResults<RealmNovel>, List<Novel>>() {
+        });
+    }
+
+    @Override
+    public Observable<List<Novel>> novels() {
+        return getRealmNovels().map(new Func1<RealmResults<RealmNovel>, List<Novel>>() {
             @Override
             public List<Novel> call(RealmResults<RealmNovel> realmNovels) {
                 final List<Novel> novels = new ArrayList<>(realmNovels.size());
                 for (RealmNovel realmNovel : realmNovels)
                     novels.add(novelFromRealm(realmNovel));
                 return novels;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ResourceCount> novelsCount() {
+        return getRealmNovels().map(new Func1<RealmResults<RealmNovel>, ResourceCount>() {
+            @Override
+            public ResourceCount call(RealmResults<RealmNovel> realmNovels) {
+                return new ResourceCount.Builder().
+                        count(realmNovels.size())
+                        .build();
             }
         });
     }

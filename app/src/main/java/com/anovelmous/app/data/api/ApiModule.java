@@ -46,11 +46,13 @@ public final class ApiModule {
                 .build();
     }
 
-    @Provides @Singleton AnovelmousService provideAnovelmousService(RestAdapter restAdapter) {
-        return restAdapter.create(AnovelmousService.class);
+    @Provides @Singleton
+    NetworkService provideNetworkService(RestAdapter restAdapter) {
+        return restAdapter.create(NetworkService.class);
     }
 
-    @Provides @Singleton DataService provideDataService() {
-        return new RealmDataService(AnovelmousApp.getContext());
+    @Provides @Singleton
+    PersistenceService provideDataService(Application app) {
+        return new RealmPersistenceService(app);
     }
 }

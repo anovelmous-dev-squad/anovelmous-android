@@ -38,7 +38,7 @@ import com.anovelmous.app.data.PixelRatioEnabled;
 import com.anovelmous.app.data.ScalpelEnabled;
 import com.anovelmous.app.data.ScalpelWireframeEnabled;
 import com.anovelmous.app.data.SeenDebugDrawer;
-import com.anovelmous.app.data.api.MockAnovelmousService;
+import com.anovelmous.app.data.api.MockNetworkService;
 import com.anovelmous.app.data.api.MockNovelsResponse;
 import com.anovelmous.app.data.prefs.BooleanPreference;
 import com.anovelmous.app.data.prefs.IntPreference;
@@ -111,7 +111,7 @@ public final class DebugAppContainer implements AppContainer {
     private final BooleanPreference seenDebugDrawer;
     private final RestAdapter restAdapter;
     private final MockRestAdapter mockRestAdapter;
-    private final MockAnovelmousService mockAnovelmousService;
+    private final MockNetworkService mockAnovelmousService;
     private final Application app;
 
     Activity activity;
@@ -132,7 +132,7 @@ public final class DebugAppContainer implements AppContainer {
                              @ScalpelWireframeEnabled BooleanPreference scalpelWireframeEnabled,
                              @SeenDebugDrawer BooleanPreference seenDebugDrawer,
                              RestAdapter restAdapter,
-                             MockAnovelmousService mockAnovelmousService,
+                             MockNetworkService mockAnovelmousService,
                              MockRestAdapter mockRestAdapter,
                              Application app) {
         this.client = client;

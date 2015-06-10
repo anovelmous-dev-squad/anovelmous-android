@@ -26,7 +26,7 @@ public abstract class OnSubscribeRealmResults<T extends RealmObject> implements 
     }
 
     public OnSubscribeRealmResults(Context context, String dbName) {
-        this.context = context.getApplicationContext();
+        this.context = context;
         this.dbName = dbName;
     }
 

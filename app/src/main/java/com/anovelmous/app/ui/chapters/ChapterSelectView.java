@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
+import com.anovelmous.app.data.api.NetworkService;
 import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Chapter;
@@ -56,7 +56,8 @@ public class ChapterSelectView extends LinearLayout
     @InjectView(R.id.chapter_list) RecyclerView chaptersView;
     @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
-    @Inject AnovelmousService anovelmousService;
+    @Inject
+    NetworkService networkService;
     private final GoUpClickListener goUpClickListener;
 
     private final float dividerPaddingStart;
@@ -163,7 +164,7 @@ public class ChapterSelectView extends LinearLayout
             new Func1<Long, Observable<ChaptersResponse>>() {
                 @Override
                 public Observable<ChaptersResponse> call(Long novelId) {
-                    return anovelmousService.chapters(novelId, Sort.CREATED_AT, Order.DESC)
+                    return networkService.chapters(novelId, Sort.CREATED_AT, Order.DESC)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnError(chapterLoadError)
                             .onErrorResumeNext(Observable.<ChaptersResponse>empty());

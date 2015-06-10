@@ -2,7 +2,6 @@ package com.anovelmous.app.data.api;
 
 import android.content.SharedPreferences;
 
-import com.anovelmous.app.AnovelmousModule;
 import com.anovelmous.app.data.ApiEndpoint;
 import com.anovelmous.app.data.IsMockMode;
 import com.anovelmous.app.data.prefs.StringPreference;
@@ -48,11 +47,11 @@ public final class DebugApiModule {
     }
 
     @Provides @Singleton
-    AnovelmousService provideAnovelmousService(RestAdapter restAdapter, MockRestAdapter mockRestAdapter,
-                                       @IsMockMode boolean isMockMode, MockAnovelmousService mockService) {
+    NetworkService provideNetworkService(RestAdapter restAdapter, MockRestAdapter mockRestAdapter,
+                                         @IsMockMode boolean isMockMode, MockNetworkService mockService) {
         if (isMockMode) {
-            return mockRestAdapter.create(AnovelmousService.class, mockService);
+            return mockRestAdapter.create(NetworkService.class, mockService);
         }
-        return restAdapter.create(AnovelmousService.class);
+        return restAdapter.create(NetworkService.class);
     }
 }

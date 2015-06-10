@@ -11,8 +11,8 @@ import io.realm.annotations.PrimaryKey;
  * Created by Greg Ziegan on 6/7/15.
  */
 public class RealmNovel extends RealmObject {
-    private long id;
-    @PrimaryKey private String url;
+    @PrimaryKey private long id;
+    private String url;
     private String title;
     private boolean isCompleted;
     private int votingDuration;

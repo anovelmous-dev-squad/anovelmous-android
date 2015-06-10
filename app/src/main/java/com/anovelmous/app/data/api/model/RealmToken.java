@@ -12,8 +12,8 @@ import io.realm.annotations.PrimaryKey;
  * Author: Greg Ziegan on 6/7/15.
  */
 public class RealmToken extends RealmObject {
-    private long id;
-    @PrimaryKey private String url;
+    @PrimaryKey private long id;
+    private String url;
     private String content;
     private boolean isValid;
     private boolean isPunctuation;

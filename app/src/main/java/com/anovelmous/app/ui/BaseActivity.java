@@ -1,6 +1,5 @@
 package com.anovelmous.app.ui;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;

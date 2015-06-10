@@ -1,9 +1,7 @@
 package com.anovelmous.app.data.api;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.anovelmous.app.AnovelmousApp;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 

@@ -65,7 +65,7 @@ public final class LumberYard {
     }
 
     public List<Entry> bufferedLogs() {
-        return new ArrayList<Entry>(entries);
+        return new ArrayList<>(entries);
     }
 
     public Observable<Entry> logs() {

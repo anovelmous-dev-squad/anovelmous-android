@@ -2,10 +2,6 @@ package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.SerializedName;
-
-import org.joda.time.DateTime;
-
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
 
 /**

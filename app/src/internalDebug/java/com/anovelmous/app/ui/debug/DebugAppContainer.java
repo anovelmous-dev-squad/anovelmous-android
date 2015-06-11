@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
+import android.support.v4.view.GravityCompat;
 import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -45,7 +46,7 @@ import com.anovelmous.app.data.prefs.IntPreference;
 import com.anovelmous.app.data.prefs.NetworkProxyPreference;
 import com.anovelmous.app.data.prefs.StringPreference;
 import com.anovelmous.app.ui.AppContainer;
-import com.anovelmous.app.ui.MainActivity;
+import com.anovelmous.app.ui.novels.NovelSelectActivity;
 import com.anovelmous.app.ui.bugreport.BugReportLens;
 import com.anovelmous.app.ui.logs.LogsDialog;
 import com.anovelmous.app.ui.misc.EnumAdapter;
@@ -223,7 +224,7 @@ public final class DebugAppContainer implements AppContainer {
         ContextualDebugActions contextualActions = new ContextualDebugActions(this, debugActions);
         content.setOnHierarchyChangeListener(HierarchyTreeChangeListener.wrap(contextualActions));
 
-        drawerLayout.setDrawerShadow(R.drawable.debug_drawer_shadow, Gravity.END);
+        drawerLayout.setDrawerShadow(R.drawable.debug_drawer_shadow, GravityCompat.END);
         drawerLayout.setDrawerListener(new DebugDrawerLayout.SimpleDrawerListener() {
             @Override public void onDrawerOpened(View drawerView) {
                 refreshOkHttpCacheStats();
@@ -237,7 +238,7 @@ public final class DebugAppContainer implements AppContainer {
         if (!seenDebugDrawer.get()) {
             drawerLayout.postDelayed(new Runnable() {
                 @Override public void run() {
-                    drawerLayout.openDrawer(Gravity.END);
+                    drawerLayout.openDrawer(GravityCompat.END);
                     Toast.makeText(drawerContext, R.string.debug_drawer_welcome, Toast.LENGTH_LONG).show();
                 }
             }, 1000);
@@ -701,7 +702,7 @@ public final class DebugAppContainer implements AppContainer {
         Timber.d("Setting network endpoint to %s", endpoint);
         networkEndpoint.set(endpoint);
 
-        Intent newApp = new Intent(app, MainActivity.class);
+        Intent newApp = new Intent(app, NovelSelectActivity.class);
         newApp.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
         app.startActivity(newApp);
         AnovelmousApp.get(app).buildObjectGraphAndInject();

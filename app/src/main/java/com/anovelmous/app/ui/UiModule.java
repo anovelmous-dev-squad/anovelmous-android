@@ -2,6 +2,7 @@ package com.anovelmous.app.ui;
 
 import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.chapters.ChapterSelectView;
+import com.anovelmous.app.ui.novels.NovelSelectActivity;
 import com.anovelmous.app.ui.novels.NovelSelectView;
 import com.anovelmous.app.ui.reading.ReadingActivity;
 import com.anovelmous.app.ui.reading.ReadingView;
@@ -16,7 +17,7 @@ import dagger.Provides;
  */
 @Module(
     injects = {
-        MainActivity.class,
+        NovelSelectActivity.class,
         NovelSelectView.class,
         ChapterSelectActivity.class,
         ChapterSelectView.class,

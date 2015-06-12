@@ -1,11 +1,13 @@
 package com.anovelmous.app.ui;
 
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -45,5 +47,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.status_bar));
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+    }
+
+    protected int getActionBarSize() {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = 0;
+        TypedArray a = obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
     }
 }

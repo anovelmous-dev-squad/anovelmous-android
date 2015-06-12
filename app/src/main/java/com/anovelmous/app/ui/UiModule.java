@@ -17,6 +17,8 @@ import dagger.Provides;
  */
 @Module(
     injects = {
+        MainActivity.class,
+        NewReadingView.class,
         NovelSelectActivity.class,
         NovelSelectView.class,
         ChapterSelectActivity.class,

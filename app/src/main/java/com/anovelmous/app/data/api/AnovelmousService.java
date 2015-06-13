@@ -96,8 +96,8 @@ public class AnovelmousService implements RestService {
 
     public Observable<List<FormattedNovelToken>> getChapterText(final long chapterId) {
         return Observable.combineLatest(
-                networkService.chapterTextTokenCount(),
-                persistenceService.chapterTextTokenCount(),
+                networkService.chapterTextTokenCount(chapterId),
+                persistenceService.chapterTextTokenCount(chapterId),
                 hasRemoteResourceCountChange)
                 .flatMap(new Func1<Boolean, Observable<List<FormattedNovelToken>>>() {
                     @Override

@@ -4,6 +4,7 @@ import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 
@@ -91,7 +92,17 @@ public class AnovelmousService implements RestService {
                 });
     }
 
-    List<FormattedNovelToken> getChapterText(long chapterId) {
+    public Observable<List<FormattedNovelToken>> getChapterText(long chapterId) {
         return null;
+    }
+
+    public Observable<Vote> castVote(Vote vote) {
+        return persistenceService.saveVote(vote)
+                .map(new Func1<Vote, Vote>() {
+                    @Override
+                    public Vote call(Vote vote) {
+                        return null; // TODO: cast vote
+                    }
+                });
     }
 }

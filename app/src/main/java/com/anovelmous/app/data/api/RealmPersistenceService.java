@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.model.RealmNovel;
+import com.anovelmous.app.data.api.model.RealmVote;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 
 import org.joda.time.DateTime;
@@ -144,5 +146,34 @@ public class RealmPersistenceService implements PersistenceService {
     @Override
     public Observable<Chapter> saveChapter(Chapter chapter) {
         return null;
+    }
+
+    public static Vote voteFromRealm(RealmVote vote) {
+        return new Vote.Builder()
+                .id(vote.getId())
+                .url(vote.getUrl())
+                .token(vote.getToken().getUrl())
+                .ordinal(vote.getOrdinal())
+                .selected(vote.isSelected())
+                .chapter(vote.getChapter().getUrl())
+                .user(vote.getUser().getUrl())
+                .createdAt(new DateTime(vote.getCreatedAt()))
+                .build();
+    }
+
+    @Override
+    public Observable<Vote> saveVote(final Vote vote) {
+        return RealmObservable.object(context, new Func1<Realm, RealmVote>() {
+            @Override
+            public RealmVote call(Realm realm) {
+                RealmVote realmVote = new RealmVote(vote, realm);
+                return realm.copyToRealmOrUpdate(realmVote);
+            }
+        }).map(new Func1<RealmVote, Vote>() {
+            @Override
+            public Vote call(RealmVote realmVote) {
+                return voteFromRealm(realmVote);
+            }
+        });
     }
 }

@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api;
 import android.content.SharedPreferences;
 
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
@@ -14,6 +15,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import retrofit.http.Body;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -91,5 +93,10 @@ public final class MockNetworkService implements NetworkService {
         FormattedNovelTokenUtil.sort(response.items, sort, order);
 
         return Observable.just(response);
+    }
+
+    @Override
+    public Observable<Vote> postVote(@Body Vote vote) {
+        return Observable.just(vote);
     }
 }

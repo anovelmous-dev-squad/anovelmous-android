@@ -1,11 +1,14 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -37,4 +40,7 @@ public interface NetworkService {
             @Query("chapter") long id,
             @Query("sort") Sort sort,
             @Query("order") Order order);
+
+    @POST("/votes")
+    Observable<Vote> postVote(@Body Vote vote);
 }

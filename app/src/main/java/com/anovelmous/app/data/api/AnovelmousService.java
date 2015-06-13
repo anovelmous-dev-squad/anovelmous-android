@@ -97,11 +97,12 @@ public class AnovelmousService implements RestService {
     }
 
     public Observable<Vote> castVote(Vote vote) {
+        // TODO: check response vote and update flags
         return persistenceService.saveVote(vote)
-                .map(new Func1<Vote, Vote>() {
+                .flatMap(new Func1<Vote, Observable<Vote>>() {
                     @Override
-                    public Vote call(Vote vote) {
-                        return null; // TODO: cast vote
+                    public Observable<Vote> call(Vote vote) {
+                        return networkService.postVote(vote);
                     }
                 });
     }

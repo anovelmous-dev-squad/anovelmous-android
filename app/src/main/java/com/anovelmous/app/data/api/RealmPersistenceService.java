@@ -116,7 +116,7 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<List<Chapter>> chapters(long novelId) {
+    public Observable<List<Chapter>> chapters(final long novelId) {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
             @Override
             public RealmResults<RealmChapter> call(Realm realm) {
@@ -144,8 +144,19 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Chapter> saveChapter(Chapter chapter) {
-        return null;
+    public Observable<Chapter> saveChapter(final Chapter chapter) {
+        return RealmObservable.object(context, new Func1<Realm, RealmChapter>() {
+            @Override
+            public RealmChapter call(Realm realm) {
+                RealmChapter realmChapter = new RealmChapter(chapter, realm);
+                return realm.copyToRealmOrUpdate(realmChapter);
+            }
+        }).map(new Func1<RealmChapter, Chapter>() {
+            @Override
+            public Chapter call(RealmChapter realmChapter) {
+                return chapterFromRealm(realmChapter);
+            }
+        });
     }
 
     public static Vote voteFromRealm(RealmVote vote) {
@@ -162,12 +173,12 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Vote> saveVote(final Vote vote) {
+    public Observable<Vote> saveVote(final Vote vote, final RestVerb restVerb) {
         return RealmObservable.object(context, new Func1<Realm, RealmVote>() {
             @Override
             public RealmVote call(Realm realm) {
-                RealmVote realmVote = new RealmVote(vote, realm, RestVerb.POST);
-                return realm.copyToRealmOrUpdate(realmVote);
+                RealmVote realmVote = new RealmVote(vote, realm, restVerb);
+                return realm.copyToRealm(realmVote);
             }
         }).map(new Func1<RealmVote, Vote>() {
             @Override

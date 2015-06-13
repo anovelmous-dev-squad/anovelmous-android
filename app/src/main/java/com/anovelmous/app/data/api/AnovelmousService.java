@@ -1,5 +1,6 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
@@ -98,7 +99,7 @@ public class AnovelmousService implements RestService {
 
     public Observable<Vote> castVote(Vote vote) {
         // TODO: check response vote and update flags
-        return persistenceService.saveVote(vote)
+        return persistenceService.saveVote(vote, RestVerb.POST)
                 .flatMap(new Func1<Vote, Observable<Vote>>() {
                     @Override
                     public Observable<Vote> call(Vote vote) {

@@ -21,11 +21,14 @@ public class RealmVote extends RealmObject {
     private RealmUser user;
     private Date createdAt;
 
+    private String restVerb;
+    private boolean lastRequestFinished;
+
     public RealmVote() {
 
     }
 
-    public RealmVote(Vote vote, Realm realm) {
+    public RealmVote(Vote vote, Realm realm, RestVerb restVerb) {
         id = vote.id;
         url = vote.url;
         token = realm.where(RealmToken.class).equalTo("url", vote.token).findFirst();
@@ -33,6 +36,8 @@ public class RealmVote extends RealmObject {
         selected = vote.selected;
         chapter = realm.where(RealmChapter.class).equalTo("url", vote.chapter).findFirst();
         user = realm.where(RealmUser.class).equalTo("url", vote.user).findFirst();
+        this.restVerb = restVerb.toString();
+        lastRequestFinished = restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
     }
 
     public long getId() {
@@ -97,5 +102,21 @@ public class RealmVote extends RealmObject {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRestVerb() {
+        return restVerb;
+    }
+
+    public void setRestVerb(String restVerb) {
+        this.restVerb = restVerb;
+    }
+
+    public boolean isLastRequestFinished() {
+        return lastRequestFinished;
+    }
+
+    public void setLastRequestFinished(boolean lastRequestFinished) {
+        this.lastRequestFinished = lastRequestFinished;
     }
 }

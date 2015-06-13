@@ -19,17 +19,22 @@ public class RealmToken extends RealmObject {
     private boolean isPunctuation;
     private Date createdAt;
 
+    private String restVerb;
+    private boolean lastRequestFinished;
+
     public RealmToken() {
 
     }
 
-    public RealmToken(Token token) {
+    public RealmToken(Token token, RestVerb restVerb) {
         id = token.id;
         url = token.url;
         content = token.content;
         isValid = token.isValid;
         isPunctuation = token.isPunctuation;
         createdAt = token.createdAt.toDate();
+        this.restVerb = restVerb.toString();
+        lastRequestFinished = restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
     }
 
     public String getContent() {
@@ -79,5 +84,21 @@ public class RealmToken extends RealmObject {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRestVerb() {
+        return restVerb;
+    }
+
+    public void setRestVerb(String restVerb) {
+        this.restVerb = restVerb;
+    }
+
+    public boolean isLastRequestFinished() {
+        return lastRequestFinished;
+    }
+
+    public void setLastRequestFinished(boolean lastRequestFinished) {
+        this.lastRequestFinished = lastRequestFinished;
     }
 }

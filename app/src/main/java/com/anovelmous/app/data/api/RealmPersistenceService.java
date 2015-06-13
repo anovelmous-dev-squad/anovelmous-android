@@ -5,6 +5,7 @@ import android.content.Context;
 import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.model.RealmNovel;
 import com.anovelmous.app.data.api.model.RealmVote;
+import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Func1;
@@ -166,7 +166,7 @@ public class RealmPersistenceService implements PersistenceService {
         return RealmObservable.object(context, new Func1<Realm, RealmVote>() {
             @Override
             public RealmVote call(Realm realm) {
-                RealmVote realmVote = new RealmVote(vote, realm);
+                RealmVote realmVote = new RealmVote(vote, realm, RestVerb.POST);
                 return realm.copyToRealmOrUpdate(realmVote);
             }
         }).map(new Func1<RealmVote, Vote>() {

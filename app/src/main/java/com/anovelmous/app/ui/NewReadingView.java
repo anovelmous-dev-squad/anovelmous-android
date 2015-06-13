@@ -3,10 +3,12 @@ package com.anovelmous.app.ui;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -15,6 +17,7 @@ import com.anovelmous.app.R;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,12 +30,19 @@ public class NewReadingView extends FrameLayout implements ObservableScrollViewC
 
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.scrollable) ObservableScrollView scrollView;
+    @InjectView(R.id.fab) View mFab;
+
+    private final int mFabMargin;
+    private boolean mFabIsShown;
 
     public NewReadingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
         }
+
+        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        mFabIsShown = true;
     }
 
     @Override
@@ -40,9 +50,28 @@ public class NewReadingView extends FrameLayout implements ObservableScrollViewC
         super.onFinishInflate();
         ButterKnife.inject(this);
 
-        ((AppCompatActivity) getContext()).setSupportActionBar(toolbar);
+        //((AppCompatActivity) getContext()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.menu_icon);
 
         scrollView.setScrollViewCallbacks(this);
+
+        ScrollUtils.addOnGlobalLayoutListener(mFab, new Runnable() {
+            @Override
+            public void run() {
+                float fabTranslationY = getHeight() - mFabMargin - mFab.getHeight();
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                    // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
+                    // which causes FAB's OnClickListener not working.
+                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFab.getLayoutParams();
+                    lp.leftMargin = getWidth() - mFabMargin - mFab.getWidth();
+                    lp.topMargin = (int) fabTranslationY;
+                    mFab.requestLayout();
+                } else {
+                    mFab.setTranslationX(getWidth() - mFabMargin - mFab.getWidth());
+                    mFab.setTranslationY(fabTranslationY);
+                }
+            }
+        });
     }
 
     @Override
@@ -59,10 +88,12 @@ public class NewReadingView extends FrameLayout implements ObservableScrollViewC
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         Timber.d("DEBUG: onUpOrCancelMotionEvent: " + scrollState);
         if (scrollState == ScrollState.UP) {
+            hideFab();
             if (toolbarIsShown()) {
                 hideToolbar();
             }
         } else if (scrollState == ScrollState.DOWN) {
+            showFab();
             if (toolbarIsHidden()) {
                 showToolbar();
             }
@@ -106,5 +137,21 @@ public class NewReadingView extends FrameLayout implements ObservableScrollViewC
 
     private int getScreenHeight() {
         return getRootView().getHeight();
+    }
+
+    private void showFab() {
+        if (!mFabIsShown) {
+            mFab.animate().cancel();
+            mFab.animate().scaleX(1).scaleY(1).setDuration(200).start();
+            mFabIsShown = true;
+        }
+    }
+
+    private void hideFab() {
+        if (mFabIsShown) {
+            mFab.animate().cancel();
+            mFab.animate().scaleX(0).scaleY(0).setDuration(200).start();
+            mFabIsShown = false;
+        }
     }
 }

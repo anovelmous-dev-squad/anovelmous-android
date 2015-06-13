@@ -42,7 +42,7 @@ public interface NetworkService {
             @Query("order") Order order);
 
     @GET("/formatted_novel_tokens?page_size=1")
-    Observable<ResourceCount> chapterTextTokenCount();
+    Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") long chapterId);
 
     @POST("/votes")
     Observable<Vote> postVote(@Body Vote vote);

@@ -97,7 +97,16 @@ public class RealmPersistenceService implements PersistenceService {
         });
     }
 
-    private Observable<RealmResults<RealmChapter>> getRealmNovelChapters() {
+    private Observable<RealmResults<RealmChapter>> getRealmNovelChapters(final long novelId) {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
+            @Override
+            public RealmResults<RealmChapter> call(Realm realm) {
+                return realm.where(RealmChapter.class).equalTo("novel.id", novelId).findAll();
+            }
+        });
+    }
+
+    private Observable<RealmResults<RealmChapter>> getRealmChapters() {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
             @Override
             public RealmResults<RealmChapter> call(Realm realm) {
@@ -120,12 +129,7 @@ public class RealmPersistenceService implements PersistenceService {
 
     @Override
     public Observable<List<Chapter>> chapters(final long novelId) {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
-            @Override
-            public RealmResults<RealmChapter> call(Realm realm) {
-                return realm.where(RealmChapter.class).findAll(); // TODO: filter by novelId
-            }
-        }).map(new Func1<RealmResults<RealmChapter>, List<Chapter>>() {
+        return getRealmNovelChapters(novelId).map(new Func1<RealmResults<RealmChapter>, List<Chapter>>() {
             @Override
             public List<Chapter> call(RealmResults<RealmChapter> realmChapters) {
                 final List<Chapter> chapters = new ArrayList<>(realmChapters.size());
@@ -138,7 +142,7 @@ public class RealmPersistenceService implements PersistenceService {
 
     @Override
     public Observable<ResourceCount> chaptersCount() {
-        return getRealmNovelChapters().map(new Func1<RealmResults<RealmChapter>, ResourceCount>() {
+        return getRealmChapters().map(new Func1<RealmResults<RealmChapter>, ResourceCount>() {
             @Override
             public ResourceCount call(RealmResults<RealmChapter> realmChapters) {
                 return new ResourceCount.Builder().count(realmChapters.size()).build();
@@ -173,28 +177,40 @@ public class RealmPersistenceService implements PersistenceService {
                 .build();
     }
 
-    @Override
-    public Observable<List<FormattedNovelToken>> chapterText(final long chapterId) {
+    private Observable<RealmResults<RealmFormattedNovelToken>> getRealmChapterText(final long chapterId) {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmFormattedNovelToken>>() {
             @Override
             public RealmResults<RealmFormattedNovelToken> call(Realm realm) {
                 return realm.where(RealmFormattedNovelToken.class)
                         .equalTo("chapter.id", chapterId).findAll();
             }
-        }).map(new Func1<RealmResults<RealmFormattedNovelToken>, List<FormattedNovelToken>>() {
-            @Override
-            public List<FormattedNovelToken> call(RealmResults<RealmFormattedNovelToken> realmFormattedNovelTokens) {
-                final List<FormattedNovelToken> chapterText = new ArrayList<>(realmFormattedNovelTokens.size());
-                for (RealmFormattedNovelToken token : realmFormattedNovelTokens)
-                    chapterText.add(formattedNovelTokenFromRealm(token));
-                return chapterText;
-            }
         });
     }
 
     @Override
-    public Observable<ResourceCount> chapterTextTokenCount() {
-        return null;
+    public Observable<List<FormattedNovelToken>> chapterText(final long chapterId) {
+        return getRealmChapterText(chapterId)
+                .map(new Func1<RealmResults<RealmFormattedNovelToken>, List<FormattedNovelToken>>() {
+                    @Override
+                    public List<FormattedNovelToken> call(RealmResults<RealmFormattedNovelToken> realmFormattedNovelTokens) {
+                        final List<FormattedNovelToken> chapterText = new ArrayList<>(realmFormattedNovelTokens.size());
+                        for (RealmFormattedNovelToken token : realmFormattedNovelTokens)
+                            chapterText.add(formattedNovelTokenFromRealm(token));
+                        return chapterText;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<ResourceCount> chapterTextTokenCount(final long chapterId) {
+        return getRealmChapterText(chapterId)
+                .map(new Func1<RealmResults<RealmFormattedNovelToken>, ResourceCount>() {
+                    @Override
+                    public ResourceCount call(RealmResults<RealmFormattedNovelToken> realmFormattedNovelTokens) {
+                        return new ResourceCount.Builder()
+                                .count(realmFormattedNovelTokens.size()).build();
+                    }
+                });
     }
 
     @Override

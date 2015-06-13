@@ -25,7 +25,7 @@ public interface PersistenceService {
     Observable<Chapter> saveChapter(Chapter chapter);
 
     Observable<List<FormattedNovelToken>> chapterText(long chapterId);
-    Observable<ResourceCount> chapterTextTokenCount();
+    Observable<ResourceCount> chapterTextTokenCount(long chapterId);
     Observable<FormattedNovelToken> saveFormattedNovelToken(FormattedNovelToken formattedNovelToken);
 
     Observable<Vote> saveVote(Vote vote, RestVerb restVerb);

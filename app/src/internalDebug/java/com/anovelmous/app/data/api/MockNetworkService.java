@@ -26,6 +26,7 @@ import rx.Observable;
 public final class MockNetworkService implements NetworkService {
     private static final int NOVEL_COUNT = 3;
     private static final int CHAPTER_COUNT = 10;
+    private static final int CHAPTER_TEXT_TOKEN_COUNT = 21;
 
     private final SharedPreferences preferences;
     private final Map<Class<? extends Enum<?>>, Enum<?>> responses = new LinkedHashMap<>();
@@ -93,6 +94,11 @@ public final class MockNetworkService implements NetworkService {
         FormattedNovelTokenUtil.sort(response.items, sort, order);
 
         return Observable.just(response);
+    }
+
+    @Override
+    public Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") long chapterId) {
+        return Observable.just(new ResourceCount.Builder().count(CHAPTER_TEXT_TOKEN_COUNT).build());
     }
 
     @Override

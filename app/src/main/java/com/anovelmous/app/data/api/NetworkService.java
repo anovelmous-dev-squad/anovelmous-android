@@ -28,7 +28,7 @@ public interface NetworkService {
 
     @GET("/chapters")
     Observable<ChaptersResponse> chapters(
-            @Query("novel") long id,
+            @Query("novel") long novelId,
             @Query("sort") Sort sort,
             @Query("order") Order order);
 
@@ -37,9 +37,12 @@ public interface NetworkService {
 
     @GET("/formatted_novel_tokens")
     Observable<ChapterTextResponse> chapterText(
-            @Query("chapter") long id,
+            @Query("chapter") long chapterId,
             @Query("sort") Sort sort,
             @Query("order") Order order);
+
+    @GET("/formatted_novel_tokens?page_size=1")
+    Observable<ResourceCount> chapterTextTokenCount();
 
     @POST("/votes")
     Observable<Vote> postVote(@Body Vote vote);

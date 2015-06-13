@@ -7,6 +7,7 @@ import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
+import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
 
 import java.util.List;
@@ -93,8 +94,32 @@ public class AnovelmousService implements RestService {
                 });
     }
 
-    public Observable<List<FormattedNovelToken>> getChapterText(long chapterId) {
-        return null;
+    public Observable<List<FormattedNovelToken>> getChapterText(final long chapterId) {
+        return Observable.combineLatest(
+                networkService.chapterTextTokenCount(),
+                persistenceService.chapterTextTokenCount(),
+                hasRemoteResourceCountChange)
+                .flatMap(new Func1<Boolean, Observable<List<FormattedNovelToken>>>() {
+                    @Override
+                    public Observable<List<FormattedNovelToken>> call(Boolean needsUpdating) {
+                        if (needsUpdating) {
+                            Observable<List<FormattedNovelToken>> chapterTextStream = networkService
+                                    .chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
+                                    .map(SearchResultToFormattedNovelTokenList.instance());
+
+                            chapterTextStream.subscribe(new Action1<List<FormattedNovelToken>>() {
+                                @Override
+                                public void call(List<FormattedNovelToken> formattedNovelTokens) {
+                                    for (FormattedNovelToken token : formattedNovelTokens)
+                                        persistenceService.saveFormattedNovelToken(token);
+                                }
+                            });
+                            return chapterTextStream;
+                        } else {
+                            return persistenceService.chapterText(chapterId);
+                        }
+                    }
+                });
     }
 
     public Observable<Vote> castVote(Vote vote) {

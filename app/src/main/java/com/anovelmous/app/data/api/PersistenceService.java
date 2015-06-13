@@ -2,6 +2,7 @@ package com.anovelmous.app.data.api;
 
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Vote;
@@ -22,5 +23,10 @@ public interface PersistenceService {
     Observable<List<Chapter>> chapters(long novelId);
     Observable<ResourceCount> chaptersCount();
     Observable<Chapter> saveChapter(Chapter chapter);
+
+    Observable<List<FormattedNovelToken>> chapterText(long chapterId);
+    Observable<ResourceCount> chapterTextTokenCount();
+    Observable<FormattedNovelToken> saveFormattedNovelToken(FormattedNovelToken formattedNovelToken);
+
     Observable<Vote> saveVote(Vote vote, RestVerb restVerb);
 }

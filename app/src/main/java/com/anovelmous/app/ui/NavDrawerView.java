@@ -1,41 +1,39 @@
 package com.anovelmous.app.ui;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
+import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by Greg Ziegan on 6/1/15.
  */
-public final class NavDrawerView extends LinearLayout {
+public final class NavDrawerView extends DrawerLayout {
+    @InjectView(R.id.container) ViewGroup container;
+
     public NavDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(VERTICAL);
 
-        // Do not let clicks trickle through to the content view.
-        setClickable(true);
-    }
-
-    public void addItem(@DrawableRes int icon, @StringRes int text, OnClickListener listener) {
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        Item item = (Item) layoutInflater.inflate(R.layout.main_drawer_item, this, false);
-
-        item.setText(text);
-        item.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
-        item.setOnClickListener(listener);
-
-        addView(item);
-    }
-
-    public static final class Item extends TextView {
-        public Item(Context context, AttributeSet attrs) {
-            super(context, attrs);
+        if (!isInEditMode()) {
+            AnovelmousApp.get(context).inject(this);
         }
     }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.inject(this);
+
+        LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
+        inflater.inflate(R.layout.activity_main, container);
+    }
+
 }

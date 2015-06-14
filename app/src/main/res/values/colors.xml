@@ -8,4 +8,5 @@
   <color name="avatar_stroke">#4faa1c29</color>
   <color name="timespan_title_text">#ffffffff</color>
   <color name="selectable_background_pressed">#79aa1c29</color>
+  <color name="bg_drawer">#941c28</color>
 </resources>

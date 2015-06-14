@@ -42,7 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         ViewGroup container = appContainer.get(this);
 
-        inflater.inflate(R.layout.frame_drawer, container);
+        inflater.inflate(R.layout.frame_drawer_app, container);
         ButterKnife.inject(this, container);
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.status_bar));

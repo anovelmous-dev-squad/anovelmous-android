@@ -1,16 +1,12 @@
 package com.anovelmous.app.ui;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
@@ -28,7 +24,7 @@ import timber.log.Timber;
  */
 public class NewReadingView extends FrameLayout implements ObservableScrollViewCallbacks {
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @InjectView(R.id.new_reading_toolbar) Toolbar toolbar;
     @InjectView(R.id.scrollable) ObservableScrollView scrollView;
     @InjectView(R.id.fab) View mFab;
 
@@ -59,17 +55,8 @@ public class NewReadingView extends FrameLayout implements ObservableScrollViewC
             @Override
             public void run() {
                 float fabTranslationY = getHeight() - mFabMargin - mFab.getHeight();
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                    // On pre-honeycomb, ViewHelper.setTranslationX/Y does not set margin,
-                    // which causes FAB's OnClickListener not working.
-                    FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFab.getLayoutParams();
-                    lp.leftMargin = getWidth() - mFabMargin - mFab.getWidth();
-                    lp.topMargin = (int) fabTranslationY;
-                    mFab.requestLayout();
-                } else {
-                    mFab.setTranslationX(getWidth() - mFabMargin - mFab.getWidth());
-                    mFab.setTranslationY(fabTranslationY);
-                }
+                mFab.setTranslationX(getWidth() - mFabMargin - mFab.getWidth());
+                mFab.setTranslationY(fabTranslationY);
             }
         });
     }

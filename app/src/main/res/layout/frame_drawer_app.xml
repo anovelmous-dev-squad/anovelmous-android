@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     >
     <FrameLayout
         android:id="@+id/main_content"
@@ -21,11 +22,12 @@
         android:fitsSystemWindows="true"
         app:insetForeground="#4000"
         >
-        <com.anovelmous.app.ui.NavDrawerView
+        <android.support.v4.widget.DrawerLayout
             android:id="@+id/main_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             >
-        </com.anovelmous.app.ui.NavDrawerView>
+        </android.support.v4.widget.DrawerLayout>
     </com.anovelmous.app.ui.misc.ScrimInsetsFrameLayout>
 </android.support.v4.widget.DrawerLayout>

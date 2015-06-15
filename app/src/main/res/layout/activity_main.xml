@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<com.anovelmous.app.ui.NewReadingView
+<com.anovelmous.app.ui.reading.ReadingView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -66,4 +66,4 @@
         android:scaleType="center"
         app:fab_colorNormal="@color/accent"
         app:fab_colorPressed="@color/selectable_background_pressed" />
-</com.anovelmous.app.ui.NewReadingView>
+</com.anovelmous.app.ui.reading.ReadingView>

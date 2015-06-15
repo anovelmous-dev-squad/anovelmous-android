@@ -18,18 +18,13 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.Order;
 import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
-import com.anovelmous.app.data.api.Sort;
 import com.anovelmous.app.data.api.resource.Chapter;
-import com.anovelmous.app.data.api.response.ChaptersResponse;
-import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.GoUpClickListener;
 import com.anovelmous.app.ui.novels.NovelSelectView;
-import com.anovelmous.app.ui.reading.ReadingActivity;
 
 import java.util.List;
 
@@ -148,9 +143,9 @@ public class ChapterSelectView extends LinearLayout
 
     @Override
     public void onChapterClick(Chapter chapter) {
-        Intent intent = new Intent(getContext(), ReadingActivity.class);
-        intent.putExtra(CHAPTER_ID, chapter.id);
-        getContext().startActivity(intent);
+        //Intent intent = new Intent(getContext(), ReadingActivity.class);
+        //intent.putExtra(CHAPTER_ID, chapter.id);
+        //getContext().startActivity(intent);
     }
 
     @Override

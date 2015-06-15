@@ -17,15 +17,13 @@ import dagger.Provides;
  */
 @Module(
     injects = {
-        MainActivity.class,
+        ReadingActivity.class,
         NavDrawerView.class,
-        NewReadingView.class,
+        ReadingView.class,
         NovelSelectActivity.class,
         NovelSelectView.class,
         ChapterSelectActivity.class,
         ChapterSelectView.class,
-        ReadingActivity.class,
-        ReadingView.class
     },
     complete = false,
     library = true

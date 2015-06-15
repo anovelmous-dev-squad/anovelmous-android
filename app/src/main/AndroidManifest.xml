@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Anovelmous" >
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.reading.ReadingActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
             android:label="@string/title_activity_novel_select" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.anovelmous.app.ui.MainActivity" />
+                android:value=".ui.reading.ReadingActivity" />
         </activity>
         <activity
             android:name=".ui.chapters.ChapterSelectActivity"
@@ -33,13 +33,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.anovelmous.app.ui.novels.NovelSelectActivity" />
-        </activity>
-        <activity
-            android:name=".ui.reading.ReadingActivity"
-            android:label="@string/title_activity_read" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.anovelmous.app.ui.chapters.ChapterSelectActivity" />
         </activity>
     </application>
 

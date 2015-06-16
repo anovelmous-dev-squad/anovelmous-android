@@ -1,10 +1,13 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+
+import java.util.List;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -43,6 +46,17 @@ public interface NetworkService {
 
     @GET("/formatted_novel_tokens?page_size=1")
     Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") long chapterId);
+
+    @GET("/tokens")
+    Observable<List<Token>> tokens(
+            @Query("sort") Sort sort,
+            @Query("order") Order order);
+
+    @GET("/tokens?page_size=1")
+    Observable<ResourceCount> tokensCount();
+
+    @GET("/tokens/filter_on_grammar")
+    Observable<List<String>> getGrammarFilteredWords();
 
     @POST("/votes")
     Observable<Vote> postVote(@Body Vote vote);

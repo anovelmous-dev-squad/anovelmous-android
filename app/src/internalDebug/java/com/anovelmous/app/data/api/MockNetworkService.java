@@ -3,13 +3,17 @@ package com.anovelmous.app.data.api;
 import android.content.SharedPreferences;
 
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
 import com.anovelmous.app.util.EnumPreferences;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -27,6 +31,7 @@ public final class MockNetworkService implements NetworkService {
     private static final int NOVEL_COUNT = 3;
     private static final int CHAPTER_COUNT = 10;
     private static final int CHAPTER_TEXT_TOKEN_COUNT = 21;
+    private static final int TOKEN_COUNT = 19;
 
     private final SharedPreferences preferences;
     private final Map<Class<? extends Enum<?>>, Enum<?>> responses = new LinkedHashMap<>();
@@ -99,6 +104,25 @@ public final class MockNetworkService implements NetworkService {
     @Override
     public Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") long chapterId) {
         return Observable.just(new ResourceCount.Builder().count(CHAPTER_TEXT_TOKEN_COUNT).build());
+    }
+
+    @Override
+    public Observable<List<Token>> tokens(@Query("sort") Sort sort, @Query("order") Order order) {
+        List<Token> tokens = new ArrayList<>();
+        return Observable.just(tokens); // TODO: craft mock data
+    }
+
+    @Override
+    public Observable<ResourceCount> tokensCount() {
+        return Observable.just(new ResourceCount.Builder().count(TOKEN_COUNT).build());
+    }
+
+    @Override
+    public Observable<List<String>> getGrammarFilteredWords() {
+        List<String> filteredStrings = new ArrayList<>(); // TODO: make a better filtered list
+        filteredStrings.add("eat");
+        filteredStrings.add("love");
+        return Observable.just(filteredStrings);
     }
 
     @Override

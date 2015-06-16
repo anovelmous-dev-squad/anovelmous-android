@@ -5,14 +5,17 @@ import android.content.Context;
 import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.model.RealmFormattedNovelToken;
 import com.anovelmous.app.data.api.model.RealmNovel;
+import com.anovelmous.app.data.api.model.RealmToken;
 import com.anovelmous.app.data.api.model.RealmVote;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
+import com.anovelmous.app.util.NotUniqueException;
 
 import org.joda.time.DateTime;
 
@@ -20,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * Created by IntelliJ
@@ -216,6 +221,96 @@ public class RealmPersistenceService implements PersistenceService {
     @Override
     public Observable<FormattedNovelToken> saveFormattedNovelToken(FormattedNovelToken formattedNovelToken) {
         return null;
+    }
+
+
+    private static Token tokenFromRealm(RealmToken realmToken) {
+        return new Token.Builder()
+                .id(realmToken.getId())
+                .url(realmToken.getUrl())
+                .content(realmToken.getContent())
+                .isPunctuation(realmToken.isPunctuation())
+                .isValid(realmToken.isValid())
+                .createdAt(new DateTime(realmToken.getCreatedAt()))
+                .build();
+    }
+
+    @Override
+    public Observable<List<Token>> saveTokens(final List<Token> tokens, final RestVerb restVerb) {
+        return RealmObservable.list(context, new Func1<Realm, RealmList<RealmToken>>() {
+            @Override
+            public RealmList<RealmToken> call(Realm realm) {
+                List<RealmToken> realmTokens = new ArrayList<>(tokens.size());
+                for (Token token : tokens)
+                    realmTokens.add(new RealmToken(token, restVerb));
+                realmTokens = realm.copyToRealmOrUpdate(realmTokens);
+
+                RealmList<RealmToken> results = new RealmList<>();
+                results.addAll(realmTokens);
+                return results;
+            }
+        }).map(new Func1<RealmList<RealmToken>, List<Token>>() {
+            @Override
+            public List<Token> call(RealmList<RealmToken> realmTokens) {
+                List<Token> tokens = new ArrayList<>(realmTokens.size());
+                for (RealmToken realmToken : realmTokens)
+                    tokens.add(tokenFromRealm(realmToken));
+                return tokens;
+            }
+        });
+    }
+
+    @Override
+    public Observable<Token> saveToken(final Token token, final RestVerb restVerb) {
+        return RealmObservable.object(context, new Func1<Realm, RealmToken>() {
+            @Override
+            public RealmToken call(Realm realm) {
+                RealmToken realmToken = new RealmToken(token, restVerb);
+                return realm.copyToRealmOrUpdate(realmToken);
+            }
+        }).map(new Func1<RealmToken, Token>() {
+            @Override
+            public Token call(RealmToken realmToken) {
+                return tokenFromRealm(realmToken);
+            }
+        });
+    }
+
+    @Override
+    public Observable<ResourceCount> tokensCount() {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmToken>>() {
+            @Override
+            public RealmResults<RealmToken> call(Realm realm) {
+                return realm.where(RealmToken.class).findAll();
+            }
+        }).map(new Func1<RealmResults<RealmToken>, ResourceCount>() {
+            @Override
+            public ResourceCount call(RealmResults<RealmToken> realmTokens) {
+                return new ResourceCount.Builder().count(realmTokens.size()).build();
+            }
+        });
+    }
+
+    @Override
+    public Observable<Token> lookupTokenByContent(final String content) {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmToken>>() {
+            @Override
+            public RealmResults<RealmToken> call(Realm realm) {
+                return realm.where(RealmToken.class).equalTo("content", content).findAll();
+            }
+        }).map(new Func1<RealmResults<RealmToken>, Token>() {
+            @Override
+            public Token call(RealmResults<RealmToken> realmTokens) {
+                try {
+                    if (realmTokens.size() > 1)
+                        throw new NotUniqueException("Realm Token content is not unique");
+                } catch (NotUniqueException e) {
+                    Timber.e(e.getMessage());
+                }
+
+                return tokenFromRealm(realmTokens.first());
+            }
+        });
     }
 
     public static Vote voteFromRealm(RealmVote vote) {

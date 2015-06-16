@@ -1,4 +1,4 @@
-package com.anovelmous.app.ui;
+package com.anovelmous.app.ui.navigation;
 
 import android.app.Activity;
 import android.content.Context;

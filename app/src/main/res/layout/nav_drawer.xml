@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.anovelmous.app.ui.NavDrawerView
+<com.anovelmous.app.ui.navigation.NavDrawerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/nav_drawer_layout"
     android:layout_width="match_parent"
@@ -18,4 +18,10 @@
         android:scaleType="centerCrop"
         android:visibility="gone">
     </ImageView>
-</com.anovelmous.app.ui.NavDrawerView>
+
+    <fragment android:name="com.anovelmous.app.ui.navigation.SectionFragment"
+        android:id="@+id/section_fragment"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+</com.anovelmous.app.ui.navigation.NavDrawerView>

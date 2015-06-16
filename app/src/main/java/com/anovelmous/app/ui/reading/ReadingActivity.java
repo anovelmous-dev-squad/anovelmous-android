@@ -13,11 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.anovelmous.app.R;
 import com.anovelmous.app.ui.BaseActivity;
+import com.anovelmous.app.ui.navigation.SectionFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class ReadingActivity extends BaseActivity {
+public final class ReadingActivity extends BaseActivity implements SectionFragment.OnFragmentInteractionListener {
     @InjectView(R.id.main_content) ViewGroup content;
 
     @Override
@@ -28,4 +29,8 @@ public final class ReadingActivity extends BaseActivity {
         inflater.inflate(R.layout.nav_drawer, content);
     }
 
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
 }

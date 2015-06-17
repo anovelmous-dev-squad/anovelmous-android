@@ -31,10 +31,10 @@ import timber.log.Timber;
 public class ReadingFragment extends Fragment implements ObservableScrollViewCallbacks {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private ObservableScrollView scrollView;
     private FloatingActionButton mFab;
     private Toolbar toolbar;
     private int mFabMargin;
@@ -76,27 +76,29 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        mFabIsShown = true;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        toolbar = (Toolbar) getView().findViewById(R.id.app_toolbar);
-        scrollView = (ObservableScrollView) getView().findViewById(R.id.scrollable);
-        scrollView.setScrollViewCallbacks(this);
-        mFab = (FloatingActionButton) getView().findViewById(R.id.fab);
+        final View view = inflater.inflate(R.layout.fragment_reading, container, false);
+        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        mFabIsShown = true;
 
         ScrollUtils.addOnGlobalLayoutListener(mFab, new Runnable() {
             @Override
             public void run() {
-                float fabTranslationY = getView().getHeight() - mFabMargin - mFab.getHeight();
-                mFab.setTranslationX(getView().getWidth() - mFabMargin - mFab.getWidth());
+                float fabTranslationY = view.getHeight() - mFabMargin - mFab.getHeight();
+                mFab.setTranslationX(view.getWidth() - mFabMargin - mFab.getWidth());
                 mFab.setTranslationY(fabTranslationY);
             }
         });
-        return inflater.inflate(R.layout.fragment_reading, container, false);
+
+        final ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scrollable);
+        scrollView.setScrollViewCallbacks(this);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -139,68 +141,29 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
     }
 
     @Override
-    public void onScrollChanged(int i, boolean b, boolean b1) {
-
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+        if (getActivity() != null && getActivity() instanceof ObservableScrollViewCallbacks) {
+            ((ObservableScrollViewCallbacks) getActivity()).onScrollChanged(scrollY, firstScroll, dragging);
+        }
     }
 
     @Override
     public void onDownMotionEvent() {
-
+        if (getActivity() != null && getActivity() instanceof ObservableScrollViewCallbacks) {
+            ((ObservableScrollViewCallbacks) getActivity()).onDownMotionEvent();
+        }
     }
 
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-        Timber.d("DEBUG: onUpOrCancelMotionEvent: " + scrollState);
-        if (scrollState == ScrollState.UP) {
+        if (getActivity() != null && getActivity() instanceof ObservableScrollViewCallbacks) {
+            ((ObservableScrollViewCallbacks) getActivity()).onUpOrCancelMotionEvent(scrollState);
+        }
+
+        if (scrollState == ScrollState.UP)
             hideFab();
-            if (toolbarIsShown()) {
-                hideToolbar();
-            }
-        } else if (scrollState == ScrollState.DOWN) {
+        else if (scrollState == ScrollState.DOWN)
             showFab();
-            if (toolbarIsHidden()) {
-                showToolbar();
-            }
-        }
-    }
-
-    private boolean toolbarIsShown() {
-        return toolbar.getTranslationY() == 0;
-    }
-
-    private boolean toolbarIsHidden() {
-        return toolbar.getTranslationY() == -toolbar.getHeight();
-    }
-
-    private void showToolbar() {
-        moveToolbar(0);
-    }
-
-    private void hideToolbar() {
-        moveToolbar(-toolbar.getHeight());
-    }
-
-    private void moveToolbar(float toTranslationY) {
-        if (toolbar.getTranslationY() == toTranslationY) {
-            return;
-        }
-        ValueAnimator animator = ValueAnimator.ofFloat(toolbar.getTranslationY(), toTranslationY).setDuration(200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float translationY = (float) animation.getAnimatedValue();
-                toolbar.setTranslationY(translationY);
-                (scrollView).setTranslationY(translationY);
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) (scrollView).getLayoutParams();
-                lp.height = (int) -translationY + getScreenHeight() - lp.topMargin;
-                (scrollView).requestLayout();
-            }
-        });
-        animator.start();
-    }
-
-    private int getScreenHeight() {
-        return getView().getRootView().getHeight();
     }
 
     private void showFab() {

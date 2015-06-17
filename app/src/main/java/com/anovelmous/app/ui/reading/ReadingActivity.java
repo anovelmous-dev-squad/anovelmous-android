@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -19,33 +17,24 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.ui.BaseActivity;
 import com.anovelmous.app.ui.ContributeFragment;
+import com.anovelmous.app.ui.ToolbarControlBaseActivity;
 import com.anovelmous.app.ui.novels.NovelListFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
-public final class ReadingActivity extends BaseActivity {
+public final class ReadingActivity extends ToolbarControlBaseActivity<ObservableScrollView> {
     private DrawerLayout mDrawer;
-    private ViewGroup content;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-    private FrameLayout container;
-    private Toolbar toolbar;
+
+    @Override
+    protected ObservableScrollView createScrollable() {
+        return (ObservableScrollView) findViewById(R.id.scrollable);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        content = (ViewGroup) findViewById(R.id.main_content);
-
-        LayoutInflater inflater = getLayoutInflater();
-        inflater.inflate(R.layout.nav_drawer, content);
-
-        toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        setSupportActionBar(toolbar);
 
         mDrawer = (DrawerLayout) findViewById(R.id.nav_drawer_layout);
         drawerToggle = setupDrawerToggle();
@@ -53,15 +42,11 @@ public final class ReadingActivity extends BaseActivity {
         mDrawer.setDrawerListener(drawerToggle);
 
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
         setupDrawerContent(nvDrawer);
-
-        container = (FrameLayout) findViewById(R.id.container);
-        inflater.inflate(R.layout.fragment_reading, container);
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
+        return new ActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.drawer_open,  R.string.drawer_close);
     }
 
     @Override
@@ -129,7 +114,6 @@ public final class ReadingActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 

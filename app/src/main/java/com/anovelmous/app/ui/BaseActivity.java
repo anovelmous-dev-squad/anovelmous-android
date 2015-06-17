@@ -30,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = getLayoutInflater();
+        LayoutInflater inflater = LayoutInflater.from(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Remove the status bar color. The DrawerLayout is responsible for drawing it from now on.
@@ -57,5 +57,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
         a.recycle();
         return actionBarSize;
+    }
+
+    protected int getScreenHeight() {
+        return findViewById(android.R.id.content).getHeight();
     }
 }

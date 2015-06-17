@@ -29,10 +29,11 @@ public interface PersistenceService {
     Observable<ResourceCount> chapterTextTokenCount(long chapterId);
     Observable<FormattedNovelToken> saveFormattedNovelToken(FormattedNovelToken formattedNovelToken);
 
-    Observable<List<Token>> saveTokens(List<Token> tokens, RestVerb restVerb);
-    Observable<Token> saveToken(Token token, RestVerb restVerb);
+    Observable<List<Token>> tokens();
     Observable<ResourceCount> tokensCount();
     Observable<Token> lookupTokenByContent(String content);
+    Observable<List<Token>> saveTokens(List<Token> tokens, RestVerb restVerb);
+    Observable<Token> saveToken(Token token, RestVerb restVerb);
 
     Observable<Vote> saveVote(Vote vote, RestVerb restVerb);
 }

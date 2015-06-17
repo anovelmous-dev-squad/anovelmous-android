@@ -5,6 +5,7 @@ import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
+import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
@@ -120,6 +121,46 @@ public class AnovelmousService implements RestService {
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<Token>> getAllTokens() {
+        return Observable.combineLatest(
+                networkService.tokensCount(),
+                persistenceService.tokensCount(),
+                hasRemoteResourceCountChange
+        ).flatMap(new Func1<Boolean, Observable<List<Token>>>() {
+            @Override
+            public Observable<List<Token>> call(Boolean needsUpdating) {
+                if (needsUpdating) {
+                    Observable<List<Token>> tokensStream = networkService
+                            .tokens(Sort.CREATED_AT, Order.DESC);
+
+                    tokensStream.subscribe(new Action1<List<Token>>() {
+                        @Override
+                        public void call(List<Token> tokens) {
+                            persistenceService.saveTokens(tokens, RestVerb.GET);
+                        }
+                    });
+                    return tokensStream;
+                } else {
+                    return persistenceService.tokens();
+                }
+            }
+        });
+    }
+
+    @Override
+    public Observable<Token> getTokenFromContent(final String content) {
+        return persistenceService.lookupTokenByContent(content).flatMap(new Func1<Token, Observable<Token>>() {
+            @Override
+            public Observable<Token> call(Token token) {
+                if (token == null)
+                    return networkService.getTokenByContent(content);
+                else
+                    return Observable.just(token);
+            }
+        });
     }
 
     public Observable<Vote> castVote(Vote vote) {

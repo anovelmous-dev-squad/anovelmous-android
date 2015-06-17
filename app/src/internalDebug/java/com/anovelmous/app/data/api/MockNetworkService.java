@@ -107,6 +107,17 @@ public final class MockNetworkService implements NetworkService {
     }
 
     @Override
+    public Observable<Token> getTokenByContent(@Query("content") String content) {
+        return Observable.just(new Token.Builder()
+                .id(1)
+                .url("mock://tokens/1")
+                .content(content)
+                .isPunctuation(false)
+                .isValid(true)
+                .build());
+    }
+
+    @Override
     public Observable<List<Token>> tokens(@Query("sort") Sort sort, @Query("order") Order order) {
         List<Token> tokens = new ArrayList<>();
         return Observable.just(tokens); // TODO: craft mock data

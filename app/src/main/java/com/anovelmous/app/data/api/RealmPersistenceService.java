@@ -236,6 +236,24 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
+    public Observable<List<Token>> tokens() {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmToken>>() {
+            @Override
+            public RealmResults<RealmToken> call(Realm realm) {
+                return realm.where(RealmToken.class).findAll();
+            }
+        }).map(new Func1<RealmResults<RealmToken>, List<Token>>() {
+            @Override
+            public List<Token> call(RealmResults<RealmToken> realmTokens) {
+                List<Token> tokens = new ArrayList<>(realmTokens.size());
+                for (RealmToken realmToken : realmTokens)
+                    tokens.add(tokenFromRealm(realmToken));
+                return tokens;
+            }
+        });
+    }
+
+    @Override
     public Observable<List<Token>> saveTokens(final List<Token> tokens, final RestVerb restVerb) {
         return RealmObservable.list(context, new Func1<Realm, RealmList<RealmToken>>() {
             @Override

@@ -52,6 +52,9 @@ public interface NetworkService {
             @Query("sort") Sort sort,
             @Query("order") Order order);
 
+    @GET("/tokens")
+    Observable<Token> getTokenByContent(@Query("content") String content);
+
     @GET("/tokens?page_size=1")
     Observable<ResourceCount> tokensCount();
 

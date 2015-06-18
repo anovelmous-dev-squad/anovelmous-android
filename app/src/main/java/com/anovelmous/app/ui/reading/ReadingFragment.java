@@ -78,18 +78,6 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_reading, container, false);
-        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
-        mFabMargin = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        mFabIsShown = true;
-
-        ScrollUtils.addOnGlobalLayoutListener(mFab, new Runnable() {
-            @Override
-            public void run() {
-                float fabTranslationY = view.getHeight() - mFabMargin - mFab.getHeight();
-                mFab.setTranslationX(view.getWidth() - mFabMargin - mFab.getWidth());
-                mFab.setTranslationY(fabTranslationY);
-            }
-        });
 
         final ObservableScrollView scrollView = (ObservableScrollView) getActivity().findViewById(R.id.scrollable);
         scrollView.setScrollViewCallbacks(this);
@@ -155,27 +143,5 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
         if (getActivity() != null && getActivity() instanceof ObservableScrollViewCallbacks) {
             ((ObservableScrollViewCallbacks) getActivity()).onUpOrCancelMotionEvent(scrollState);
         }
-
-        if (scrollState == ScrollState.UP)
-            hideFab();
-        else if (scrollState == ScrollState.DOWN)
-            showFab();
     }
-
-    private void showFab() {
-        if (!mFabIsShown) {
-            mFab.animate().cancel();
-            mFab.animate().scaleX(1).scaleY(1).setDuration(200).start();
-            mFabIsShown = true;
-        }
-    }
-
-    private void hideFab() {
-        if (mFabIsShown) {
-            mFab.animate().cancel();
-            mFab.animate().scaleX(0).scaleY(0).setDuration(200).start();
-            mFabIsShown = false;
-        }
-    }
-
 }

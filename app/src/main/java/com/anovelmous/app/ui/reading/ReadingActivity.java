@@ -19,13 +19,14 @@ import com.anovelmous.app.ui.ContributeFragment;
 import com.anovelmous.app.ui.ToolbarControlBaseActivity;
 import com.anovelmous.app.ui.novels.NovelListFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
 public final class ReadingActivity extends ToolbarControlBaseActivity<ObservableScrollView>
         implements ReadingFragment.OnFragmentInteractionListener, ContributeFragment.OnFragmentInteractionListener,
                    NovelListFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
+    private EtsyActionBarDrawerToggle drawerToggle;
 
     @Override
     protected ObservableScrollView createScrollable() {
@@ -46,8 +47,8 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
         selectDrawerItem(nvDrawer.getMenu().getItem(0));
     }
 
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.drawer_open,  R.string.drawer_close);
+    private EtsyActionBarDrawerToggle setupDrawerToggle() {
+        return new EtsyActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.drawer_open,  R.string.drawer_close);
     }
 
     @Override

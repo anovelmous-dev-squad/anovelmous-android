@@ -22,6 +22,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""

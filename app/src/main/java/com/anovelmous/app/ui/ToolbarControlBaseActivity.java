@@ -36,6 +36,7 @@ public abstract class ToolbarControlBaseActivity<S extends Scrollable> extends B
 
         toolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setLogo(R.drawable.toolbar_logo);
 
         scrollView = createScrollable();
         scrollView.setScrollViewCallbacks(this);

@@ -8,6 +8,6 @@
     android:paddingEnd="4dp"
     android:paddingRight="4dp"
     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-    android:textColor="@color/timespan_title_text"
+    android:textColor="@color/text_color_secondary"
     tools:ignore="RtlSymmetry"
     />

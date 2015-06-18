@@ -54,7 +54,7 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         // Uncomment to inflate menu items to Action Bar
-        // inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

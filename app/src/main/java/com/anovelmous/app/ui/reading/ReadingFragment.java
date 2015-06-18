@@ -32,10 +32,6 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private FloatingActionButton mFab;
-    private int mFabMargin;
-    private boolean mFabIsShown;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;

@@ -10,7 +10,7 @@ import com.anovelmous.app.ui.BaseActivity;
 import butterknife.InjectView;
 
 public class ChapterSelectActivity extends BaseActivity {
-    @InjectView(R.id.main_content) ViewGroup content;
+    @InjectView(R.id.app_content) ViewGroup content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

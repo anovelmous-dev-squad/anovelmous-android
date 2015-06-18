@@ -13,8 +13,6 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 /**
@@ -22,8 +20,7 @@ import timber.log.Timber;
  */
 public abstract class ToolbarControlBaseActivity<S extends Scrollable> extends BaseActivity implements ObservableScrollViewCallbacks {
 
-    private FrameLayout container;
-    private ViewGroup content;
+    private ViewGroup appContent;
     private Toolbar toolbar;
     private S scrollView;
 
@@ -33,15 +30,12 @@ public abstract class ToolbarControlBaseActivity<S extends Scrollable> extends B
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        content = (ViewGroup) findViewById(R.id.main_content);
+        appContent = (ViewGroup) findViewById(R.id.app_content);
 
-        inflater.inflate(R.layout.activity_main, content);
+        inflater.inflate(R.layout.activity_main, appContent);
 
         toolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
-
-        container = (FrameLayout) findViewById(R.id.container);
-        inflater.inflate(R.layout.fragment_reading, container);
 
         scrollView = createScrollable();
         scrollView.setScrollViewCallbacks(this);

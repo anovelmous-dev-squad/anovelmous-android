@@ -1,15 +1,12 @@
 package com.anovelmous.app.ui.reading;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.anovelmous.app.R;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -36,7 +33,6 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
     private static final String ARG_PARAM2 = "param2";
 
     private FloatingActionButton mFab;
-    private Toolbar toolbar;
     private int mFabMargin;
     private boolean mFabIsShown;
 
@@ -95,7 +91,7 @@ public class ReadingFragment extends Fragment implements ObservableScrollViewCal
             }
         });
 
-        final ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scrollable);
+        final ObservableScrollView scrollView = (ObservableScrollView) getActivity().findViewById(R.id.scrollable);
         scrollView.setScrollViewCallbacks(this);
 
         return view;

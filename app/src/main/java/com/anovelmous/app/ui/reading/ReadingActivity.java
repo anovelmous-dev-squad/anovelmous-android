@@ -2,27 +2,27 @@ package com.anovelmous.app.ui.reading;
 
 
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.ui.AboutFragment;
 import com.anovelmous.app.ui.ContributeFragment;
 import com.anovelmous.app.ui.ToolbarControlBaseActivity;
 import com.anovelmous.app.ui.novels.NovelListFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 
-public final class ReadingActivity extends ToolbarControlBaseActivity<ObservableScrollView> {
+public final class ReadingActivity extends ToolbarControlBaseActivity<ObservableScrollView>
+        implements ReadingFragment.OnFragmentInteractionListener, ContributeFragment.OnFragmentInteractionListener,
+                   NovelListFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
@@ -43,6 +43,7 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
 
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
+        selectDrawerItem(nvDrawer.getMenu().getItem(0));
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -104,6 +105,9 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
             case R.id.nav_novels_fragment:
                 fragmentClass = NovelListFragment.class;
                 break;
+            case R.id.nav_about:
+                fragmentClass = AboutFragment.class;
+                break;
             default:
                 fragmentClass = ReadingFragment.class;
         }
@@ -115,7 +119,7 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.scroll_container, fragment).commit();
 
         // Highlight the selected item, update the title, and close the drawer
         menuItem.setChecked(true);
@@ -123,4 +127,8 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
         mDrawer.closeDrawers();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

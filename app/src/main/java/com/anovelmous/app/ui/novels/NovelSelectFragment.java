@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.anovelmous.app.InjectingFragmentModule;
+import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.AnovelmousService;
 import com.anovelmous.app.data.api.NetworkService;
@@ -25,12 +27,14 @@ import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.ObjectGraph;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -41,7 +45,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
-
+import static com.anovelmous.app.util.Preconditions.checkState;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -51,7 +55,7 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
  * create an instance of this fragment.
  */
 public class NovelSelectFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
+        implements Injector, SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,6 +66,9 @@ public class NovelSelectFragment extends Fragment
     private String mParam2;
 
     public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
+
+    private ObjectGraph mObjectGraph;
+    private boolean mFirstAttach = true;
 
     @InjectView(R.id.novels_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.novels_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
@@ -118,21 +125,12 @@ public class NovelSelectFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         inflatedView = inflater.inflate(R.layout.fragment_novel_select, container, false);
-        ButterKnife.inject(inflatedView);
-
-        dividerPaddingStart =
-                getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
-
-        novelsSubject = PublishSubject.create();
-
-        novelSelectAdapter = new NovelSelectAdapter(this, getActivity());
-        restService = new AnovelmousService(networkService, persistenceService);
+        ButterKnife.inject(this, inflatedView);
 
         AnimationDrawable ellipsis =
                 (AnimationDrawable) getResources().getDrawable(R.drawable.dancing_ellipsis);
         loadingMessageView.setCompoundDrawablesWithIntrinsicBounds(null, null, ellipsis, null);
         ellipsis.start();
-
 
         swipeRefreshView.setColorSchemeResources(R.color.accent);
         swipeRefreshView.setOnRefreshListener(this);
@@ -150,6 +148,7 @@ public class NovelSelectFragment extends Fragment
                 new DividerItemDecoration(getActivity(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
         novelsView.setAdapter(novelSelectAdapter);
 
+        onRefresh();
         return inflatedView;
     }
 
@@ -170,11 +169,27 @@ public class NovelSelectFragment extends Fragment
                     + " must implement OnFragmentInteractionListener");
         }
 
+        ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
+        List<Object> fragmentModules = getModules();
+        mObjectGraph = appGraph.plus(fragmentModules.toArray());
+
+        if (mFirstAttach) {
+            inject(this);
+            mFirstAttach = false;
+        }
+
+        novelsSubject = PublishSubject.create();
+
+        dividerPaddingStart =
+                getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
+
+
+        novelSelectAdapter = new NovelSelectAdapter(this, getActivity());
+        restService = new AnovelmousService(networkService, persistenceService);
+
         subscriptions.add(novelsSubject
                 .flatMap(allNovels)
                 .subscribe(novelSelectAdapter));
-
-        onRefresh();
     }
 
     @Override
@@ -182,6 +197,18 @@ public class NovelSelectFragment extends Fragment
         super.onDetach();
         mListener = null;
         subscriptions.unsubscribe();
+    }
+
+    @Override
+    public void onDestroy() {
+        mObjectGraph = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override public void onRefresh() {
@@ -201,6 +228,23 @@ public class NovelSelectFragment extends Fragment
     @Override
     public void onNovelClick(Novel novel) {
 
+    }
+
+    @Override
+    public final ObjectGraph getObjectGraph() {
+        return mObjectGraph;
+    }
+
+    @Override
+    public void inject(Object target) {
+        checkState(mObjectGraph != null, "object graph must be assigned prior to calling inject");
+        mObjectGraph.inject(target);
+    }
+
+    protected List<Object> getModules() {
+        List<Object> result = new ArrayList<>();
+        result.add(new InjectingFragmentModule(this, this));
+        return result;
     }
 
     /**

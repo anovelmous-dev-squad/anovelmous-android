@@ -2,6 +2,7 @@ package com.anovelmous.app.ui;
 
 import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
 import com.anovelmous.app.ui.chapters.ChapterSelectView;
+import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingActivity;
 
 import javax.inject.Singleton;
@@ -15,6 +16,7 @@ import dagger.Provides;
 @Module(
     injects = {
         ReadingActivity.class,
+        NovelSelectFragment.class,
         ChapterSelectActivity.class,
         ChapterSelectView.class,
     },

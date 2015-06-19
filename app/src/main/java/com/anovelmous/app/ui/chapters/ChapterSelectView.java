@@ -24,7 +24,6 @@ import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.misc.GoUpClickListener;
-import com.anovelmous.app.ui.novels.NovelSelectView;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class ChapterSelectView extends LinearLayout
         if (!isInEditMode()) {
             AnovelmousApp.get(context).inject(this);
             Intent intent = ((Activity) context).getIntent();
-            novelId = intent.getLongExtra(NovelSelectView.NOVEL_ID, 1);
+            novelId = 1;
         } else
             novelId = 1;
 

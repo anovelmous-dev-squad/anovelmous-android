@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,13 +16,13 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.ui.AboutFragment;
 import com.anovelmous.app.ui.ContributeFragment;
 import com.anovelmous.app.ui.ToolbarControlBaseActivity;
-import com.anovelmous.app.ui.novels.NovelListFragment;
+import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
 public final class ReadingActivity extends ToolbarControlBaseActivity<ObservableScrollView>
         implements ReadingFragment.OnFragmentInteractionListener, ContributeFragment.OnFragmentInteractionListener,
-                   NovelListFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener {
+                   NovelSelectFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private EtsyActionBarDrawerToggle drawerToggle;
@@ -104,7 +103,7 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
                 fragmentClass = ContributeFragment.class;
                 break;
             case R.id.nav_novels_fragment:
-                fragmentClass = NovelListFragment.class;
+                fragmentClass = NovelSelectFragment.class;
                 break;
             case R.id.nav_about:
                 fragmentClass = AboutFragment.class;

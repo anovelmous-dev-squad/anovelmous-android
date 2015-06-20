@@ -14,7 +14,9 @@ package com.anovelmous.app.data.api;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import java.lang.annotation.Retention;
+
 import javax.inject.Qualifier;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

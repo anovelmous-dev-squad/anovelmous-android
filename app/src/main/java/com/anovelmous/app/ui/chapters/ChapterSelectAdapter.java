@@ -7,14 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.resource.Chapter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.realm.Realm;
 import rx.functions.Action1;
 
 /**

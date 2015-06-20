@@ -16,14 +16,15 @@ package com.anovelmous.app;
 
 import android.content.Context;
 
-import dagger.Module;
-import dagger.Provides;
-
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

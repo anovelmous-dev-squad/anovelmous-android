@@ -12,10 +12,6 @@ import com.anovelmous.app.R;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.melnykov.fab.FloatingActionButton;
-
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.

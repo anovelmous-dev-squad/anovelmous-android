@@ -2,15 +2,14 @@ package com.anovelmous.app.ui.chapters;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
-import com.anovelmous.app.ui.misc.GoUpClickListener;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 
 import java.util.ArrayList;

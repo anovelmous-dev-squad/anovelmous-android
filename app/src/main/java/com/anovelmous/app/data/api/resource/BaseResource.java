@@ -1,6 +1,7 @@
 package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
+
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
 
 /**

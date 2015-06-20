@@ -1,8 +1,9 @@
 package com.anovelmous.app.ui.trending;
 
+import com.anovelmous.app.data.api.SearchQuery;
+
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
-import com.anovelmous.app.data.api.SearchQuery;
 
 public enum TrendingTimespan {
   DAY("today", 1, DurationFieldType.days()),

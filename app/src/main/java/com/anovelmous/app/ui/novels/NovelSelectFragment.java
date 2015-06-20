@@ -24,6 +24,7 @@ import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.ui.BaseFragment;
 import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
@@ -46,39 +47,23 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
-import static com.anovelmous.app.util.Preconditions.checkState;
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NovelSelectFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NovelSelectFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class NovelSelectFragment extends Fragment
-        implements Injector, SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
-    public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
 
-    private ObjectGraph mObjectGraph;
-    private boolean mFirstAttach = true;
+public class NovelSelectFragment extends BaseFragment
+        implements SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
+    public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
 
     @InjectView(R.id.novels_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.novels_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
     @InjectView(R.id.novels_list) RecyclerView novelsView;
     @InjectView(R.id.novels_loading_message) TextView loadingMessageView;
 
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
-
     private float dividerPaddingStart;
 
     private PublishSubject<RestVerb> novelsSubject;
     private NovelSelectAdapter novelSelectAdapter;
     private CompositeSubscription subscriptions = new CompositeSubscription();
-    private RestService restService;
 
     private View inflatedView;
-    private OnFragmentInteractionListener mListener;
 
     public static NovelSelectFragment newInstance() {
         NovelSelectFragment fragment = new NovelSelectFragment();
@@ -89,14 +74,6 @@ public class NovelSelectFragment extends Fragment
 
     public NovelSelectFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -131,41 +108,15 @@ public class NovelSelectFragment extends Fragment
         return inflatedView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
-        ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
-        List<Object> fragmentModules = getModules();
-        mObjectGraph = appGraph.plus(fragmentModules.toArray());
-
-        if (mFirstAttach) {
-            inject(this);
-            mFirstAttach = false;
-        }
-
         novelsSubject = PublishSubject.create();
 
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
 
-
         novelSelectAdapter = new NovelSelectAdapter(this, getActivity());
-        restService = new AnovelmousService(networkService, persistenceService);
-
         subscriptions.add(novelsSubject
                 .flatMap(allNovels)
                 .subscribe(novelSelectAdapter));
@@ -174,14 +125,7 @@ public class NovelSelectFragment extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         subscriptions.unsubscribe();
-    }
-
-    @Override
-    public void onDestroy() {
-        mObjectGraph = null;
-        super.onDestroy();
     }
 
     @Override
@@ -190,7 +134,8 @@ public class NovelSelectFragment extends Fragment
         ButterKnife.reset(this);
     }
 
-    @Override public void onRefresh() {
+    @Override
+    public void onRefresh() {
         if (animatorView.getDisplayedChildId() == R.id.trending_error) {
             animatorView.setDisplayedChildId(R.id.trending_loading);
         }
@@ -210,29 +155,6 @@ public class NovelSelectFragment extends Fragment
         getFragmentManager().beginTransaction()
                 .replace(R.id.scroll_container, chapterSelectFragment).addToBackStack(null).commit();
     }
-
-    @Override
-    public final ObjectGraph getObjectGraph() {
-        return mObjectGraph;
-    }
-
-    @Override
-    public void inject(Object target) {
-        checkState(mObjectGraph != null, "object graph must be assigned prior to calling inject");
-        mObjectGraph.inject(target);
-    }
-
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
-        result.add(new InjectingFragmentModule(this, this));
-        return result;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     private final Func1<RestVerb, Observable<List<Novel>>> allNovels =
             new Func1<RestVerb, Observable<List<Novel>>>() {

@@ -20,10 +20,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.chapters.ChapterSelectActivity"
-            android:label="@string/title_activity_chapter_select" >
-        </activity>
     </application>
 
 </manifest>

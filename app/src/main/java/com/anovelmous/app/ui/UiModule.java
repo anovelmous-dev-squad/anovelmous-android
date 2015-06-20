@@ -1,7 +1,6 @@
 package com.anovelmous.app.ui;
 
-import com.anovelmous.app.ui.chapters.ChapterSelectActivity;
-import com.anovelmous.app.ui.chapters.ChapterSelectView;
+import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingActivity;
 
@@ -17,8 +16,7 @@ import dagger.Provides;
     injects = {
         ReadingActivity.class,
         NovelSelectFragment.class,
-        ChapterSelectActivity.class,
-        ChapterSelectView.class,
+        ChapterSelectFragment.class,
     },
     complete = false,
     library = true

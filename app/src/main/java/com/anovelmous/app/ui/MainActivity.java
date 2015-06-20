@@ -16,6 +16,7 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
+import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -31,7 +32,7 @@ import static com.anovelmous.app.util.Preconditions.checkState;
 public final class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
         implements ReadingFragment.OnFragmentInteractionListener, ContributeFragment.OnFragmentInteractionListener,
                    NovelSelectFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener,
-                   Injector {
+                   ChapterSelectFragment.OnFragmentInteractionListener, Injector {
     private ObjectGraph mObjectGraph;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;

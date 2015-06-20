@@ -24,6 +24,7 @@ import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 
@@ -56,15 +57,6 @@ import static com.anovelmous.app.util.Preconditions.checkState;
  */
 public class NovelSelectFragment extends Fragment
         implements Injector, SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
 
     private ObjectGraph mObjectGraph;
@@ -85,24 +77,12 @@ public class NovelSelectFragment extends Fragment
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private RestService restService;
 
-
     private View inflatedView;
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NovelSelectFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NovelSelectFragment newInstance(String param1, String param2) {
+    public static NovelSelectFragment newInstance() {
         NovelSelectFragment fragment = new NovelSelectFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -115,8 +95,7 @@ public class NovelSelectFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -227,7 +206,9 @@ public class NovelSelectFragment extends Fragment
 
     @Override
     public void onNovelClick(Novel novel) {
-
+        ChapterSelectFragment chapterSelectFragment = ChapterSelectFragment.newInstance(String.valueOf(novel.id));
+        getFragmentManager().beginTransaction()
+                .replace(R.id.scroll_container, chapterSelectFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -247,16 +228,6 @@ public class NovelSelectFragment extends Fragment
         return result;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

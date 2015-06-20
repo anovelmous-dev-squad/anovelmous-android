@@ -2,11 +2,11 @@ package com.anovelmous.app.ui.chapters;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,14 +47,6 @@ import timber.log.Timber;
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 import static com.anovelmous.app.util.Preconditions.checkState;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChapterSelectFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChapterSelectFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChapterSelectFragment extends Fragment implements Injector,
         SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {
     public final static String CHAPTER_ID = "com.anovelmous.app.ui.chapters.CHAPTER_ID";
@@ -127,6 +119,7 @@ public class ChapterSelectFragment extends Fragment implements Injector,
         chaptersView.addItemDecoration(
                 new DividerItemDecoration(getActivity(), VERTICAL_LIST, dividerPaddingStart, safeIsRtl()));
         chaptersView.setAdapter(chapterSelectAdapter);
+        onRefresh();
         return inflatedView;
     }
 
@@ -164,8 +157,6 @@ public class ChapterSelectFragment extends Fragment implements Injector,
         subscriptions.add(novelIdSubject
                 .flatMap(chaptersRequest)
                 .subscribe(chapterSelectAdapter));
-
-        onRefresh();
     }
 
     @Override
@@ -199,6 +190,12 @@ public class ChapterSelectFragment extends Fragment implements Injector,
     public void onDestroy() {
         mObjectGraph = null;
         super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     private boolean safeIsRtl() {

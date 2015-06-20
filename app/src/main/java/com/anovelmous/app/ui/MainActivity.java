@@ -118,6 +118,8 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
 
+        int containerId = R.id.scroll_container;
+
         Class fragmentClass;
         switch(menuItem.getItemId()) {
             case R.id.nav_read_fragment:
@@ -125,6 +127,7 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
                 break;
             case R.id.nav_contribute_fragment:
                 fragmentClass = ContributeFragment.class;
+                containerId = R.id.contribute_container;
                 break;
             case R.id.nav_novels_fragment:
                 fragmentClass = NovelSelectFragment.class;
@@ -143,9 +146,8 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.scroll_container, fragment).commit();
+        fragmentManager.beginTransaction().replace(containerId, fragment).commit();
 
-        // Highlight the selected item, update the title, and close the drawer
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();

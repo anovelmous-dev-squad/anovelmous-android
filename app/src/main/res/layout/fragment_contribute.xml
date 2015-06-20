@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.anovelmous.app.ui.ContributeFragment">
 
     <MultiAutoCompleteTextView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="@string/view_contribute_placeholder_text"
-        android:id="@+id/contribute_auto_complete_view"
-        android:layout_weight="1" />
+        android:id="@+id/contribute_auto_complete_view" />
 </LinearLayout>

@@ -40,6 +40,10 @@ public final class AnovelmousApp extends Application {
         registerActivityLifecycleCallbacks(activityHierarchyServer);
     }
 
+    public ObjectGraph getObjectGraph() {
+        return objectGraph;
+    }
+
     public void buildObjectGraphAndInject() {
         objectGraph = ObjectGraph.create(Modules.list(this));
         objectGraph.inject(this);

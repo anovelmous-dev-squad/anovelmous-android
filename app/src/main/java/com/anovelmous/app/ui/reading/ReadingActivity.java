@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
@@ -46,7 +47,7 @@ public final class ReadingActivity extends ToolbarControlBaseActivity<Observable
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ObjectGraph appGraph = ((Injector) getApplication()).getObjectGraph();
+        ObjectGraph appGraph = AnovelmousApp.get(this).getObjectGraph();
         List<Object> activityModules = getModules();
         mObjectGraph = appGraph.plus(activityModules.toArray());
 

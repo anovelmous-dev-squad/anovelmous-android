@@ -9,6 +9,6 @@
     <MultiAutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="@string/view_contribute_placeholder_text"
+        android:hint="@string/view_contribute_placeholder_text"
         android:id="@+id/contribute_auto_complete_view" />
 </LinearLayout>

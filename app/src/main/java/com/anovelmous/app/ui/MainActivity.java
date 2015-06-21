@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
@@ -25,6 +26,8 @@ import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dagger.ObjectGraph;
 
 import static com.anovelmous.app.util.Preconditions.checkState;
@@ -75,7 +78,6 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        // Uncomment to inflate menu items to Action Bar
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -86,7 +88,13 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.contribute_action_button:
+                navigateFromReadToContribute(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -116,16 +124,10 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
 
-        int containerId = R.id.scroll_container;
-
         Class fragmentClass;
         switch(menuItem.getItemId()) {
             case R.id.nav_read_fragment:
                 fragmentClass = ReadingFragment.class;
-                break;
-            case R.id.nav_contribute_fragment:
-                fragmentClass = ContributeFragment.class;
-                containerId = R.id.contribute_container;
                 break;
             case R.id.nav_novels_fragment:
                 fragmentClass = NovelSelectFragment.class;
@@ -144,7 +146,7 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(containerId, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.scroll_container, fragment).commit();
 
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
@@ -171,5 +173,13 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
         List<Object> result = new ArrayList<>();
         result.add(new InjectingActivityModule(this, this));
         return result;
+    }
+
+    private void navigateFromReadToContribute(MenuItem menuItem) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ContributeFragment contributeFragment = ContributeFragment.newInstance();
+        fragmentManager.beginTransaction()
+                .replace(R.id.contribute_container, contributeFragment).commit();
+        setTitle(menuItem.getTitle());
     }
 }

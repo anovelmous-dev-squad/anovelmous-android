@@ -30,9 +30,7 @@ import dagger.ObjectGraph;
 import static com.anovelmous.app.util.Preconditions.checkState;
 
 public final class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
-        implements ReadingFragment.OnFragmentInteractionListener, ContributeFragment.OnFragmentInteractionListener,
-                   NovelSelectFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener,
-                   ChapterSelectFragment.OnFragmentInteractionListener, Injector {
+        implements BaseFragment.OnFragmentInteractionListener, Injector {
     private ObjectGraph mObjectGraph;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;

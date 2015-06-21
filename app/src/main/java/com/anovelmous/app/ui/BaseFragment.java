@@ -48,15 +48,15 @@ public class BaseFragment extends Fragment implements Injector {
                     + " must implement OnFragmentInteractionListener");
         }
 
+        ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
+        List<Object> fragmentModules = getModules();
+        mObjectGraph = appGraph.plus(fragmentModules.toArray());
 
         if (mFirstAttach) {
             inject(this);
             mFirstAttach = false;
         }
 
-        ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
-        List<Object> fragmentModules = getModules();
-        mObjectGraph = appGraph.plus(fragmentModules.toArray());
         restService = new AnovelmousService(networkService, persistenceService);
     }
 

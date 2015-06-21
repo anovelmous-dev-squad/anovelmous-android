@@ -23,6 +23,7 @@ import com.anovelmous.app.data.api.NetworkService;
 import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.ui.BaseFragment;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
@@ -47,30 +48,22 @@ import timber.log.Timber;
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 import static com.anovelmous.app.util.Preconditions.checkState;
 
-public class ChapterSelectFragment extends Fragment implements Injector,
+public class ChapterSelectFragment extends BaseFragment implements Injector,
         SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {
     public final static String CHAPTER_ID = "com.anovelmous.app.ui.chapters.CHAPTER_ID";
 
     private View inflatedView;
     private long novelId;
-    private ObjectGraph mObjectGraph;
-    private boolean mFirstAttach = true;
 
     @InjectView(R.id.chapters_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.chapters_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
     @InjectView(R.id.chapter_list) RecyclerView chaptersView;
     @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
-
     private float dividerPaddingStart;
     private PublishSubject<Long> novelIdSubject;
     private ChapterSelectAdapter chapterSelectAdapter;
     private CompositeSubscription subscriptions = new CompositeSubscription();
-    private RestService restService;
-
-    private OnFragmentInteractionListener mListener;
 
     public static ChapterSelectFragment newInstance(String novelId) {
         ChapterSelectFragment fragment = new ChapterSelectFragment();
@@ -123,37 +116,13 @@ public class ChapterSelectFragment extends Fragment implements Injector,
         return inflatedView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
-        ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
-        List<Object> fragmentModules = getModules();
-        mObjectGraph = appGraph.plus(fragmentModules.toArray());
-
-        if (mFirstAttach) {
-            inject(this);
-            mFirstAttach = false;
-        }
-
         dividerPaddingStart =
                 getResources().getDimensionPixelSize(R.dimen.trending_divider_padding_start);
         novelIdSubject = PublishSubject.create();
         chapterSelectAdapter = new ChapterSelectAdapter(this, getActivity());
-        restService = new AnovelmousService(networkService, persistenceService);
         subscriptions.add(novelIdSubject
                 .flatMap(chaptersRequest)
                 .subscribe(chapterSelectAdapter));
@@ -177,19 +146,12 @@ public class ChapterSelectFragment extends Fragment implements Injector,
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         subscriptions.unsubscribe();
     }
 
     @Override
     public void onChapterClick(Chapter chapter) {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        mObjectGraph = null;
-        super.onDestroy();
     }
 
     @Override
@@ -204,21 +166,6 @@ public class ChapterSelectFragment extends Fragment implements Injector,
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) private boolean isRtl() {
         return inflatedView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
     }
 
     private final Func1<Long, Observable<List<Chapter>>> chaptersRequest =
@@ -241,21 +188,4 @@ public class ChapterSelectFragment extends Fragment implements Injector,
             animatorView.setDisplayedChildId(R.id.trending_error);
         }
     };
-
-    @Override
-    public ObjectGraph getObjectGraph() {
-        return mObjectGraph;
-    }
-
-    @Override
-    public void inject(Object target) {
-        checkState(mObjectGraph != null, "object graph must be assigned prior to calling inject");
-        mObjectGraph.inject(target);
-    }
-
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
-        result.add(new InjectingFragmentModule(this, this));
-        return result;
-    }
 }

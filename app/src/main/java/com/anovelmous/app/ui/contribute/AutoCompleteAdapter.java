@@ -16,8 +16,8 @@ import rx.functions.Action1;
 public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filterable, Action1<List<String>> {
     private List<String> items = Collections.emptyList();
 
-    public AutoCompleteAdapter(Context context, int resource) {
-        super(context, resource);
+    public AutoCompleteAdapter(Context context, int resource, int textViewResourceId) {
+        super(context, resource, textViewResourceId);
     }
 
     @Override

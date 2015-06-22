@@ -2,6 +2,7 @@ package com.anovelmous.app.ui.contribute;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class ContributeFragment extends BaseFragment {
 
     @InjectView(R.id.contribute_auto_complete_view) MultiAutoCompleteTextView autoCompleteTextView;
 
+    private boolean isRefreshing;
     private AutoCompleteAdapter autoCompleteAdapter;
     private PublishSubject<RestVerb> tokenFilterSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
@@ -58,6 +60,27 @@ public class ContributeFragment extends BaseFragment {
 
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
 
+        isRefreshing = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (!isRefreshing)
+                        break;
+                    try {
+                        view.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                tokenFilterSubject.onNext(RestVerb.GET);
+                            }
+                        });
+                        Thread.sleep(10000); // TODO: use current chapter's votingDuration
+                    } catch (Exception e) {
+                        Timber.e(e.toString());
+                    }
+                }
+            }
+        }).start();
         return view;
     }
 
@@ -65,7 +88,7 @@ public class ContributeFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         tokenFilterSubject = PublishSubject.create();
-        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), R.layout.fragment_contribute);
+        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), R.layout.fragment_contribute, R.id.contribute_auto_complete_view);
         subscriptions.add(tokenFilterSubject
                 .flatMap(filteredTokens)
                 .subscribe(autoCompleteAdapter));
@@ -80,6 +103,7 @@ public class ContributeFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isRefreshing = false;
         ButterKnife.reset(this);
     }
 

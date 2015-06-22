@@ -173,4 +173,9 @@ public class AnovelmousService implements RestService {
                     }
                 });
     }
+
+    @Override
+    public Observable<List<String>> getGrammarFilteredStrings() {
+        return networkService.getGrammarFilteredWords();
+    }
 }

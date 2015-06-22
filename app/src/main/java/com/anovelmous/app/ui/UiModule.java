@@ -1,6 +1,7 @@
 package com.anovelmous.app.ui;
 
 import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
+import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 

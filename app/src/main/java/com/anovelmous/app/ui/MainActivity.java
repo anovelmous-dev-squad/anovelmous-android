@@ -11,13 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
-import com.anovelmous.app.ui.chapters.ChapterSelectFragment;
+import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -26,8 +25,6 @@ import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dagger.ObjectGraph;
 
 import static com.anovelmous.app.util.Preconditions.checkState;

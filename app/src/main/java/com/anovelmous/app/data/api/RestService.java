@@ -20,4 +20,5 @@ public interface RestService {
     Observable<List<Token>> getAllTokens();
     Observable<Token> getTokenFromContent(String content);
     Observable<Vote> castVote(Vote vote);
+    Observable<List<String>> getGrammarFilteredStrings();
 }

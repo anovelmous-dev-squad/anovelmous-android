@@ -12,9 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.anovelmous.app.AnovelmousApp;
-import com.anovelmous.app.InjectingActivityModule;
-import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
 import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
@@ -22,16 +19,8 @@ import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dagger.ObjectGraph;
-
-import static com.anovelmous.app.util.Preconditions.checkState;
-
 public final class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
-        implements BaseFragment.OnFragmentInteractionListener, Injector {
-    private ObjectGraph mObjectGraph;
+        implements BaseFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private EtsyActionBarDrawerToggle drawerToggle;
@@ -45,13 +34,6 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ObjectGraph appGraph = AnovelmousApp.get(this).getObjectGraph();
-        List<Object> activityModules = getModules();
-        mObjectGraph = appGraph.plus(activityModules.toArray());
-
-        // now we can inject ourselves
-        inject(this);
-
         mDrawer = (DrawerLayout) findViewById(R.id.nav_drawer_layout);
         drawerToggle = setupDrawerToggle();
 
@@ -64,12 +46,6 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
 
     private EtsyActionBarDrawerToggle setupDrawerToggle() {
         return new EtsyActionBarDrawerToggle(this, mDrawer, getToolbar(), R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mObjectGraph = null;
-        super.onDestroy();
     }
 
     @Override
@@ -153,23 +129,6 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public final ObjectGraph getObjectGraph() {
-        return mObjectGraph;
-    }
-
-    @Override
-    public void inject(Object target) {
-        checkState(mObjectGraph != null, "object graph must be assigned prior to calling inject");
-        mObjectGraph.inject(target);
-    }
-
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
-        result.add(new InjectingActivityModule(this, this));
-        return result;
     }
 
     private void navigateFromReadToContribute(MenuItem menuItem) {

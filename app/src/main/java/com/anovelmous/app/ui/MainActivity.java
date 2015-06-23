@@ -120,6 +120,9 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.scroll_container, fragment).commit();
+        Fragment contributeFragment = fragmentManager.findFragmentById(R.id.contribute_container);
+        if (contributeFragment != null && contributeFragment.isAdded()) // TODO: create a more elegant way of listening for navigation away from contribute
+            fragmentManager.beginTransaction().remove(contributeFragment).commit();
 
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());

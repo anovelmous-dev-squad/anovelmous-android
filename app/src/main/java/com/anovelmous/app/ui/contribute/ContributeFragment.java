@@ -12,6 +12,8 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.ui.BaseFragment;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -58,10 +60,12 @@ public class ContributeFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.fragment_contribute, container, false);
         ButterKnife.inject(this, view);
 
+        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), R.layout.fragment_contribute, R.id.contribute_auto_complete_view, Arrays.asList(EXAMPLE));
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
+        autoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         isRefreshing = true;
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -80,7 +84,7 @@ public class ContributeFragment extends BaseFragment {
                     }
                 }
             }
-        }).start();
+        }).start();*/
         return view;
     }
 
@@ -88,16 +92,19 @@ public class ContributeFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         tokenFilterSubject = PublishSubject.create();
-        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), R.layout.fragment_contribute, R.id.contribute_auto_complete_view);
-        subscriptions.add(tokenFilterSubject
+        /*subscriptions.add(tokenFilterSubject
                 .flatMap(filteredTokens)
-                .subscribe(autoCompleteAdapter));
+                .subscribe(autoCompleteAdapter));*/
     }
+
+    private static final String[] EXAMPLE = new String[] {
+      "something", "something-else"
+    };
 
     @Override
     public void onDetach() {
         super.onDetach();
-        subscriptions.unsubscribe();
+        //subscriptions.unsubscribe();
     }
 
     @Override

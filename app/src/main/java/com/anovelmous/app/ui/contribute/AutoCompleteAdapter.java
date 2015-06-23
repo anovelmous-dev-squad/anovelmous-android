@@ -13,13 +13,15 @@ import rx.functions.Action1;
 /**
  * Created by Greg Ziegan on 6/22/15.
  */
-public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filterable, Action1<List<String>> {
-    private List<String> items = Collections.emptyList();
+public class AutoCompleteAdapter extends ArrayAdapter<String> {
+//    private List<String> items = Collections.emptyList();
 
-    public AutoCompleteAdapter(Context context, int resource, int textViewResourceId) {
-        super(context, resource, textViewResourceId);
+    public AutoCompleteAdapter(Context context, int resource, int textViewResourceId, List<String> initialData) {
+        super(context, resource, textViewResourceId, initialData);
+        //this.items = initialData;
     }
 
+    /*
     @Override
     public void call(List<String> items) {
         this.items = items;
@@ -34,5 +36,5 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filtera
     @Override
     public String getItem(int index) {
         return items.get(index);
-    }
+    }*/
 }

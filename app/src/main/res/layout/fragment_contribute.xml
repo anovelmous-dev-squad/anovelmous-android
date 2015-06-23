@@ -10,5 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="@string/view_contribute_placeholder_text"
-        android:id="@+id/contribute_auto_complete_view" />
+        android:id="@+id/contribute_auto_complete_view"
+        android:inputType="textAutoComplete"
+        android:enabled="true"
+        android:singleLine="true"
+        android:completionThreshold="1"/>
 </LinearLayout>

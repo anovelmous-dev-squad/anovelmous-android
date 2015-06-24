@@ -17,7 +17,7 @@ abstract class BaseResource {
         url = checkNotNull(builder.url, "url == null");
     }
 
-    public abstract static class Builder<T extends Builder>{
+    protected abstract static class Builder<T extends Builder>{
         protected long id;
         protected String url;
 

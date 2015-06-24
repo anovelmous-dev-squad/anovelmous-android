@@ -2,6 +2,7 @@ package com.anovelmous.app.data.api;
 
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
@@ -12,6 +13,7 @@ import java.util.List;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -63,4 +65,7 @@ public interface NetworkService {
 
     @POST("/votes")
     Observable<Vote> postVote(@Body Vote vote);
+
+    @GET("/users/{id}")
+    Observable<User> getUser(@Path("id") long userId);
 }

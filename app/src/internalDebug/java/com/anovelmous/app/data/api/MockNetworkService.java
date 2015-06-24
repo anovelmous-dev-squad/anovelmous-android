@@ -4,11 +4,14 @@ import android.content.SharedPreferences;
 
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
 import com.anovelmous.app.data.api.response.NovelsResponse;
 import com.anovelmous.app.util.EnumPreferences;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import retrofit.http.Body;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -139,5 +143,17 @@ public final class MockNetworkService implements NetworkService {
     @Override
     public Observable<Vote> postVote(@Body Vote vote) {
         return Observable.just(vote);
+    }
+
+    @Override
+    public Observable<User> getUser(@Path("id") long userId) {
+        return Observable.just(new User.Builder()
+                .id(userId)
+                .url("mock://users/" + userId)
+                .username("Mock User")
+                .email("user"+userId+"@email.com")
+                .groups(new ArrayList<String>())
+                .dateJoined(new DateTime())
+                .build());
     }
 }

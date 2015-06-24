@@ -4,15 +4,19 @@ import android.content.Context;
 
 import com.anovelmous.app.data.api.model.RealmChapter;
 import com.anovelmous.app.data.api.model.RealmFormattedNovelToken;
+import com.anovelmous.app.data.api.model.RealmGroup;
 import com.anovelmous.app.data.api.model.RealmNovel;
 import com.anovelmous.app.data.api.model.RealmToken;
+import com.anovelmous.app.data.api.model.RealmUser;
 import com.anovelmous.app.data.api.model.RealmVote;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
+import com.anovelmous.app.data.api.resource.Group;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 import com.anovelmous.app.util.NotUniqueException;
@@ -24,6 +28,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
 import rx.functions.Func1;
@@ -355,6 +360,45 @@ public class RealmPersistenceService implements PersistenceService {
             @Override
             public Vote call(RealmVote realmVote) {
                 return voteFromRealm(realmVote);
+            }
+        });
+    }
+
+    private static Group groupFromRealm(RealmGroup realmGroup) {
+        return new Group.Builder()
+                .id(realmGroup.getId())
+                .url(realmGroup.getUrl())
+                .name(realmGroup.getName())
+                .build();
+    }
+
+    private static User userFromRealm(RealmUser realmUser) {
+        List<String> groupsUrlList = new ArrayList<>(realmUser.getGroups().size());
+        for (RealmGroup realmGroup : realmUser.getGroups())
+            groupsUrlList.add(realmGroup.getUrl());
+
+        return new User.Builder()
+                .id(realmUser.getId())
+                .url(realmUser.getUrl())
+                .username(realmUser.getUsername())
+                .email(realmUser.getEmail())
+                .groups(groupsUrlList)
+                .dateJoined(new DateTime(realmUser.getDateJoined()))
+                .build();
+    }
+
+    @Override
+    public Observable<User> getMyUser(final String authToken) {
+        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmUser>>() {
+            @Override
+            public RealmResults<RealmUser> call(Realm realm) {
+                return realm.where(RealmUser.class).equalTo("authToken", authToken).findAll();
+            }
+        }).map(new Func1<RealmResults<RealmUser>, User>() {
+            @Override
+            public User call(RealmResults<RealmUser> realmUsers) {
+                User user = userFromRealm(realmUsers.first());
+                return user;
             }
         });
     }

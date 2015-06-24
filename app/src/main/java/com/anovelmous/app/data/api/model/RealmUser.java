@@ -20,6 +20,7 @@ public class RealmUser extends RealmObject {
     private String email;
     private RealmList<RealmGroup> groups;
     private Date dateJoined;
+    private String authToken;
 
     public RealmUser() {
 
@@ -39,6 +40,11 @@ public class RealmUser extends RealmObject {
         }
 
         dateJoined = user.dateJoined.toDate();
+    }
+
+    public RealmUser(User user, Realm realm, String authToken) {
+        this(user, realm);
+        this.authToken = authToken;
     }
 
     public String getUsername() {
@@ -87,5 +93,13 @@ public class RealmUser extends RealmObject {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 }

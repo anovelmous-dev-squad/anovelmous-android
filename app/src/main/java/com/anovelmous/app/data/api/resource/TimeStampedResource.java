@@ -18,7 +18,7 @@ abstract class TimeStampedResource extends BaseResource {
         createdAt = checkNotNull(builder.createdAt, "createdAt == null");
     }
 
-    public abstract static class Builder<T extends Builder> extends BaseResource.Builder<T> {
+    protected abstract static class Builder<T extends Builder> extends BaseResource.Builder<T> {
         protected DateTime createdAt;
 
         public T createdAt(DateTime createdAt) {

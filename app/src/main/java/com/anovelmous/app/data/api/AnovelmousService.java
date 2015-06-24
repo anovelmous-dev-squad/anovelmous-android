@@ -6,6 +6,7 @@ import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
@@ -177,5 +178,18 @@ public class AnovelmousService implements RestService {
     @Override
     public Observable<List<String>> getGrammarFilteredStrings() {
         return networkService.getGrammarFilteredWords();
+    }
+
+    @Override
+    public Observable<User> getMyUser(String authToken) {
+        return persistenceService.getMyUser(authToken).map(new Func1<User, User>() {
+            @Override
+            public User call(User user) {
+                if (user != null)
+                    return user;  // TODO: create lastModified field and refresh cache
+
+                return user; // TODO: either lookup user remotely or POST
+            }
+        });
     }
 }

@@ -4,6 +4,7 @@ import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 
 import java.util.List;
@@ -21,4 +22,5 @@ public interface RestService {
     Observable<Token> getTokenFromContent(String content);
     Observable<Vote> castVote(Vote vote);
     Observable<List<String>> getGrammarFilteredStrings();
+    Observable<User> getMyUser(String authToken);
 }

@@ -6,6 +6,7 @@ import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
+import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface PersistenceService {
     Observable<Token> saveToken(Token token, RestVerb restVerb);
 
     Observable<Vote> saveVote(Vote vote, RestVerb restVerb);
+
+    Observable<User> getMyUser(String authToken);
 }

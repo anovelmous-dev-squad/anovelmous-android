@@ -60,12 +60,10 @@ public class ContributeFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.fragment_contribute, container, false);
         ButterKnife.inject(this, view);
 
-        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, Arrays.asList(EXAMPLE));
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
 
         isRefreshing = true;
-        /*new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -84,7 +82,7 @@ public class ContributeFragment extends BaseFragment {
                     }
                 }
             }
-        }).start();*/
+        }).start();
         return view;
     }
 
@@ -92,19 +90,16 @@ public class ContributeFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         tokenFilterSubject = PublishSubject.create();
-        /*subscriptions.add(tokenFilterSubject
+        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), android.R.layout.simple_list_item_1);
+        subscriptions.add(tokenFilterSubject
                 .flatMap(filteredTokens)
-                .subscribe(autoCompleteAdapter));*/
+                .subscribe(autoCompleteAdapter));
     }
-
-    private static final String[] EXAMPLE = new String[] {
-      "something", "something-else"
-    };
 
     @Override
     public void onDetach() {
         super.onDetach();
-        //subscriptions.unsubscribe();
+        subscriptions.unsubscribe();
     }
 
     @Override

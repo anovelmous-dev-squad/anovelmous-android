@@ -3,20 +3,21 @@ package com.anovelmous.app.ui.contribute;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
+import java.util.Collections;
 import java.util.List;
+
+import rx.functions.Action1;
 
 /**
  * Created by Greg Ziegan on 6/22/15.
  */
-public class AutoCompleteAdapter extends ArrayAdapter<String> {
-//    private List<String> items = Collections.emptyList();
+public class AutoCompleteAdapter extends ArrayAdapter<String> implements Action1<List<String>> {
+    private List<String> items = Collections.emptyList();
 
-    public AutoCompleteAdapter(Context context, int resource, List<String> initialData) {
-        super(context, resource, initialData);
-        //this.items = initialData;
+    public AutoCompleteAdapter(Context context, int resource) {
+        super(context, resource);
     }
 
-    /*
     @Override
     public void call(List<String> items) {
         this.items = items;
@@ -31,5 +32,6 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
     @Override
     public String getItem(int index) {
         return items.get(index);
-    }*/
+    }
+
 }

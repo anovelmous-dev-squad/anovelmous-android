@@ -3,10 +3,8 @@ package com.anovelmous.app.ui.chapters;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,27 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.anovelmous.app.InjectingFragmentModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
-import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.BaseFragment;
 import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import dagger.ObjectGraph;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -46,7 +35,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
-import static com.anovelmous.app.util.Preconditions.checkState;
 
 public class ChapterSelectFragment extends BaseFragment implements Injector,
         SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {

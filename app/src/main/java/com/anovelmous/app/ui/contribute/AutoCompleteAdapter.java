@@ -2,13 +2,8 @@ package com.anovelmous.app.ui.contribute;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 
-import java.util.Collections;
 import java.util.List;
-
-import rx.functions.Action1;
 
 /**
  * Created by Greg Ziegan on 6/22/15.

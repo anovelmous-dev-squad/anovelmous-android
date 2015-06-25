@@ -2,7 +2,6 @@ package com.anovelmous.app.ui.contribute;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.ui.BaseFragment;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,7 +1,9 @@
 package com.anovelmous.app.data.api;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
@@ -38,11 +40,13 @@ public final class MockNetworkService implements NetworkService {
     private static final int TOKEN_COUNT = 19;
 
     private final SharedPreferences preferences;
+    private final Context context;
     private final Map<Class<? extends Enum<?>>, Enum<?>> responses = new LinkedHashMap<>();
 
     @Inject
-    MockNetworkService(SharedPreferences preferences) {
+    MockNetworkService(SharedPreferences preferences, Context context) {
         this.preferences = preferences;
+        this.context = context;
 
         loadResponse(MockNovelsResponse.class, MockNovelsResponse.SUCCESS);
         loadResponse(MockChaptersResponse.class, MockChaptersResponse.SUCCESS);
@@ -134,10 +138,8 @@ public final class MockNetworkService implements NetworkService {
 
     @Override
     public Observable<List<String>> getGrammarFilteredWords() {
-        List<String> filteredStrings = new ArrayList<>(); // TODO: make a better filtered list
-        filteredStrings.add("eat");
-        filteredStrings.add("love");
-        return Observable.just(filteredStrings);
+        List<String> tokens = Arrays.asList(context.getResources().getStringArray(R.array.mock_token_set));
+        return Observable.just(tokens);
     }
 
     @Override
@@ -151,7 +153,7 @@ public final class MockNetworkService implements NetworkService {
                 .id(userId)
                 .url("mock://users/" + userId)
                 .username("Mock User")
-                .email("user"+userId+"@email.com")
+                .email("user" + userId + "@email.com")
                 .groups(new ArrayList<String>())
                 .dateJoined(new DateTime())
                 .build());

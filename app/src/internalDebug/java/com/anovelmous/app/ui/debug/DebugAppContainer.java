@@ -111,7 +111,7 @@ public final class DebugAppContainer implements AppContainer {
     private final BooleanPreference seenDebugDrawer;
     private final RestAdapter restAdapter;
     private final MockRestAdapter mockRestAdapter;
-    private final MockNetworkService mockAnovelmousService;
+    private final MockNetworkService mockNetworkService;
     private final Application app;
 
     Activity activity;
@@ -132,7 +132,7 @@ public final class DebugAppContainer implements AppContainer {
                              @ScalpelWireframeEnabled BooleanPreference scalpelWireframeEnabled,
                              @SeenDebugDrawer BooleanPreference seenDebugDrawer,
                              RestAdapter restAdapter,
-                             MockNetworkService mockAnovelmousService,
+                             MockNetworkService mockNetworkService,
                              MockRestAdapter mockRestAdapter,
                              Application app) {
         this.client = client;
@@ -149,7 +149,7 @@ public final class DebugAppContainer implements AppContainer {
         this.mockRestAdapter = mockRestAdapter;
         this.networkProxy = networkProxy;
         this.animationSpeed = animationSpeed;
-        this.mockAnovelmousService = mockAnovelmousService;
+        this.mockNetworkService = mockNetworkService;
         this.restAdapter = restAdapter;
         this.app = app;
     }
@@ -427,14 +427,14 @@ public final class DebugAppContainer implements AppContainer {
         final EnumAdapter<T> adapter = new EnumAdapter<>(drawerContext, responseClass);
         spinner.setEnabled(isMockMode);
         spinner.setAdapter(adapter);
-        spinner.setSelection(mockAnovelmousService.getResponse(responseClass).ordinal());
+        spinner.setSelection(mockNetworkService.getResponse(responseClass).ordinal());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position,
                                                  long id) {
                 T selected = adapter.getItem(position);
-                if (selected != mockAnovelmousService.getResponse(responseClass)) {
+                if (selected != mockNetworkService.getResponse(responseClass)) {
                     Timber.d("Setting %s to %s", responseClass.getSimpleName(), selected);
-                    mockAnovelmousService.setResponse(responseClass, selected);
+                    mockNetworkService.setResponse(responseClass, selected);
                 } else {
                     Timber.d("Ignoring re-selection of %s %s", responseClass.getSimpleName(), selected);
                 }

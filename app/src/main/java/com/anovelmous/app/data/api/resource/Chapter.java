@@ -58,4 +58,8 @@ public class Chapter extends TimeStampedResource {
         }
     }
 
+    @Override
+    public String toString() {
+        return "<Chapter: " + id + " title: " + title + ">";
+    }
 }

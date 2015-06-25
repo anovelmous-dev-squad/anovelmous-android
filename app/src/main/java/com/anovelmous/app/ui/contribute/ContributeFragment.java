@@ -12,7 +12,9 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.BaseFragment;
+import com.anovelmous.app.ui.reading.ReadingFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,11 +42,15 @@ public class ContributeFragment extends BaseFragment {
     private boolean isRefreshing;
     private AutoCompleteAdapter autoCompleteAdapter;
     private PublishSubject<RestVerb> tokenFilterSubject;
+    private PublishSubject<Long> currentChapterSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
+    private long currentChapterId;
+    private Chapter currentChapter;
 
-    public static ContributeFragment newInstance() {
+    public static ContributeFragment newInstance(long currentChapterId) {
         ContributeFragment fragment = new ContributeFragment();
         Bundle args = new Bundle();
+        args.putLong(ReadingFragment.CUR_CHAPTER_ID, currentChapterId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,6 +63,7 @@ public class ContributeFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            currentChapterId = getArguments().getLong(ReadingFragment.CUR_CHAPTER_ID, 1);
         }
     }
 
@@ -96,6 +103,18 @@ public class ContributeFragment extends BaseFragment {
         subscriptions.add(tokenFilterSubject
                 .flatMap(filteredTokens)
                 .subscribe(autoCompleteAdapter));
+
+        currentChapterSubject = PublishSubject.create();
+        subscriptions.add(currentChapterSubject
+                .flatMap(chapterRefresh)
+                .subscribe(new Action1<Chapter>() {
+                    @Override
+                    public void call(Chapter chapter) {
+                        Timber.d("Current 'Contribute' Chapter set to: " + chapter);
+                        currentChapter = chapter;
+                    }
+                }));
+        currentChapterSubject.onNext(currentChapterId);
     }
 
     @Override
@@ -125,6 +144,24 @@ public class ContributeFragment extends BaseFragment {
     private final Action1<Throwable> tokensLoadError = new Action1<Throwable>() {
         @Override public void call(Throwable throwable) {
             Timber.e(throwable, "Failed to get filtered tokens");
+        }
+    };
+
+    private final Func1<Long, Observable<Chapter>> chapterRefresh = new Func1<Long, Observable<Chapter>>() {
+        @Override
+        public Observable<Chapter> call(Long chapterId) {
+            return restService.getChapter(currentChapterId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError(chapterLoadError)
+                    .retry(3);
+        }
+    };
+
+    private final Action1<Throwable> chapterLoadError = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            Timber.e(throwable, "Failed to refresh chapter");
         }
     };
 }

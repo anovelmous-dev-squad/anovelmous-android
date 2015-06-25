@@ -67,6 +67,21 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
+    public Observable<Chapter> chapter(final long chapterId) {
+        return RealmObservable.object(context, new Func1<Realm, RealmChapter>() {
+            @Override
+            public RealmChapter call(Realm realm) {
+                return realm.where(RealmChapter.class).equalTo("id", chapterId).findFirst();
+            }
+        }).map(new Func1<RealmChapter, Chapter>() {
+            @Override
+            public Chapter call(RealmChapter realmChapter) {
+                return chapterFromRealm(realmChapter);
+            }
+        });
+    }
+
+    @Override
     public Observable<ResourceCount> novelsCount() {
         return getRealmNovels().map(new Func1<RealmResults<RealmNovel>, ResourceCount>() {
             @Override

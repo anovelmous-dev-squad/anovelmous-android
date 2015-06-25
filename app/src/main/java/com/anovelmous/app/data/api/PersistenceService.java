@@ -22,6 +22,7 @@ public interface PersistenceService {
     Observable<ResourceCount> novelsCount();
     Observable<Novel> saveNovel(Novel novel);
 
+    Observable<Chapter> chapter(long chapterId);
     Observable<List<Chapter>> chapters(long novelId);
     Observable<ResourceCount> chaptersCount();
     Observable<Chapter> saveChapter(Chapter chapter);

@@ -69,6 +69,11 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
+    public Observable<Chapter> getChapter(long chapterId) {
+        return persistenceService.chapter(chapterId); // TODO: check remote resource's "last_modified" timestamp (when it exists)
+    }
+
+    @Override
     public Observable<List<Chapter>> getNovelChapters(final long novelId) {
         return Observable.combineLatest(
                 networkService.chaptersCount(), persistenceService.chaptersCount(),

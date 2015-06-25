@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.BaseFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -14,6 +15,9 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 public class ReadingFragment extends BaseFragment implements ObservableScrollViewCallbacks {
     public static final String ARG_SCROLL_Y = "ARG_SCROLL_Y";
+    public static final String CUR_CHAPTER_ID = "com.anovelmous.app.ui.reading.ReadingFragment.CUR_CHAPTER_ID";
+
+    private Chapter currentChapter;
 
     public static ReadingFragment newInstance() {
         ReadingFragment fragment = new ReadingFragment();
@@ -69,5 +73,9 @@ public class ReadingFragment extends BaseFragment implements ObservableScrollVie
         if (getActivity() != null && getActivity() instanceof ObservableScrollViewCallbacks) {
             ((ObservableScrollViewCallbacks) getActivity()).onUpOrCancelMotionEvent(scrollState);
         }
+    }
+
+    public Chapter getCurrentChapter() {
+        return currentChapter;
     }
 }

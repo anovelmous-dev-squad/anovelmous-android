@@ -16,6 +16,7 @@ import rx.Observable;
  */
 public interface RestService {
     Observable<List<Novel>> getAllNovels();
+    Observable<Chapter> getChapter(long chapterId);
     Observable<List<Chapter>> getNovelChapters(long novelId);
     Observable<List<FormattedNovelToken>> getChapterText(long chapterId);
     Observable<List<Token>> getAllTokens();

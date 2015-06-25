@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
@@ -136,7 +137,10 @@ public final class MainActivity extends ToolbarControlBaseActivity<ObservableScr
 
     private void navigateFromReadToContribute(MenuItem menuItem) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ContributeFragment contributeFragment = ContributeFragment.newInstance();
+        ReadingFragment readingFragment = (ReadingFragment) fragmentManager
+                .findFragmentById(R.id.scroll_container);
+        Chapter currentChapter = readingFragment.getCurrentChapter();
+        ContributeFragment contributeFragment = ContributeFragment.newInstance(10); // TODO: finish implementing current Chapter lookup
         fragmentManager.beginTransaction()
                 .replace(R.id.contribute_container, contributeFragment).commit();
         setTitle(menuItem.getTitle());

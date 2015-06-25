@@ -14,5 +14,6 @@
         android:inputType="textAutoComplete"
         android:enabled="true"
         android:singleLine="true"
-        android:completionThreshold="1"/>
+        android:completionThreshold="2"
+        />
 </LinearLayout>

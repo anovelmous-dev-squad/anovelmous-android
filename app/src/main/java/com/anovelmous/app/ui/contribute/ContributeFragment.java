@@ -46,6 +46,7 @@ public class ContributeFragment extends BaseFragment {
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private long currentChapterId;
     private Chapter currentChapter;
+    private int pollingTime = 10;
 
     public static ContributeFragment newInstance(long currentChapterId) {
         ContributeFragment fragment = new ContributeFragment();
@@ -77,7 +78,7 @@ public class ContributeFragment extends BaseFragment {
 
         isRefreshing = true;
 
-        Observable.interval(10, TimeUnit.SECONDS, Schedulers.io())
+        Observable.interval(pollingTime, TimeUnit.SECONDS, Schedulers.io())
                 .takeWhile(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
@@ -112,6 +113,7 @@ public class ContributeFragment extends BaseFragment {
                     public void call(Chapter chapter) {
                         Timber.d("Current 'Contribute' Chapter set to: " + chapter);
                         currentChapter = chapter;
+                        pollingTime = chapter.votingDuration;
                     }
                 }));
         currentChapterSubject.onNext(currentChapterId);

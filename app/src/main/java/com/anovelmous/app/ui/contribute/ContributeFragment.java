@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.anovelmous.app.R;
@@ -27,7 +29,7 @@ import timber.log.Timber;
 
 public class ContributeFragment extends BaseFragment {
 
-    @InjectView(R.id.contribute_auto_complete_view) MultiAutoCompleteTextView autoCompleteTextView;
+    @InjectView(R.id.contribute_auto_complete_view) AutoCompleteTextView autoCompleteTextView;
 
     private boolean isRefreshing;
     private AutoCompleteAdapter autoCompleteAdapter;
@@ -58,9 +60,9 @@ public class ContributeFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.fragment_contribute, container, false);
         ButterKnife.inject(this, view);
 
-        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(), R.layout.fragment_contribute, R.id.contribute_auto_complete_view, Arrays.asList(EXAMPLE));
+        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(),
+                android.R.layout.simple_list_item_1, Arrays.asList(EXAMPLE));
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
-        autoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         isRefreshing = true;
         /*new Thread(new Runnable() {

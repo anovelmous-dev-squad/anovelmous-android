@@ -11,8 +11,8 @@ import java.util.List;
 public class AutoCompleteAdapter extends ArrayAdapter<String> {
 //    private List<String> items = Collections.emptyList();
 
-    public AutoCompleteAdapter(Context context, int resource, int textViewResourceId, List<String> initialData) {
-        super(context, resource, textViewResourceId, initialData);
+    public AutoCompleteAdapter(Context context, int resource, List<String> initialData) {
+        super(context, resource, initialData);
         //this.items = initialData;
     }
 

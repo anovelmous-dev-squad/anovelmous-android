@@ -2,6 +2,7 @@ package com.anovelmous.app.ui.contribute;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,18 @@ import com.anovelmous.app.ui.BaseFragment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
+import rx.Observer;
+import rx.Scheduler;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -63,26 +69,22 @@ public class ContributeFragment extends BaseFragment {
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
 
         isRefreshing = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (!isRefreshing)
-                        break;
-                    try {
-                        view.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                tokenFilterSubject.onNext(RestVerb.GET);
-                            }
-                        });
-                        Thread.sleep(10000); // TODO: use current chapter's votingDuration
-                    } catch (Exception e) {
-                        Timber.e(e.toString());
+
+        Observable.interval(10, TimeUnit.SECONDS, Schedulers.io())
+                .takeWhile(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        return isRefreshing;
                     }
-                }
-            }
-        }).start();
+                })
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long tick) {
+                        Timber.d("Polling for new tokens");
+                        tokenFilterSubject.onNext(RestVerb.GET);
+                    }
+                });
+
         return view;
     }
 

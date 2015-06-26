@@ -3,16 +3,20 @@ package com.anovelmous.app.ui.contribute;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.ui.BaseFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 
@@ -25,6 +29,7 @@ import butterknife.InjectView;
 import rx.Observable;
 import rx.Observer;
 import rx.Scheduler;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -43,6 +48,7 @@ public class ContributeFragment extends BaseFragment {
     private AutoCompleteAdapter autoCompleteAdapter;
     private PublishSubject<RestVerb> tokenFilterSubject;
     private PublishSubject<Long> currentChapterSubject;
+    private PublishSubject<RestVerb> voteSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private long currentChapterId;
     private Chapter currentChapter;
@@ -75,6 +81,20 @@ public class ContributeFragment extends BaseFragment {
         ButterKnife.inject(this, view);
 
         autoCompleteTextView.setAdapter(autoCompleteAdapter);
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int result = actionId & EditorInfo.IME_MASK_ACTION;
+                switch(result) {
+                    case EditorInfo.IME_ACTION_DONE:
+
+                        break;
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        break;
+                }
+                return true;
+            }
+        });
 
         isRefreshing = true;
 
@@ -116,7 +136,18 @@ public class ContributeFragment extends BaseFragment {
                         pollingTime = chapter.votingDuration;
                     }
                 }));
+
         currentChapterSubject.onNext(currentChapterId);
+
+        voteSubject = PublishSubject.create();
+        subscriptions.add(voteSubject
+            .flatMap(castVote)
+            .subscribe(new Action1<Vote>() {
+                @Override
+                public void call(Vote vote) {
+                    Timber.d("Successfully casted a vote!");
+                }
+            }));
     }
 
     @Override
@@ -164,6 +195,28 @@ public class ContributeFragment extends BaseFragment {
         @Override
         public void call(Throwable throwable) {
             Timber.e(throwable, "Failed to refresh chapter");
+        }
+    };
+
+    private final Func1<RestVerb, Observable<Vote>> castVote = new Func1<RestVerb, Observable<Vote>>() {
+        @Override
+        public Observable<Vote> call(RestVerb restVerb) {
+            return Observable.just(restVerb)
+                    .map(new Func1<RestVerb, Vote>() {
+                        @Override
+                        public Vote call(RestVerb restVerb) {
+                            return null; // TODO: construct vote
+                        }
+                    }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError(voteCastError);
+        }
+    };
+
+    private final Action1<Throwable> voteCastError = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            Timber.e(throwable, "Failed to cast vote");
         }
     };
 }

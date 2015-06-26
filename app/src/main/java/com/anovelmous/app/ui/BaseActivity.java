@@ -15,6 +15,7 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.resource.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
 
     @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
     private ObjectGraph mObjectGraph;
+
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,5 +103,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
         List<Object> result = new ArrayList<>();
         result.add(new InjectingActivityModule(this, this));
         return result;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 }

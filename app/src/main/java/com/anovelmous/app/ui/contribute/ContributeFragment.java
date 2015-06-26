@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
+import com.anovelmous.app.ui.BaseActivity;
 import com.anovelmous.app.ui.BaseFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 
@@ -48,7 +50,7 @@ public class ContributeFragment extends BaseFragment {
     private AutoCompleteAdapter autoCompleteAdapter;
     private PublishSubject<RestVerb> tokenFilterSubject;
     private PublishSubject<Long> currentChapterSubject;
-    private PublishSubject<RestVerb> voteSubject;
+    private PublishSubject<String> voteSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private long currentChapterId;
     private Chapter currentChapter;
@@ -87,7 +89,7 @@ public class ContributeFragment extends BaseFragment {
                 int result = actionId & EditorInfo.IME_MASK_ACTION;
                 switch(result) {
                     case EditorInfo.IME_ACTION_DONE:
-
+                        voteSubject.onNext((String) v.getText());
                         break;
                     case EditorInfo.IME_ACTION_SEARCH:
                         break;
@@ -198,14 +200,26 @@ public class ContributeFragment extends BaseFragment {
         }
     };
 
-    private final Func1<RestVerb, Observable<Vote>> castVote = new Func1<RestVerb, Observable<Vote>>() {
+    private final Func1<String, Observable<Vote>> castVote = new Func1<String, Observable<Vote>>() {
         @Override
-        public Observable<Vote> call(RestVerb restVerb) {
-            return Observable.just(restVerb)
-                    .map(new Func1<RestVerb, Vote>() {
+        public Observable<Vote> call(String tokenContent) {
+            return Observable.just(tokenContent)
+                    .flatMap(new Func1<String, Observable<Token>>() {
                         @Override
-                        public Vote call(RestVerb restVerb) {
-                            return null; // TODO: construct vote
+                        public Observable<Token> call(String tokenContent) {
+                            return restService.getTokenFromContent(tokenContent);
+                        }
+                    })
+                    .map(new Func1<Token, Vote>() {
+                        @Override
+                        public Vote call(Token token) {
+                            return new Vote.Builder()
+                                    .restVerb(RestVerb.POST)
+                                    .chapter(currentChapter.url)
+                                    .ordinal(1) // TODO: Lookup most recent noveltoken ordinal
+                                    .token(token.url)
+                                    .user(((BaseActivity) getActivity()).getCurrentUser().url)
+                                    .build();
                         }
                     }).observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())

@@ -1,5 +1,6 @@
 package com.anovelmous.app.data.api;
 
+import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
@@ -68,4 +69,10 @@ public interface NetworkService {
 
     @GET("/users/{id}")
     Observable<User> getUser(@Path("id") long userId);
+
+    @GET("/novel_tokens")
+    Observable<NovelToken> getMostRecentNovelToken(
+            @Query("chapter") long chapterId,
+            @Query("sort") Sort sort,
+            @Query("order") Order order);
 }

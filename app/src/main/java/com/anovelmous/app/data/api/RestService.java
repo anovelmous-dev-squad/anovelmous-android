@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
@@ -24,4 +25,5 @@ public interface RestService {
     Observable<Vote> castVote(Vote vote);
     Observable<List<String>> getGrammarFilteredStrings();
     Observable<User> getMyUser(String authToken);
+    Observable<NovelToken> getMostRecentNovelToken(long chapterId);
 }

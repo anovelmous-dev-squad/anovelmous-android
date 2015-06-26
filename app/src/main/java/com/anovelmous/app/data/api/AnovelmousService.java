@@ -4,6 +4,7 @@ import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
+import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
@@ -195,5 +196,10 @@ public class AnovelmousService implements RestService {
                 return user; // TODO: either lookup user remotely or POST
             }
         });
+    }
+
+    @Override
+    public Observable<NovelToken> getMostRecentNovelToken(long chapterId) {
+        return networkService.getMostRecentNovelToken(chapterId, Sort.CREATED_AT, Order.DESC); // TODO: maybe implement smart polling/caching?
     }
 }

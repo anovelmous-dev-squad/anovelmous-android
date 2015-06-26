@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.model.RestVerb;
+import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
@@ -157,5 +159,19 @@ public final class MockNetworkService implements NetworkService {
                 .groups(new ArrayList<String>())
                 .dateJoined(new DateTime())
                 .build());
+    }
+
+    @Override
+    public Observable<NovelToken> getMostRecentNovelToken(@Query("chapter") long chapterId,
+                                                          @Query("sort") Sort sort,
+                                                          @Query("order") Order order) {
+        return Observable.just(new NovelToken.Builder()
+                        .id(1)
+                        .url("mock://novel_tokens/1")
+                        .restVerb(RestVerb.GET)
+                        .chapter("mock://chapters/1")
+                        .ordinal(1)
+                        .token("mock://tokens/1")
+                        .build());
     }
 }

@@ -14,6 +14,9 @@ public class RealmGroup extends RealmObject {
     private String url;
     private String name;
 
+    private String restVerb;
+    private boolean lastRequestFinished;
+
     public RealmGroup() {
 
     }
@@ -22,6 +25,8 @@ public class RealmGroup extends RealmObject {
         id = group.id;
         url = group.url;
         name = group.name;
+        restVerb = group.restVerb.toString();
+        lastRequestFinished = group.restVerb.equals(RestVerb.GET);
     }
 
     public String getName() {
@@ -46,5 +51,21 @@ public class RealmGroup extends RealmObject {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getRestVerb() {
+        return restVerb;
+    }
+
+    public void setRestVerb(String restVerb) {
+        this.restVerb = restVerb;
+    }
+
+    public boolean isLastRequestFinished() {
+        return lastRequestFinished;
+    }
+
+    public void setLastRequestFinished(boolean lastRequestFinished) {
+        this.lastRequestFinished = lastRequestFinished;
     }
 }

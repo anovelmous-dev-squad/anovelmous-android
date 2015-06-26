@@ -145,7 +145,7 @@ public class AnovelmousService implements RestService {
                     tokensStream.subscribe(new Action1<List<Token>>() {
                         @Override
                         public void call(List<Token> tokens) {
-                            persistenceService.saveTokens(tokens, RestVerb.GET);
+                            persistenceService.saveTokens(tokens);
                         }
                     });
                     return tokensStream;
@@ -171,7 +171,7 @@ public class AnovelmousService implements RestService {
 
     public Observable<Vote> castVote(Vote vote) {
         // TODO: check response vote and update flags
-        return persistenceService.saveVote(vote, RestVerb.POST)
+        return persistenceService.saveVote(vote)
                 .flatMap(new Func1<Vote, Observable<Vote>>() {
                     @Override
                     public Observable<Vote> call(Vote vote) {
@@ -192,7 +192,6 @@ public class AnovelmousService implements RestService {
             public User call(User user) {
                 if (user != null)
                     return user;  // TODO: create lastModified field and refresh cache
-
                 return user; // TODO: either lookup user remotely or POST
             }
         });

@@ -34,10 +34,10 @@ public interface PersistenceService {
     Observable<List<Token>> tokens();
     Observable<ResourceCount> tokensCount();
     Observable<Token> lookupTokenByContent(String content);
-    Observable<List<Token>> saveTokens(List<Token> tokens, RestVerb restVerb);
-    Observable<Token> saveToken(Token token, RestVerb restVerb);
+    Observable<List<Token>> saveTokens(List<Token> tokens);
+    Observable<Token> saveToken(Token token);
 
-    Observable<Vote> saveVote(Vote vote, RestVerb restVerb);
+    Observable<Vote> saveVote(Vote vote);
 
     Observable<User> getMyUser(String authToken);
 }

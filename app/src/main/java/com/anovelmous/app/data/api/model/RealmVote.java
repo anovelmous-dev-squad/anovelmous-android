@@ -28,7 +28,7 @@ public class RealmVote extends RealmObject {
 
     }
 
-    public RealmVote(Vote vote, Realm realm, RestVerb restVerb) {
+    public RealmVote(Vote vote, Realm realm) {
         id = vote.id;
         url = vote.url;
         token = realm.where(RealmToken.class).equalTo("url", vote.token).findFirst();
@@ -36,8 +36,8 @@ public class RealmVote extends RealmObject {
         selected = vote.selected;
         chapter = realm.where(RealmChapter.class).equalTo("url", vote.chapter).findFirst();
         user = realm.where(RealmUser.class).equalTo("url", vote.user).findFirst();
-        this.restVerb = restVerb.toString();
-        lastRequestFinished = restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
+        restVerb = vote.restVerb.toString();
+        lastRequestFinished = vote.restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
     }
 
     public long getId() {

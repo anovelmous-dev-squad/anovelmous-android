@@ -2,6 +2,7 @@ package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
 
+import com.anovelmous.app.data.api.model.RestVerb;
 import com.google.gson.annotations.SerializedName;
 
 import static com.anovelmous.app.util.Preconditions.checkNotNull;

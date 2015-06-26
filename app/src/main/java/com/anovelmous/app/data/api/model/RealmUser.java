@@ -22,6 +22,9 @@ public class RealmUser extends RealmObject {
     private Date dateJoined;
     private String authToken;
 
+    private String restVerb;
+    private boolean lastRequestFinished;
+
     public RealmUser() {
 
     }
@@ -40,6 +43,8 @@ public class RealmUser extends RealmObject {
         }
 
         dateJoined = user.dateJoined.toDate();
+        restVerb = user.restVerb.toString();
+        lastRequestFinished = user.restVerb.equals(RestVerb.GET);
     }
 
     public RealmUser(User user, Realm realm, String authToken) {
@@ -101,5 +106,21 @@ public class RealmUser extends RealmObject {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public String getRestVerb() {
+        return restVerb;
+    }
+
+    public void setRestVerb(String restVerb) {
+        this.restVerb = restVerb;
+    }
+
+    public boolean isLastRequestFinished() {
+        return lastRequestFinished;
+    }
+
+    public void setLastRequestFinished(boolean lastRequestFinished) {
+        this.lastRequestFinished = lastRequestFinished;
     }
 }

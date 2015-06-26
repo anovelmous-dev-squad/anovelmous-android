@@ -26,15 +26,15 @@ public class RealmToken extends RealmObject {
 
     }
 
-    public RealmToken(Token token, RestVerb restVerb) {
+    public RealmToken(Token token) {
         id = token.id;
         url = token.url;
         content = token.content;
         isValid = token.isValid;
         isPunctuation = token.isPunctuation;
         createdAt = token.createdAt.toDate();
-        this.restVerb = restVerb.toString();
-        lastRequestFinished = restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
+        restVerb = token.restVerb.toString();
+        lastRequestFinished = token.restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
     }
 
     public String getContent() {

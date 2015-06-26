@@ -97,6 +97,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Novel.Builder()
                 .id(realmNovel.getId())
                 .url(realmNovel.getUrl())
+                .restVerb(RestVerb.GET)
                 .title(realmNovel.getTitle())
                 .isCompleted(realmNovel.isCompleted())
                 .votingDuration(realmNovel.getVotingDuration())
@@ -142,6 +143,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Chapter.Builder()
                 .id(realmChapter.getId())
                 .url(realmChapter.getUrl())
+                .restVerb(RestVerb.GET)
                 .title(realmChapter.getTitle())
                 .isCompleted(realmChapter.isCompleted())
                 .votingDuration(realmChapter.getVotingDuration())
@@ -193,6 +195,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new FormattedNovelToken.Builder()
                 .id(formattedNovelToken.getId())
                 .url(formattedNovelToken.getUrl())
+                .restVerb(RestVerb.GET)
                 .content(formattedNovelToken.getContent())
                 .ordinal(formattedNovelToken.getOrdinal())
                 .chapter(formattedNovelToken.getChapter().getUrl())
@@ -246,6 +249,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Token.Builder()
                 .id(realmToken.getId())
                 .url(realmToken.getUrl())
+                .restVerb(RestVerb.valueOf(realmToken.getRestVerb()))
                 .content(realmToken.getContent())
                 .isPunctuation(realmToken.isPunctuation())
                 .isValid(realmToken.isValid())
@@ -272,13 +276,13 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<List<Token>> saveTokens(final List<Token> tokens, final RestVerb restVerb) {
+    public Observable<List<Token>> saveTokens(final List<Token> tokens) {
         return RealmObservable.list(context, new Func1<Realm, RealmList<RealmToken>>() {
             @Override
             public RealmList<RealmToken> call(Realm realm) {
                 List<RealmToken> realmTokens = new ArrayList<>(tokens.size());
                 for (Token token : tokens)
-                    realmTokens.add(new RealmToken(token, restVerb));
+                    realmTokens.add(new RealmToken(token));
                 realmTokens = realm.copyToRealmOrUpdate(realmTokens);
 
                 RealmList<RealmToken> results = new RealmList<>();
@@ -297,11 +301,11 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Token> saveToken(final Token token, final RestVerb restVerb) {
+    public Observable<Token> saveToken(final Token token) {
         return RealmObservable.object(context, new Func1<Realm, RealmToken>() {
             @Override
             public RealmToken call(Realm realm) {
-                RealmToken realmToken = new RealmToken(token, restVerb);
+                RealmToken realmToken = new RealmToken(token);
                 return realm.copyToRealmOrUpdate(realmToken);
             }
         }).map(new Func1<RealmToken, Token>() {
@@ -353,6 +357,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Vote.Builder()
                 .id(vote.getId())
                 .url(vote.getUrl())
+                .restVerb(RestVerb.valueOf(vote.getRestVerb()))
                 .token(vote.getToken().getUrl())
                 .ordinal(vote.getOrdinal())
                 .selected(vote.isSelected())
@@ -363,11 +368,11 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Vote> saveVote(final Vote vote, final RestVerb restVerb) {
+    public Observable<Vote> saveVote(final Vote vote) {
         return RealmObservable.object(context, new Func1<Realm, RealmVote>() {
             @Override
             public RealmVote call(Realm realm) {
-                RealmVote realmVote = new RealmVote(vote, realm, restVerb);
+                RealmVote realmVote = new RealmVote(vote, realm);
                 return realm.copyToRealm(realmVote);
             }
         }).map(new Func1<RealmVote, Vote>() {
@@ -383,6 +388,7 @@ public class RealmPersistenceService implements PersistenceService {
                 .id(realmGroup.getId())
                 .url(realmGroup.getUrl())
                 .name(realmGroup.getName())
+                .restVerb(RestVerb.valueOf(realmGroup.getRestVerb()))
                 .build();
     }
 
@@ -394,6 +400,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new User.Builder()
                 .id(realmUser.getId())
                 .url(realmUser.getUrl())
+                .restVerb(RestVerb.valueOf(realmUser.getRestVerb()))
                 .username(realmUser.getUsername())
                 .email(realmUser.getEmail())
                 .groups(groupsUrlList)

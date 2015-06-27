@@ -30,6 +30,7 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     Every x seconds, a voting round ends. During each round, an author may cast a vote for the next word in the novel. However, the author has a limited pool of words, to be expanded by the top contributors. If the author\'s votes are consistently being selected for the novel, he/she will be able to add new words to the vocabulary.</string>
     <string name="view_contribute_placeholder_text">Type the next word&#8230;</string>
 
+    <string name="facebook_app_id">893722630690569</string>
 
     <string-array name="mock_token_set">
         <item>the</item>

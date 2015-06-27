@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
  */
 public final class LoggedInActivity extends MainActivity {
 
-    private static final String TEMP_AUTH_TOKEN = "temp_auth_token";
+    private static final String TEMP_AUTH_TOKEN = "7ac2ff58476d6dea4d5de573909f54b3ee2c9525";
 
     @Inject NetworkService networkService;
     @Inject PersistenceService persistenceService;

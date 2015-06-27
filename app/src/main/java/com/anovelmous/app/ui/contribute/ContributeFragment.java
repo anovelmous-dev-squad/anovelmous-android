@@ -20,6 +20,7 @@ import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.ui.BaseActivity;
 import com.anovelmous.app.ui.BaseFragment;
+import com.anovelmous.app.ui.LoggedInActivity;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 
 import java.util.Arrays;
@@ -218,7 +219,7 @@ public class ContributeFragment extends BaseFragment {
                                     .chapter(currentChapter.url)
                                     .ordinal(1) // TODO: Lookup most recent noveltoken ordinal
                                     .token(token.url)
-                                    .user(((BaseActivity) getActivity()).getCurrentUser().url)
+                                    .user(null)// ((LoggedInActivity) getActivity()).getCurrentUser().url)
                                     .build();
                         }
                     }).observeOn(AndroidSchedulers.mainThread())

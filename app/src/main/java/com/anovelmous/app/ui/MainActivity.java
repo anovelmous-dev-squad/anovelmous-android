@@ -20,7 +20,7 @@ import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
-public final class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
+public class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
         implements BaseFragment.OnFragmentInteractionListener {
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;

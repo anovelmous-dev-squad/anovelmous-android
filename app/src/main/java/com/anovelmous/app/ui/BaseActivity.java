@@ -37,8 +37,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
     @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
     private ObjectGraph mObjectGraph;
 
-    private User currentUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,9 +101,5 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
         List<Object> result = new ArrayList<>();
         result.add(new InjectingActivityModule(this, this));
         return result;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
     }
 }

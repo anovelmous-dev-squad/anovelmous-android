@@ -1,6 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.anovelmous.app.ui.LoginFragment">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_fragment_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.anovelmous.app.ui.LoginFragment">
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/fb_login_button"

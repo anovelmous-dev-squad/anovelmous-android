@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class LoginFragment extends DialogFragment {
+    private static final String DIALOG_TITLE = "com.anovelmous.app.ui.LoginFragment.DIALOG_TITLE";
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;
@@ -31,9 +32,12 @@ public class LoginFragment extends DialogFragment {
     AccessToken accessToken;
     ProfileTracker profileTracker;
 
-    public static LoginFragment newInstance() {
+    private String title;
+
+    public static LoginFragment newInstance(String title) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
+        args.putString(DIALOG_TITLE, title);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,6 +50,7 @@ public class LoginFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            title = getArguments().getString(DIALOG_TITLE);
         }
 
         callbackManager = CallbackManager.Factory.create();
@@ -94,6 +99,9 @@ public class LoginFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
+
+        getDialog().setTitle(title);
+
         loginButton.setReadPermissions("user_friends");
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

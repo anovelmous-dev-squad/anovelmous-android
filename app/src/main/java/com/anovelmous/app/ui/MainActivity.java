@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -144,5 +145,18 @@ public class MainActivity extends ToolbarControlBaseActivity<ObservableScrollVie
         fragmentManager.beginTransaction()
                 .replace(R.id.contribute_container, contributeFragment).commit();
         setTitle(menuItem.getTitle());
+    }
+
+    private void showLoginDialog() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        LoginFragment loginFragment = LoginFragment.newInstance(getString(R.string.login_dialog_title));
+        loginFragment.show(getSupportFragmentManager(), "dialog");
+        ft.commit();
     }
 }

@@ -2,7 +2,7 @@ package com.anovelmous.app.ui;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 
 import com.anovelmous.app.InjectingFragmentModule;
 import com.anovelmous.app.Injector;
@@ -21,32 +21,21 @@ import dagger.ObjectGraph;
 import static com.anovelmous.app.util.Preconditions.checkState;
 
 /**
- * Created by Greg Ziegan on 6/20/15.
+ * Created by Greg Ziegan on 6/28/15.
  */
-public abstract class BaseFragment extends Fragment implements Injector {
+public abstract class BaseDialogFragment extends DialogFragment implements Injector {
     private ObjectGraph mObjectGraph;
     private boolean mFirstAttach = true;
 
-    private OnFragmentInteractionListener mListener;
     protected RestService restService;
 
     @Inject NetworkService networkService;
     @Inject PersistenceService persistenceService;
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
 
         ObjectGraph appGraph = ((Injector) activity).getObjectGraph();
         List<Object> fragmentModules = getModules();
@@ -63,7 +52,6 @@ public abstract class BaseFragment extends Fragment implements Injector {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -88,5 +76,4 @@ public abstract class BaseFragment extends Fragment implements Injector {
         result.add(new InjectingFragmentModule(this, this));
         return result;
     }
-
 }

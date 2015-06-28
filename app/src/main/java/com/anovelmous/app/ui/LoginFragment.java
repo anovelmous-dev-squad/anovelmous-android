@@ -3,34 +3,53 @@ package com.anovelmous.app.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.resource.User;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class LoginFragment extends DialogFragment {
+public class LoginFragment extends BaseDialogFragment {
     private static final String DIALOG_TITLE = "com.anovelmous.app.ui.LoginFragment.DIALOG_TITLE";
+
+    private OnFragmentInteractionListener mListener;
+
+    public interface OnFragmentInteractionListener {
+        void onSuccessfulLogin(User user);
+    }
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;
     AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
     ProfileTracker profileTracker;
+    Profile userProfile;
+    User me;
 
     private String title;
 
@@ -58,17 +77,26 @@ public class LoginFragment extends DialogFragment {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        // App code
+                        GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                                try {
+                                    String username = jsonObject.getString("id");
+                                    String email = jsonObject.getString("name");
+                                    createAndPersistNewUser(username, email);
+                                } catch (JSONException e) {
+                                    Timber.e(e.getMessage());
+                                }
+                            }
+                        }).executeAsync();
                     }
 
                     @Override
                     public void onCancel() {
-                        // App code
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
-                        // App code
                     }
                 });
 
@@ -77,11 +105,10 @@ public class LoginFragment extends DialogFragment {
             protected void onCurrentAccessTokenChanged(
                     AccessToken oldAccessToken,
                     AccessToken currentAccessToken) {
-                // Set the access token using
-                // currentAccessToken when it's loaded or set.
+                accessToken = currentAccessToken;
             }
         };
-        // If the access token is available already assign it.
+
         accessToken = AccessToken.getCurrentAccessToken();
 
         profileTracker = new ProfileTracker() {
@@ -89,7 +116,7 @@ public class LoginFragment extends DialogFragment {
             protected void onCurrentProfileChanged(
                     Profile oldProfile,
                     Profile currentProfile) {
-                // App code
+                userProfile = currentProfile;
             }
         };
     }
@@ -102,7 +129,7 @@ public class LoginFragment extends DialogFragment {
 
         getDialog().setTitle(title);
 
-        loginButton.setReadPermissions("user_friends");
+        loginButton.setReadPermissions("public_profile");
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -124,6 +151,18 @@ public class LoginFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement LoginFragment.OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -143,5 +182,23 @@ public class LoginFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void createAndPersistNewUser(String username, String email) {
+        me = new User.Builder()
+                .username(username)
+                .email(email)
+                .groups(new ArrayList<String>())
+                .build();
+        restService.createUser(me)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(new Action1<User>() {
+                @Override
+                public void call(User user) {
+                    me = user;
+                    mListener.onSuccessfulLogin(user);
+                }
+            });
     }
 }

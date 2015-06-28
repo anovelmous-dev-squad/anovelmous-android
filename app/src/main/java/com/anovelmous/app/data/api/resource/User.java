@@ -26,7 +26,10 @@ public class User extends BaseResource {
         this.username = checkNotNull(builder.username, "username == null");
         this.email = checkNotNull(builder.email, "email == null");
         this.groups = checkNotNull(builder.groups, "groups == null");
-        this.dateJoined = checkNotNull(builder.dateJoined, "dateJoined == null");
+        if (builder.restVerb == RestVerb.GET)
+            this.dateJoined = checkNotNull(builder.dateJoined, "dateJoined == null");
+        else
+            this.dateJoined = new DateTime();
     }
 
     public static final class Builder extends BaseResource.Builder<Builder> {

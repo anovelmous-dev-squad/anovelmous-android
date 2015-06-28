@@ -16,6 +16,7 @@ import dagger.Provides;
 @Module(
     injects = {
         MainActivity.class,
+        LoggedInActivity.class,
         ReadingFragment.class,
         ContributeFragment.class,
         AboutFragment.class,

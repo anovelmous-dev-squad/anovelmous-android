@@ -25,5 +25,6 @@ public interface RestService {
     Observable<Vote> castVote(Vote vote);
     Observable<List<String>> getGrammarFilteredStrings();
     Observable<User> getMyUser(String authToken);
+    Observable<User> getUser(long userId);
     Observable<NovelToken> getMostRecentNovelToken(long chapterId);
 }

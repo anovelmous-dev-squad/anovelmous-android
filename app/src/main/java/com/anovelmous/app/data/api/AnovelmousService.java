@@ -199,6 +199,11 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
+    public Observable<User> getUser(long userId) {
+        return null; // TODO: finish implementation
+    }
+
+    @Override
     public Observable<NovelToken> getMostRecentNovelToken(long chapterId) {
         return networkService.getMostRecentNovelToken(chapterId, Sort.CREATED_AT, Order.DESC); // TODO: maybe implement smart polling/caching?
     }

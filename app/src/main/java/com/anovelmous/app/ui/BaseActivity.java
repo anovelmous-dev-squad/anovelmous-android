@@ -36,7 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
     @Inject AppContainer appContainer;
 
     @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
-    private ObjectGraph mObjectGraph;
+    protected ObjectGraph mObjectGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -21,8 +21,10 @@ import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
-public class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
+public final class MainActivity extends ToolbarControlBaseActivity<ObservableScrollView>
         implements BaseFragment.OnFragmentInteractionListener {
+    public static final String USER_LOGIN_ID = "com.anovelmous.app.ui.MainActivity.USER_LOGIN_ID";
+
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private EtsyActionBarDrawerToggle drawerToggle;

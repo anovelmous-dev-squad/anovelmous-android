@@ -1,16 +1,21 @@
 package com.anovelmous.app.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -18,10 +23,13 @@ import com.facebook.login.widget.LoginButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends DialogFragment {
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;
+    AccessTokenTracker accessTokenTracker;
+    AccessToken accessToken;
+    ProfileTracker profileTracker;
 
     public static LoginFragment newInstance() {
         LoginFragment fragment = new LoginFragment();
@@ -58,6 +66,27 @@ public class LoginFragment extends BaseFragment {
                         // App code
                     }
                 });
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                // Set the access token using
+                // currentAccessToken when it's loaded or set.
+            }
+        };
+        // If the access token is available already assign it.
+        accessToken = AccessToken.getCurrentAccessToken();
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(
+                    Profile oldProfile,
+                    Profile currentProfile) {
+                // App code
+            }
+        };
     }
 
     @Override
@@ -93,5 +122,18 @@ public class LoginFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -162,6 +162,11 @@ public final class MockNetworkService implements NetworkService {
     }
 
     @Override
+    public Observable<User> createUser(@Body User user) {
+        return getUser(1);
+    }
+
+    @Override
     public Observable<NovelToken> getMostRecentNovelToken(@Query("chapter") long chapterId,
                                                           @Query("sort") Sort sort,
                                                           @Query("order") Order order) {

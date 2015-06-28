@@ -423,4 +423,35 @@ public class RealmPersistenceService implements PersistenceService {
             }
         });
     }
+
+    @Override
+    public Observable<User> getUser(final long userId) {
+        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+            @Override
+            public RealmUser call(Realm realm) {
+                return realm.where(RealmUser.class).equalTo("id", userId).findFirst();
+            }
+        }).map(new Func1<RealmUser, User>() {
+            @Override
+            public User call(RealmUser realmUser) {
+                return userFromRealm(realmUser);
+            }
+        });
+    }
+
+    @Override
+    public Observable<User> createUser(final User user) {
+        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+            @Override
+            public RealmUser call(Realm realm) {
+                RealmUser realmUser = new RealmUser(user, realm);
+                return realm.copyToRealmOrUpdate(realmUser);
+            }
+        }).map(new Func1<RealmUser, User>() {
+            @Override
+            public User call(RealmUser realmUser) {
+                return userFromRealm(realmUser);
+            }
+        });
+    }
 }

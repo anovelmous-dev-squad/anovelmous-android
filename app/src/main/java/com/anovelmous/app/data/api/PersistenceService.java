@@ -40,4 +40,6 @@ public interface PersistenceService {
     Observable<Vote> saveVote(Vote vote);
 
     Observable<User> getMyUser(String authToken);
+    Observable<User> getUser(long userId);
+    Observable<User> createUser(User user);
 }

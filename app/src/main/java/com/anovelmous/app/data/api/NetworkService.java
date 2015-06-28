@@ -70,6 +70,8 @@ public interface NetworkService {
     @GET("/users/{id}")
     Observable<User> getUser(@Path("id") long userId);
 
+    Observable<User> createUser(@Body User user);
+
     @GET("/novel_tokens")
     Observable<NovelToken> getMostRecentNovelToken(
             @Query("chapter") long chapterId,

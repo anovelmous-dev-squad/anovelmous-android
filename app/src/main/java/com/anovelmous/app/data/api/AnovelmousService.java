@@ -200,7 +200,17 @@ public class AnovelmousService implements RestService {
 
     @Override
     public Observable<User> getUser(long userId) {
-        return null; // TODO: finish implementation
+        return persistenceService.getUser(userId); // TODO: finish implementation
+    }
+
+    @Override
+    public Observable<User> createUser(User user) {
+        return networkService.createUser(user).flatMap(new Func1<User, Observable<User>>() {
+            @Override
+            public Observable<User> call(User user) {
+                return persistenceService.createUser(user);
+            }
+        });
     }
 
     @Override

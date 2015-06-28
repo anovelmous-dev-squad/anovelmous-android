@@ -26,5 +26,6 @@ public interface RestService {
     Observable<List<String>> getGrammarFilteredStrings();
     Observable<User> getMyUser(String authToken);
     Observable<User> getUser(long userId);
+    Observable<User> createUser(User user);
     Observable<NovelToken> getMostRecentNovelToken(long chapterId);
 }

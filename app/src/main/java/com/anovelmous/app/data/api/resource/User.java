@@ -20,6 +20,7 @@ public class User extends BaseResource {
 
     @SerializedName("date_joined")
     @NonNull public DateTime dateJoined;
+    public String fbAccessToken;
 
     private User(Builder builder) {
         super(builder);
@@ -30,6 +31,8 @@ public class User extends BaseResource {
             this.dateJoined = checkNotNull(builder.dateJoined, "dateJoined == null");
         else
             this.dateJoined = new DateTime();
+        if (builder.fbAccessToken != null)
+            fbAccessToken = builder.fbAccessToken;
     }
 
     public static final class Builder extends BaseResource.Builder<Builder> {
@@ -37,6 +40,7 @@ public class User extends BaseResource {
         private String email;
         private List<String> groups;
         private DateTime dateJoined;
+        private String fbAccessToken;
 
         public Builder username(String username) {
             this.username = username;
@@ -55,6 +59,11 @@ public class User extends BaseResource {
 
         public Builder dateJoined(DateTime dateJoined) {
             this.dateJoined = dateJoined;
+            return this;
+        }
+
+        public Builder fbAccessToken(String accessToken) {
+            this.fbAccessToken = accessToken;
             return this;
         }
 

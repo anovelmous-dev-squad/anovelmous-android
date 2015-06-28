@@ -20,6 +20,7 @@ import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 import com.anovelmous.app.util.NotUniqueException;
+import com.facebook.AccessToken;
 
 import org.joda.time.DateTime;
 
@@ -405,21 +406,36 @@ public class RealmPersistenceService implements PersistenceService {
                 .email(realmUser.getEmail())
                 .groups(groupsUrlList)
                 .dateJoined(new DateTime(realmUser.getDateJoined()))
+                .fbAccessToken(realmUser.getFbAccessToken())
                 .build();
     }
 
     @Override
-    public Observable<User> getMyUser(final String authToken) {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmUser>>() {
+    public Observable<User> getUser(final AccessToken accessToken) {
+        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
             @Override
-            public RealmResults<RealmUser> call(Realm realm) {
-                return realm.where(RealmUser.class).equalTo("authToken", authToken).findAll();
+            public RealmUser call(Realm realm) {
+                return realm.where(RealmUser.class).equalTo("fbAccessToken", accessToken.getToken()).findFirst();
             }
-        }).map(new Func1<RealmResults<RealmUser>, User>() {
+        }).map(new Func1<RealmUser, User>() {
             @Override
-            public User call(RealmResults<RealmUser> realmUsers) {
-                User user = userFromRealm(realmUsers.first());
-                return user;
+            public User call(RealmUser realmUser) {
+                return userFromRealm(realmUser);
+            }
+        });
+    }
+
+    @Override
+    public Observable<User> getUser(final String authToken) {
+        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+            @Override
+            public RealmUser call(Realm realm) {
+                return realm.where(RealmUser.class).equalTo("authToken", authToken).findFirst();
+            }
+        }).map(new Func1<RealmUser, User>() {
+            @Override
+            public User call(RealmUser realmUser) {
+                return userFromRealm(realmUser);
             }
         });
     }

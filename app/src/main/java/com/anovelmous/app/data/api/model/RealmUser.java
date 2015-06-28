@@ -21,6 +21,7 @@ public class RealmUser extends RealmObject {
     private RealmList<RealmGroup> groups;
     private Date dateJoined;
     private String authToken;
+    private String fbAccessToken;
 
     private String restVerb;
     private boolean lastRequestFinished;
@@ -45,6 +46,8 @@ public class RealmUser extends RealmObject {
         dateJoined = user.dateJoined.toDate();
         restVerb = user.restVerb.toString();
         lastRequestFinished = user.restVerb.equals(RestVerb.GET);
+
+        fbAccessToken = user.fbAccessToken;
     }
 
     public RealmUser(User user, Realm realm, String authToken) {
@@ -122,5 +125,13 @@ public class RealmUser extends RealmObject {
 
     public void setLastRequestFinished(boolean lastRequestFinished) {
         this.lastRequestFinished = lastRequestFinished;
+    }
+
+    public String getFbAccessToken() {
+        return fbAccessToken;
+    }
+
+    public void setFbAccessToken(String fbAccessToken) {
+        this.fbAccessToken = fbAccessToken;
     }
 }

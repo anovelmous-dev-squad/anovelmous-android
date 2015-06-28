@@ -1,65 +1,44 @@
 package com.anovelmous.app.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
-import com.anovelmous.app.data.api.RestService;
-import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.User;
-import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
-import javax.inject.Inject;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-
 /**
- * Created by Greg Ziegan on 6/27/15.
+ * Created by Greg Ziegan on 6/28/15.
  */
-public final class LoggedInActivity extends ToolbarControlBaseActivity<ObservableScrollView>
-        implements BaseFragment.OnFragmentInteractionListener {
+public final class LoggedOutActivity extends ToolbarControlBaseActivity<ObservableScrollView>
+        implements BaseFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener {
+    public static final String USER_LOGIN_ID = "com.anovelmous.app.ui.LoggedOutActivity.USER_LOGIN_ID";
 
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private EtsyActionBarDrawerToggle drawerToggle;
 
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
-    private long userId;
-    private User currentUser;
-    private RestService restService;
+    @Override
+    protected ObservableScrollView createScrollable() {
+        return (ObservableScrollView) findViewById(R.id.scrollable);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userId = getIntent().getLongExtra(LoggedOutActivity.USER_LOGIN_ID, 1);
-        restService = new AnovelmousService(networkService, persistenceService);
-        restService.getUser(userId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<User>() {
-                    @Override
-                    public void call(User user) {
-                        currentUser = user;
-                    }
-                });
 
         mDrawer = (DrawerLayout) findViewById(R.id.nav_drawer_layout);
         drawerToggle = setupDrawerToggle();
@@ -69,21 +48,6 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
         selectDrawerItem(nvDrawer.getMenu().getItem(0));
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    @Override
-    protected ObservableScrollView createScrollable() {
-        return (ObservableScrollView) findViewById(R.id.scrollable);
     }
 
     private EtsyActionBarDrawerToggle setupDrawerToggle() {
@@ -163,7 +127,7 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.scroll_container, fragment).commit();
         Fragment contributeFragment = fragmentManager.findFragmentById(R.id.contribute_container);
-        if (contributeFragment != null && contributeFragment.isAdded())
+        if (contributeFragment != null && contributeFragment.isAdded()) // TODO: create a more elegant way of listening for navigation away from contribute
             fragmentManager.beginTransaction().remove(contributeFragment).commit();
 
         menuItem.setChecked(true);
@@ -177,13 +141,27 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
     }
 
     private void navigateFromReadToContribute(MenuItem menuItem) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ReadingFragment readingFragment = (ReadingFragment) fragmentManager
-                .findFragmentById(R.id.scroll_container);
-        Chapter currentChapter = readingFragment.getCurrentChapter();
-        ContributeFragment contributeFragment = ContributeFragment.newInstance(10); // TODO: finish implementing current Chapter lookup
-        fragmentManager.beginTransaction()
-                .replace(R.id.contribute_container, contributeFragment).commit();
-        setTitle(menuItem.getTitle());
+        showLoginDialog();
+    }
+
+    private void showLoginDialog() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        LoginFragment loginFragment = LoginFragment.newInstance(getString(R.string.login_dialog_title));
+        loginFragment.show(getSupportFragmentManager(), "dialog");
+        ft.commit();
+    }
+
+    @Override
+    public void onSuccessfulLogin(User user) {
+        Intent intent = new Intent(this, LoggedInActivity.class);
+        intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, user.id);
+        startActivity(intent);
+        finish();
     }
 }

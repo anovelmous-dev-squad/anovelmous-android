@@ -7,6 +7,7 @@ import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
+import com.facebook.AccessToken;
 
 import java.util.List;
 
@@ -24,7 +25,8 @@ public interface RestService {
     Observable<Token> getTokenFromContent(String content);
     Observable<Vote> castVote(Vote vote);
     Observable<List<String>> getGrammarFilteredStrings();
-    Observable<User> getMyUser(String authToken);
+    Observable<User> getUser(AccessToken accessToken);
+    Observable<User> getUser(String authToken);
     Observable<User> getUser(long userId);
     Observable<User> createUser(User user);
     Observable<NovelToken> getMostRecentNovelToken(long chapterId);

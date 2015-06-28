@@ -1,6 +1,5 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
@@ -12,6 +11,7 @@ import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
+import com.facebook.AccessToken;
 
 import java.util.List;
 
@@ -187,8 +187,8 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
-    public Observable<User> getMyUser(String authToken) {
-        return persistenceService.getMyUser(authToken).map(new Func1<User, User>() {
+    public Observable<User> getUser(String authToken) {
+        return persistenceService.getUser(authToken).map(new Func1<User, User>() {
             @Override
             public User call(User user) {
                 if (user != null)
@@ -196,6 +196,11 @@ public class AnovelmousService implements RestService {
                 return user; // TODO: either lookup user remotely or POST
             }
         });
+    }
+
+    @Override
+    public Observable<User> getUser(AccessToken accessToken) {
+        return persistenceService.getUser(accessToken);
     }
 
     @Override

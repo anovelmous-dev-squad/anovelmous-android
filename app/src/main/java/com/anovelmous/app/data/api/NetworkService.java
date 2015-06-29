@@ -70,7 +70,7 @@ public interface NetworkService {
     @GET("/users/{id}")
     Observable<User> getUser(@Path("id") long userId);
 
-    @GET("/users")
+    @POST("/users")
     Observable<User> createUser(@Body User user);
 
     @GET("/novel_tokens")

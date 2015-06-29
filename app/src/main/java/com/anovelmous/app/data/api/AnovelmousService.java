@@ -233,12 +233,18 @@ public class AnovelmousService implements RestService {
 
     @Override
     public Observable<User> createUser(User user) {
-        return networkService.createUser(user).flatMap(new Func1<User, Observable<User>>() {
-            @Override
-            public Observable<User> call(User user) {
-                return persistenceService.createUser(user);
-            }
-        });
+        return persistenceService.createUser(user)
+                .flatMap(new Func1<User, Observable<User>>() {
+                    @Override
+                    public Observable<User> call(User user) {
+                        return networkService.createUser(user);
+                    }
+                }).flatMap(new Func1<User, Observable<User>>() {
+                    @Override
+                    public Observable<User> call(User user) {
+                        return persistenceService.updateUser(user);
+                    }
+                });
     }
 
     @Override

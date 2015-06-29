@@ -44,4 +44,5 @@ public interface PersistenceService {
     Observable<User> getUser(String authToken);
     Observable<User> getUser(long userId);
     Observable<User> createUser(User user);
+    Observable<User> updateUser(User user);
 }

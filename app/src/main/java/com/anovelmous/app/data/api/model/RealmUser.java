@@ -7,6 +7,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -17,7 +18,7 @@ public class RealmUser extends RealmObject {
     @PrimaryKey private long id;
     private String url;
     private String username;
-    private String email;
+    @Index private String email;
     private RealmList<RealmGroup> groups;
     private Date dateJoined;
     private String authToken;
@@ -30,17 +31,25 @@ public class RealmUser extends RealmObject {
 
     }
 
+    public RealmUser(RealmUser realmUser, User user, Realm realm) {
+        this(user, realm);
+        if (realmUser.getFbAccessToken() != null && user.fbAccessToken == null)
+            this.fbAccessToken = realmUser.getFbAccessToken();
+        else
+            this.fbAccessToken = user.fbAccessToken;
+    }
+
     public RealmUser(User user, Realm realm) {
         id = user.id;
         url = user.url;
         username = user.username;
         email = user.email;
 
-        for (String groupId : user.groups) {
+        groups = new RealmList<>();
+        for (String groupUrl : user.groups) {
             groups.add(realm.where(RealmGroup.class)
-                            .equalTo("url", groupId)
-                            .findFirst()
-            );
+                            .equalTo("url", groupUrl)
+                            .findFirst());
         }
 
         dateJoined = user.dateJoined.toDate();

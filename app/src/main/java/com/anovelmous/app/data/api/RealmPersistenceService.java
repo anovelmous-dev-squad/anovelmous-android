@@ -112,7 +112,7 @@ public class RealmPersistenceService implements PersistenceService {
             @Override
             public RealmNovel call(Realm realm) {
                 RealmNovel realmNovel = new RealmNovel(novel);
-                return realm.copyToRealm(realmNovel);
+                return realm.copyToRealmOrUpdate(realmNovel);
             }
         }).map(new Func1<RealmNovel, Novel>() {
             @Override
@@ -250,7 +250,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Token.Builder()
                 .id(realmToken.getId())
                 .url(realmToken.getUrl())
-                .restVerb(RestVerb.valueOf(realmToken.getRestVerb()))
+                .restVerb(RestVerb.getValueForString(realmToken.getRestVerb()))
                 .content(realmToken.getContent())
                 .isPunctuation(realmToken.isPunctuation())
                 .isValid(realmToken.isValid())
@@ -358,7 +358,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new Vote.Builder()
                 .id(vote.getId())
                 .url(vote.getUrl())
-                .restVerb(RestVerb.valueOf(vote.getRestVerb()))
+                .restVerb(RestVerb.getValueForString(vote.getRestVerb()))
                 .token(vote.getToken().getUrl())
                 .ordinal(vote.getOrdinal())
                 .selected(vote.isSelected())
@@ -389,7 +389,7 @@ public class RealmPersistenceService implements PersistenceService {
                 .id(realmGroup.getId())
                 .url(realmGroup.getUrl())
                 .name(realmGroup.getName())
-                .restVerb(RestVerb.valueOf(realmGroup.getRestVerb()))
+                .restVerb(RestVerb.getValueForString(realmGroup.getRestVerb()))
                 .build();
     }
 
@@ -401,7 +401,7 @@ public class RealmPersistenceService implements PersistenceService {
         return new User.Builder()
                 .id(realmUser.getId())
                 .url(realmUser.getUrl())
-                .restVerb(RestVerb.valueOf(realmUser.getRestVerb()))
+                .restVerb(RestVerb.getValueForString(realmUser.getRestVerb().toUpperCase()))
                 .username(realmUser.getUsername())
                 .email(realmUser.getEmail())
                 .groups(groupsUrlList)
@@ -462,6 +462,22 @@ public class RealmPersistenceService implements PersistenceService {
             public RealmUser call(Realm realm) {
                 RealmUser realmUser = new RealmUser(user, realm);
                 return realm.copyToRealmOrUpdate(realmUser);
+            }
+        }).map(new Func1<RealmUser, User>() {
+            @Override
+            public User call(RealmUser realmUser) {
+                return userFromRealm(realmUser);
+            }
+        });
+    }
+
+    @Override
+    public Observable<User> updateUser(final User user) {
+        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+            @Override
+            public RealmUser call(Realm realm) {
+                RealmUser oldRealmUser = realm.where(RealmUser.class).equalTo("email", user.email).findFirst();
+                return new RealmUser(oldRealmUser, user, realm);
             }
         }).map(new Func1<RealmUser, User>() {
             @Override

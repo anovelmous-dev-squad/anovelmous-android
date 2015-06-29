@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.User;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -26,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -77,18 +79,7 @@ public class LoginFragment extends BaseDialogFragment {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                                try {
-                                    String username = jsonObject.getString("id");
-                                    String email = jsonObject.getString("name");
-                                    createAndPersistNewUser(username, email);
-                                } catch (JSONException e) {
-                                    Timber.e(e.getMessage());
-                                }
-                            }
-                        }).executeAsync();
+
                     }
 
                     @Override
@@ -129,12 +120,23 @@ public class LoginFragment extends BaseDialogFragment {
 
         getDialog().setTitle(title);
 
-        loginButton.setReadPermissions("public_profile");
+        loginButton.setReadPermissions(Arrays.asList(new String [] {"public_profile", "email"}));
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
+                GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                        try {
+                            String username = jsonObject.getString("id");
+                            String email = jsonObject.getString("email");
+                            createAndPersistNewUser(username, email, AccessToken.getCurrentAccessToken().getToken());
+                        } catch (JSONException e) {
+                            Timber.e(e.getMessage());
+                        }
+                    }
+                }).executeAsync();
             }
             @Override
             public void onCancel() {
@@ -184,8 +186,10 @@ public class LoginFragment extends BaseDialogFragment {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void createAndPersistNewUser(String username, String email) {
+    private void createAndPersistNewUser(String username, String email, String accessToken) {
         me = new User.Builder()
+                .restVerb(RestVerb.POST)
+                .fbAccessToken(accessToken)
                 .username(username)
                 .email(email)
                 .groups(new ArrayList<String>())

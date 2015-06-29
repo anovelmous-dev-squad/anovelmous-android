@@ -159,6 +159,9 @@ public final class LoggedOutActivity extends ToolbarControlBaseActivity<Observab
 
     @Override
     public void onSuccessfulLogin(User user) {
+        Fragment dialogFragment = getSupportFragmentManager().findFragmentByTag("dialog");
+        getSupportFragmentManager().beginTransaction().remove(dialogFragment).commit();
+
         Intent intent = new Intent(this, LoggedInActivity.class);
         intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, user.id);
         startActivity(intent);

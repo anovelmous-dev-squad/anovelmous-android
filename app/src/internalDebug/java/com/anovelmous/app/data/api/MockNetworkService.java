@@ -154,8 +154,9 @@ public final class MockNetworkService implements NetworkService {
         return Observable.just(new User.Builder()
                 .id(userId)
                 .url("mock://users/" + userId)
+                .restVerb(RestVerb.GET)
                 .username("Mock User")
-                .email("user" + userId + "@email.com")
+                .email("grz5@case.edu") // TODO: fix mock User building process
                 .groups(new ArrayList<String>())
                 .dateJoined(new DateTime())
                 .build());

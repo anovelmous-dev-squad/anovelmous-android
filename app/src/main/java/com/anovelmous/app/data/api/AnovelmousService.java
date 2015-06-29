@@ -89,24 +89,30 @@ public class AnovelmousService implements RestService {
                     @Override
                     public Observable<List<Chapter>> call(Boolean needsUpdating) {
                         if (needsUpdating) {
-                            Observable<List<Chapter>> chaptersStream = networkService.
-                                    chapters(novelId, Sort.CREATED_AT, Order.DESC)
-                                    .map(SearchResultToChapterList.instance());
+                            return networkService.chapters(novelId, Sort.CREATED_AT, Order.DESC)
+                                    .map(SearchResultToChapterList.instance())
+                                    .map(cacheChapters);
 
-                            chaptersStream.subscribe(new Action1<List<Chapter>>() {
-                                @Override
-                                public void call(List<Chapter> chapters) {
-                                    for (Chapter chapter : chapters)
-                                        persistenceService.saveChapter(chapter);
-                                }
-                            });
-                            return chaptersStream;
                         } else {
                             return persistenceService.chapters(novelId);
                         }
                     }
                 });
     }
+
+    private final Func1<List<Chapter>, List<Chapter>> cacheChapters = new Func1<List<Chapter>, List<Chapter>>() {
+        @Override
+        public List<Chapter> call(List<Chapter> chapters) {
+            for (Chapter chapter : chapters)
+                persistenceService.saveChapter(chapter).subscribe(new Action1<Chapter>() {
+                    @Override
+                    public void call(Chapter chapter) {
+                        Timber.v("Successfully saved: " + chapter.toString());
+                    }
+                });
+            return chapters;
+        }
+    };
 
     public Observable<List<FormattedNovelToken>> getChapterText(final long chapterId) {
         return Observable.combineLatest(
@@ -117,24 +123,29 @@ public class AnovelmousService implements RestService {
                     @Override
                     public Observable<List<FormattedNovelToken>> call(Boolean needsUpdating) {
                         if (needsUpdating) {
-                            Observable<List<FormattedNovelToken>> chapterTextStream = networkService
-                                    .chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
-                                    .map(SearchResultToFormattedNovelTokenList.instance());
-
-                            chapterTextStream.subscribe(new Action1<List<FormattedNovelToken>>() {
-                                @Override
-                                public void call(List<FormattedNovelToken> formattedNovelTokens) {
-                                    for (FormattedNovelToken token : formattedNovelTokens)
-                                        persistenceService.saveFormattedNovelToken(token);
-                                }
-                            });
-                            return chapterTextStream;
+                            return networkService.chapterText(chapterId, Sort.CREATED_AT, Order.ASC)
+                                    .map(SearchResultToFormattedNovelTokenList.instance())
+                                    .map(cacheFormattedNovelTokens);
                         } else {
                             return persistenceService.chapterText(chapterId);
                         }
                     }
                 });
     }
+
+    private final Func1<List<FormattedNovelToken>, List<FormattedNovelToken>> cacheFormattedNovelTokens = new Func1<List<FormattedNovelToken>, List<FormattedNovelToken>>() {
+        @Override
+        public List<FormattedNovelToken> call(List<FormattedNovelToken> formattedNovelTokens) {
+            for (FormattedNovelToken token : formattedNovelTokens)
+                persistenceService.saveFormattedNovelToken(token).subscribe(new Action1<FormattedNovelToken>() {
+                    @Override
+                    public void call(FormattedNovelToken formattedNovelToken) {
+                        Timber.v("Successfully saved: " + formattedNovelToken.toString());
+                    }
+                });
+            return formattedNovelTokens;
+        }
+    };
 
     @Override
     public Observable<List<Token>> getAllTokens() {
@@ -146,22 +157,28 @@ public class AnovelmousService implements RestService {
             @Override
             public Observable<List<Token>> call(Boolean needsUpdating) {
                 if (needsUpdating) {
-                    Observable<List<Token>> tokensStream = networkService
-                            .tokens(Sort.CREATED_AT, Order.DESC);
-
-                    tokensStream.subscribe(new Action1<List<Token>>() {
-                        @Override
-                        public void call(List<Token> tokens) {
-                            persistenceService.saveTokens(tokens);
-                        }
-                    });
-                    return tokensStream;
+                    return networkService.tokens(Sort.CREATED_AT, Order.DESC)
+                            .map(cacheTokens);
                 } else {
                     return persistenceService.tokens();
                 }
             }
         });
     }
+
+    private final Func1<List<Token>, List<Token>> cacheTokens = new Func1<List<Token>, List<Token>>() {
+        @Override
+        public List<Token> call(List<Token> tokens) {
+            for (Token token : tokens)
+                persistenceService.saveToken(token).subscribe(new Action1<Token>() {
+                    @Override
+                    public void call(Token token) {
+                        Timber.v("Successfully saved: " + token.toString());
+                    }
+                });
+            return tokens;
+        }
+    };
 
     @Override
     public Observable<Token> getTokenFromContent(final String content) {

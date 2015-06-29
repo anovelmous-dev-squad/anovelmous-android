@@ -45,4 +45,9 @@ public class Token extends TimeStampedResource {
             return new Token(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "<Token: " + content + ">";
+    }
 }

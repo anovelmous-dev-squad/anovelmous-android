@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.User;
 import com.facebook.AccessToken;
@@ -29,6 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,6 +47,8 @@ public class LoginFragment extends BaseDialogFragment {
     public interface OnFragmentInteractionListener {
         void onSuccessfulLogin(User user);
     }
+
+    @Inject RestService restService;
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;

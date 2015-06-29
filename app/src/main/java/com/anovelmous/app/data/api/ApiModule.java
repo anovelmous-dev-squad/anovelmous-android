@@ -53,4 +53,9 @@ public final class ApiModule {
     PersistenceService provideDataService(Application app) {
         return new RealmPersistenceService(app);
     }
+
+    @Provides @Singleton RestService provideRestService(NetworkService networkService,
+                                                        PersistenceService persistenceService) {
+        return new AnovelmousService(networkService, persistenceService);
+    }
 }

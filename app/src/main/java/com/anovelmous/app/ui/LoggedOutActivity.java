@@ -165,6 +165,5 @@ public final class LoggedOutActivity extends ToolbarControlBaseActivity<Observab
         Intent intent = new Intent(this, LoggedInActivity.class);
         intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, user.id);
         startActivity(intent);
-        finish();
     }
 }

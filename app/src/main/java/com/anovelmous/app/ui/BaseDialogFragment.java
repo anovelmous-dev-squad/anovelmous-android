@@ -1,20 +1,13 @@
 package com.anovelmous.app.ui;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 
 import com.anovelmous.app.InjectingFragmentModule;
 import com.anovelmous.app.Injector;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
-import com.anovelmous.app.data.api.RestService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
@@ -26,12 +19,6 @@ import static com.anovelmous.app.util.Preconditions.checkState;
 public abstract class BaseDialogFragment extends DialogFragment implements Injector {
     private ObjectGraph mObjectGraph;
     private boolean mFirstAttach = true;
-
-    protected RestService restService;
-
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -45,8 +32,6 @@ public abstract class BaseDialogFragment extends DialogFragment implements Injec
             inject(this);
             mFirstAttach = false;
         }
-
-        restService = new AnovelmousService(networkService, persistenceService);
     }
 
     @Override

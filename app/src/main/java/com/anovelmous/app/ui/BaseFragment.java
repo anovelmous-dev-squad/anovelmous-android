@@ -6,15 +6,9 @@ import android.support.v4.app.Fragment;
 
 import com.anovelmous.app.InjectingFragmentModule;
 import com.anovelmous.app.Injector;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
-import com.anovelmous.app.data.api.RestService;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
@@ -28,10 +22,6 @@ public abstract class BaseFragment extends Fragment implements Injector {
     private boolean mFirstAttach = true;
 
     private OnFragmentInteractionListener mListener;
-    protected RestService restService;
-
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
@@ -56,8 +46,6 @@ public abstract class BaseFragment extends Fragment implements Injector {
             inject(this);
             mFirstAttach = false;
         }
-
-        restService = new AnovelmousService(networkService, persistenceService);
     }
 
     @Override

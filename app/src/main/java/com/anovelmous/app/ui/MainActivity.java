@@ -3,23 +3,17 @@ package com.anovelmous.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.User;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -30,9 +24,7 @@ import timber.log.Timber;
 
 public final class MainActivity extends BaseActivity {
 
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
-    private RestService restService; // TODO: make the rest service an injectable singleton
+    @Inject RestService restService;
     private PublishSubject<RestVerb> getUserSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -40,8 +32,6 @@ public final class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-        restService = new AnovelmousService(networkService, persistenceService);
 
         final AccessToken accessToken = AccessToken.getCurrentAccessToken();
 

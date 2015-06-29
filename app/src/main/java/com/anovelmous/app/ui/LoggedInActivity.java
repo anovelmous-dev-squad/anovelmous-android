@@ -12,9 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.AnovelmousService;
-import com.anovelmous.app.data.api.NetworkService;
-import com.anovelmous.app.data.api.PersistenceService;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.User;
@@ -40,17 +37,14 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
     private NavigationView nvDrawer;
     private EtsyActionBarDrawerToggle drawerToggle;
 
-    @Inject NetworkService networkService;
-    @Inject PersistenceService persistenceService;
+    @Inject RestService restService;
     private long userId;
     private User currentUser;
-    private RestService restService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userId = getIntent().getLongExtra(LoggedOutActivity.USER_LOGIN_ID, 1);
-        restService = new AnovelmousService(networkService, persistenceService);
         restService.getUser(userId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

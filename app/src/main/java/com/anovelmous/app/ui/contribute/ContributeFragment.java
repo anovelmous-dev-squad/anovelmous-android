@@ -2,42 +2,34 @@ package com.anovelmous.app.ui.contribute;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
-import com.anovelmous.app.ui.BaseActivity;
 import com.anovelmous.app.ui.BaseFragment;
-import com.anovelmous.app.ui.LoggedInActivity;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
-import rx.Observer;
-import rx.Scheduler;
-import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -45,6 +37,7 @@ import timber.log.Timber;
 
 public class ContributeFragment extends BaseFragment {
 
+    @Inject RestService restService;
     @InjectView(R.id.contribute_auto_complete_view) AutoCompleteTextView autoCompleteTextView;
 
     private boolean isRefreshing;

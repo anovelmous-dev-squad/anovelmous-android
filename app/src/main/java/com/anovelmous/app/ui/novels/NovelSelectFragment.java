@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.anovelmous.app.R;
+import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.ui.BaseFragment;
@@ -22,6 +23,8 @@ import com.anovelmous.app.ui.misc.BetterViewAnimator;
 import com.anovelmous.app.ui.misc.DividerItemDecoration;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -39,6 +42,8 @@ import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 public class NovelSelectFragment extends BaseFragment
         implements SwipeRefreshLayout.OnRefreshListener, NovelSelectAdapter.NovelClickListener {
     public final static String NOVEL_ID = "com.anovelmous.app.ui.novels.NOVEL_ID";
+
+    @Inject RestService restService;
 
     @InjectView(R.id.novels_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.novels_swipe_refresh) SwipeRefreshLayout swipeRefreshView;

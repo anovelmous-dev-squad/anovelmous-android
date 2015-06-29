@@ -477,7 +477,7 @@ public class RealmPersistenceService implements PersistenceService {
             @Override
             public RealmUser call(Realm realm) {
                 RealmUser oldRealmUser = realm.where(RealmUser.class).equalTo("email", user.email).findFirst();
-                return new RealmUser(oldRealmUser, user, realm);
+                return realm.copyToRealmOrUpdate(new RealmUser(oldRealmUser, user, realm));
             }
         }).map(new Func1<RealmUser, User>() {
             @Override

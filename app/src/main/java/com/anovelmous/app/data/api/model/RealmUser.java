@@ -33,6 +33,10 @@ public class RealmUser extends RealmObject {
 
     public RealmUser(RealmUser realmUser, User user, Realm realm) {
         this(user, realm);
+        if (!realmUser.isLastRequestFinished() &&
+                RestVerb.getValueForString(realmUser.getRestVerb()) != RestVerb.GET)
+            this.lastRequestFinished = true;
+
         if (realmUser.getFbAccessToken() != null && user.fbAccessToken == null)
             this.fbAccessToken = realmUser.getFbAccessToken();
         else

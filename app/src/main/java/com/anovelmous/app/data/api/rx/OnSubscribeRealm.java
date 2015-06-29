@@ -10,30 +10,22 @@ import rx.Subscriber;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-/**
- * Created by IntelliJ
- * Author: Greg Ziegan on 6/8/15.
- * Adapted from the code featured in the following blog post:
- *      https://realm.io/news/using-realm-with-rxjava/
- *
- */
 public abstract class OnSubscribeRealm<T extends RealmObject> implements Observable.OnSubscribe<T> {
     private Context context;
-    private String dbFileName;
+    private String fileName;
 
     public OnSubscribeRealm(Context context) {
-        this.context = context;
-        dbFileName = null;
+        this(context, null);
     }
 
-    public OnSubscribeRealm(Context context, String dbFileName) {
-        this.context = context;
-        this.dbFileName = dbFileName;
+    public OnSubscribeRealm(Context context, String fileName) {
+        this.context = context.getApplicationContext();
+        this.fileName = fileName;
     }
 
     @Override
     public void call(final Subscriber<? super T> subscriber) {
-        final Realm realm = dbFileName != null ? Realm.getInstance(context, dbFileName) : Realm.getInstance(context);
+        final Realm realm = fileName != null ? Realm.getInstance(context, fileName) : Realm.getInstance(context);
         subscriber.add(Subscriptions.create(new Action0() {
             @Override
             public void call() {
@@ -52,14 +44,13 @@ public abstract class OnSubscribeRealm<T extends RealmObject> implements Observa
             realm.commitTransaction();
         } catch (RuntimeException e) {
             realm.cancelTransaction();
-            subscriber.onError(new RealmException("Error occurred during transaction.", e));
+            subscriber.onError(new RealmException("Error during transaction.", e));
             return;
         } catch (Error e) {
             realm.cancelTransaction();
             subscriber.onError(e);
             return;
         }
-
         if (object != null) {
             subscriber.onNext(object);
         }

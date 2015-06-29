@@ -1,11 +1,5 @@
 package com.anovelmous.app.data.api.rx;
 
-/**
- * Created by IntelliJ
- * Author: Greg Ziegan on 6/9/15.
- * Adapted from the code featured in the following blog post:
- *      https://realm.io/news/using-realm-with-rxjava/
- */
 import android.content.Context;
 
 import io.realm.Realm;

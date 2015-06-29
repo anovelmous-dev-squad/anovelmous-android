@@ -19,6 +19,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import timber.log.Timber;
 
 /**
  * Created by Greg Ziegan on 6/9/15.
@@ -49,25 +50,30 @@ public class AnovelmousService implements RestService {
                     @Override
                     public Observable<List<Novel>> call(Boolean needsUpdating) {
                         if (needsUpdating) {
-                            Observable<List<Novel>> novelsStream = networkService.
-                                    novels(100, 1, Sort.CREATED_AT, Order.DESC)
-                                    .map(SearchResultToNovelList.instance());
-
-                            // Persist new novels
-                            novelsStream.subscribe(new Action1<List<Novel>>() {
-                                @Override
-                                public void call(List<Novel> novels) {
-                                    for (Novel novel : novels)
-                                        persistenceService.saveNovel(novel);
-                                }
-                            });
-                            return novelsStream;
+                             return networkService.novels(100, 1, Sort.CREATED_AT, Order.DESC)
+                                    .map(SearchResultToNovelList.instance())
+                                    .map(cacheNovels);
                         } else {
                             return persistenceService.novels();
                         }
                     }
                 });
     }
+
+    private final Func1<List<Novel>, List<Novel>> cacheNovels = new Func1<List<Novel>, List<Novel>>() {
+        @Override
+        public List<Novel> call(List<Novel> novels) {
+            for (Novel novel : novels)
+                persistenceService.saveNovel(novel)
+                        .subscribe(new Action1<Novel>() {
+                            @Override
+                            public void call(Novel novel) {
+                                Timber.v("Saved novel: " + novel.toString());
+                            }
+                        });
+            return novels;
+        }
+    };
 
     @Override
     public Observable<Chapter> getChapter(long chapterId) {

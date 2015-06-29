@@ -112,7 +112,7 @@ public class RealmPersistenceService implements PersistenceService {
             @Override
             public RealmNovel call(Realm realm) {
                 RealmNovel realmNovel = new RealmNovel(novel);
-                return realm.copyToRealmOrUpdate(realmNovel);
+                return realm.copyToRealm(realmNovel);
             }
         }).map(new Func1<RealmNovel, Novel>() {
             @Override

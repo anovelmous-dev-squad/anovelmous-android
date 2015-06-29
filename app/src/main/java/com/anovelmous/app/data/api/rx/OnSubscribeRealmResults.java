@@ -11,12 +11,6 @@ import rx.Subscriber;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-/**
- * Created by IntelliJ
- * Author: Greg Ziegan on 6/8/15.
- * Adapted from the code featured in the following blog post:
- *      https://realm.io/news/using-realm-with-rxjava/
- */
 public abstract class OnSubscribeRealmResults<T extends RealmObject> implements Observable.OnSubscribe<RealmResults<T>> {
     private Context context;
     private String dbName;
@@ -26,7 +20,7 @@ public abstract class OnSubscribeRealmResults<T extends RealmObject> implements 
     }
 
     public OnSubscribeRealmResults(Context context, String dbName) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.dbName = dbName;
     }
 

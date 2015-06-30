@@ -3,20 +3,20 @@ package com.anovelmous.app.data.api;
 import android.content.Context;
 
 import com.anovelmous.app.data.api.model.RealmChapter;
+import com.anovelmous.app.data.api.model.RealmContributor;
 import com.anovelmous.app.data.api.model.RealmFormattedNovelToken;
-import com.anovelmous.app.data.api.model.RealmGroup;
+import com.anovelmous.app.data.api.model.RealmGuild;
 import com.anovelmous.app.data.api.model.RealmNovel;
 import com.anovelmous.app.data.api.model.RealmToken;
-import com.anovelmous.app.data.api.model.RealmUser;
 import com.anovelmous.app.data.api.model.RealmVote;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
-import com.anovelmous.app.data.api.resource.Group;
+import com.anovelmous.app.data.api.resource.Guild;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
-import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 import com.anovelmous.app.util.NotUniqueException;
@@ -68,7 +68,7 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Chapter> chapter(final long chapterId) {
+    public Observable<Chapter> chapter(final String chapterId) {
         return RealmObservable.object(context, new Func1<Realm, RealmChapter>() {
             @Override
             public RealmChapter call(Realm realm) {
@@ -122,7 +122,7 @@ public class RealmPersistenceService implements PersistenceService {
         });
     }
 
-    private Observable<RealmResults<RealmChapter>> getRealmNovelChapters(final long novelId) {
+    private Observable<RealmResults<RealmChapter>> getRealmNovelChapters(final String novelId) {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmChapter>>() {
             @Override
             public RealmResults<RealmChapter> call(Realm realm) {
@@ -154,7 +154,7 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<List<Chapter>> chapters(final long novelId) {
+    public Observable<List<Chapter>> chapters(final String novelId) {
         return getRealmNovelChapters(novelId).map(new Func1<RealmResults<RealmChapter>, List<Chapter>>() {
             @Override
             public List<Chapter> call(RealmResults<RealmChapter> realmChapters) {
@@ -204,7 +204,7 @@ public class RealmPersistenceService implements PersistenceService {
                 .build();
     }
 
-    private Observable<RealmResults<RealmFormattedNovelToken>> getRealmChapterText(final long chapterId) {
+    private Observable<RealmResults<RealmFormattedNovelToken>> getRealmChapterText(final String chapterId) {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmFormattedNovelToken>>() {
             @Override
             public RealmResults<RealmFormattedNovelToken> call(Realm realm) {
@@ -215,7 +215,7 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<List<FormattedNovelToken>> chapterText(final long chapterId) {
+    public Observable<List<FormattedNovelToken>> chapterText(final String chapterId) {
         return getRealmChapterText(chapterId)
                 .map(new Func1<RealmResults<RealmFormattedNovelToken>, List<FormattedNovelToken>>() {
                     @Override
@@ -229,7 +229,7 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<ResourceCount> chapterTextTokenCount(final long chapterId) {
+    public Observable<ResourceCount> chapterTextTokenCount(final String chapterId) {
         return getRealmChapterText(chapterId)
                 .map(new Func1<RealmResults<RealmFormattedNovelToken>, ResourceCount>() {
                     @Override
@@ -384,105 +384,90 @@ public class RealmPersistenceService implements PersistenceService {
         });
     }
 
-    private static Group groupFromRealm(RealmGroup realmGroup) {
-        return new Group.Builder()
-                .id(realmGroup.getId())
-                .url(realmGroup.getUrl())
-                .name(realmGroup.getName())
-                .restVerb(RestVerb.getValueForString(realmGroup.getRestVerb()))
+    private static Guild groupFromRealm(RealmGuild realmGuild) {
+        return new Guild.Builder()
+                .id(realmGuild.getId())
+                .url(realmGuild.getUrl())
+                .name(realmGuild.getName())
+                .restVerb(RestVerb.getValueForString(realmGuild.getRestVerb()))
                 .build();
     }
 
-    private static User userFromRealm(RealmUser realmUser) {
-        List<String> groupsUrlList = new ArrayList<>(realmUser.getGroups().size());
-        for (RealmGroup realmGroup : realmUser.getGroups())
-            groupsUrlList.add(realmGroup.getUrl());
+    private static Contributor contributorFromRealm(RealmContributor realmContributor) {
+        List<String> groupsUrlList = new ArrayList<>(realmContributor.getGroups().size());
+        for (RealmGuild realmGuild : realmContributor.getGroups())
+            groupsUrlList.add(realmGuild.getUrl());
 
-        return new User.Builder()
-                .id(realmUser.getId())
-                .url(realmUser.getUrl())
-                .restVerb(RestVerb.getValueForString(realmUser.getRestVerb().toUpperCase()))
-                .username(realmUser.getUsername())
-                .email(realmUser.getEmail())
+        return new Contributor.Builder()
+                .id(realmContributor.getId())
+                .url(realmContributor.getUrl())
+                .restVerb(RestVerb.getValueForString(realmContributor.getRestVerb().toUpperCase()))
+                .username(realmContributor.getUsername())
+                .email(realmContributor.getEmail())
                 .groups(groupsUrlList)
-                .dateJoined(new DateTime(realmUser.getDateJoined()))
-                .fbAccessToken(realmUser.getFbAccessToken())
+                .dateJoined(new DateTime(realmContributor.getDateJoined()))
+                .fbAccessToken(realmContributor.getFbAccessToken())
                 .build();
     }
 
     @Override
-    public Observable<User> getUser(final AccessToken accessToken) {
-        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+    public Observable<Contributor> getContributor(final AccessToken accessToken) {
+        return RealmObservable.object(context, new Func1<Realm, RealmContributor>() {
             @Override
-            public RealmUser call(Realm realm) {
-                return realm.where(RealmUser.class).equalTo("fbAccessToken", accessToken.getToken()).findFirst();
+            public RealmContributor call(Realm realm) {
+                return realm.where(RealmContributor.class).equalTo("fbAccessToken", accessToken.getToken()).findFirst();
             }
-        }).map(new Func1<RealmUser, User>() {
+        }).map(new Func1<RealmContributor, Contributor>() {
             @Override
-            public User call(RealmUser realmUser) {
-                return userFromRealm(realmUser);
-            }
-        });
-    }
-
-    @Override
-    public Observable<User> getUser(final String authToken) {
-        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
-            @Override
-            public RealmUser call(Realm realm) {
-                return realm.where(RealmUser.class).equalTo("authToken", authToken).findFirst();
-            }
-        }).map(new Func1<RealmUser, User>() {
-            @Override
-            public User call(RealmUser realmUser) {
-                return userFromRealm(realmUser);
+            public Contributor call(RealmContributor realmContributor) {
+                return contributorFromRealm(realmContributor);
             }
         });
     }
 
     @Override
-    public Observable<User> getUser(final long userId) {
-        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+    public Observable<Contributor> getContributor(final String contributorId) {
+        return RealmObservable.object(context, new Func1<Realm, RealmContributor>() {
             @Override
-            public RealmUser call(Realm realm) {
-                return realm.where(RealmUser.class).equalTo("id", userId).findFirst();
+            public RealmContributor call(Realm realm) {
+                return realm.where(RealmContributor.class).equalTo("id", contributorId).findFirst();
             }
-        }).map(new Func1<RealmUser, User>() {
+        }).map(new Func1<RealmContributor, Contributor>() {
             @Override
-            public User call(RealmUser realmUser) {
-                return userFromRealm(realmUser);
-            }
-        });
-    }
-
-    @Override
-    public Observable<User> createUser(final User user) {
-        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
-            @Override
-            public RealmUser call(Realm realm) {
-                RealmUser realmUser = new RealmUser(user, realm);
-                return realm.copyToRealmOrUpdate(realmUser);
-            }
-        }).map(new Func1<RealmUser, User>() {
-            @Override
-            public User call(RealmUser realmUser) {
-                return userFromRealm(realmUser);
+            public Contributor call(RealmContributor realmContributor) {
+                return contributorFromRealm(realmContributor);
             }
         });
     }
 
     @Override
-    public Observable<User> updateUser(final User user) {
-        return RealmObservable.object(context, new Func1<Realm, RealmUser>() {
+    public Observable<Contributor> createContributor(final Contributor contributor) {
+        return RealmObservable.object(context, new Func1<Realm, RealmContributor>() {
             @Override
-            public RealmUser call(Realm realm) {
-                RealmUser oldRealmUser = realm.where(RealmUser.class).equalTo("email", user.email).findFirst();
-                return realm.copyToRealmOrUpdate(new RealmUser(oldRealmUser, user, realm));
+            public RealmContributor call(Realm realm) {
+                RealmContributor realmContributor = new RealmContributor(contributor, realm);
+                return realm.copyToRealmOrUpdate(realmContributor);
             }
-        }).map(new Func1<RealmUser, User>() {
+        }).map(new Func1<RealmContributor, Contributor>() {
             @Override
-            public User call(RealmUser realmUser) {
-                return userFromRealm(realmUser);
+            public Contributor call(RealmContributor realmContributor) {
+                return contributorFromRealm(realmContributor);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Contributor> updateContributor(final Contributor contributor) {
+        return RealmObservable.object(context, new Func1<Realm, RealmContributor>() {
+            @Override
+            public RealmContributor call(Realm realm) {
+                RealmContributor oldRealmContributor = realm.where(RealmContributor.class).equalTo("email", contributor.email).findFirst();
+                return realm.copyToRealmOrUpdate(new RealmContributor(oldRealmContributor, contributor, realm));
+            }
+        }).map(new Func1<RealmContributor, Contributor>() {
+            @Override
+            public Contributor call(RealmContributor realmContributor) {
+                return contributorFromRealm(realmContributor);
             }
         });
     }

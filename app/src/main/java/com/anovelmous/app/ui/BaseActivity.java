@@ -15,8 +15,6 @@ import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.InjectingActivityModule;
 import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.resource.User;
-import com.facebook.FacebookSdk;
 
 import java.util.ArrayList;
 import java.util.List;

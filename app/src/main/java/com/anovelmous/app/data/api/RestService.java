@@ -1,11 +1,11 @@
 package com.anovelmous.app.data.api;
 
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.Token;
-import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.facebook.AccessToken;
 
@@ -18,16 +18,15 @@ import rx.Observable;
  */
 public interface RestService {
     Observable<List<Novel>> getAllNovels();
-    Observable<Chapter> getChapter(long chapterId);
-    Observable<List<Chapter>> getNovelChapters(long novelId);
-    Observable<List<FormattedNovelToken>> getChapterText(long chapterId);
+    Observable<Chapter> getChapter(String chapterId);
+    Observable<List<Chapter>> getNovelChapters(String novelId);
+    Observable<List<FormattedNovelToken>> getChapterText(String chapterId);
     Observable<List<Token>> getAllTokens();
     Observable<Token> getTokenFromContent(String content);
     Observable<Vote> castVote(Vote vote);
     Observable<List<String>> getGrammarFilteredStrings();
-    Observable<User> getUser(AccessToken accessToken);
-    Observable<User> getUser(String authToken);
-    Observable<User> getUser(long userId);
-    Observable<User> createUser(User user);
-    Observable<NovelToken> getMostRecentNovelToken(long chapterId);
+    Observable<Contributor> getContributor(AccessToken accessToken);
+    Observable<Contributor> getContributor(String contributorId);
+    Observable<Contributor> createUser(Contributor contributor);
+    Observable<NovelToken> getMostRecentNovelToken(String chapterId);
 }

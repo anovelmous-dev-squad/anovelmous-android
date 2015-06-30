@@ -13,7 +13,7 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
 /**
  * Created by Greg Ziegan on 6/7/15.
  */
-public class User extends BaseResource {
+public class Contributor extends BaseResource {
     @NonNull public final String username;
     @NonNull public final String email;
     @NonNull public final List<String> groups;
@@ -22,7 +22,7 @@ public class User extends BaseResource {
     @NonNull public DateTime dateJoined;
     public String fbAccessToken;
 
-    private User(Builder builder) {
+    private Contributor(Builder builder) {
         super(builder);
         this.username = checkNotNull(builder.username, "username == null");
         this.email = checkNotNull(builder.email, "email == null");
@@ -67,8 +67,8 @@ public class User extends BaseResource {
             return this;
         }
 
-        public User build() {
-            return new User(this);
+        public Contributor build() {
+            return new Contributor(this);
         }
     }
 }

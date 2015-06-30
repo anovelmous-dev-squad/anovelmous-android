@@ -11,28 +11,22 @@ import static com.anovelmous.app.util.Preconditions.checkNotNull;
  * Author: Greg Ziegan on 6/7/15.
  */
 abstract class BaseResource {
-    public final long id;
-    @NonNull public final String url;
+    public final String id;
+    public final String url;
     @NonNull public final RestVerb restVerb;
 
     protected BaseResource(Builder builder) {
         restVerb = checkNotNull(builder.restVerb, "restVerb == null");
-
-        if (restVerb == RestVerb.POST) {
-            id = -1;
-            url = "";
-        } else {
-            id = builder.id;
-            url = checkNotNull(builder.url, "url == null");
-        }
+        id = builder.id;
+        url = builder.url;
     }
 
     protected abstract static class Builder<T extends Builder>{
-        protected long id;
+        protected String id;
         protected String url;
         protected RestVerb restVerb;
 
-        public T id(long id) {
+        public T id(String id) {
             this.id = id;
             return (T) this;
         }

@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
-import com.anovelmous.app.data.api.resource.User;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.ui.contribute.ContributeFragment;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
@@ -38,20 +38,20 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
     private EtsyActionBarDrawerToggle drawerToggle;
 
     @Inject RestService restService;
-    private long userId;
-    private User currentUser;
+    private String contributorId;
+    private Contributor currentContributor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userId = getIntent().getLongExtra(LoggedOutActivity.USER_LOGIN_ID, 1);
-        restService.getUser(userId)
+        contributorId = getIntent().getStringExtra(LoggedOutActivity.USER_LOGIN_ID);
+        restService.getContributor(contributorId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<User>() {
+                .subscribe(new Action1<Contributor>() {
                     @Override
-                    public void call(User user) {
-                        currentUser = user;
+                    public void call(Contributor contributor) {
+                        currentContributor = contributor;
                     }
                 });
 
@@ -71,8 +71,8 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
 
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public Contributor getCurrentContributor() {
+        return currentContributor;
     }
 
     @Override

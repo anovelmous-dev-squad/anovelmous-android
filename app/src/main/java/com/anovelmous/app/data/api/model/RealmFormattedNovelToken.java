@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api.model;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -13,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
  * Author: Greg Ziegan on 6/7/15.
  */
 public class RealmFormattedNovelToken extends RealmObject {
-    @PrimaryKey private long id;
+    @PrimaryKey private String id;
     private String url;
     private String content;
     private int ordinal;
@@ -25,13 +26,21 @@ public class RealmFormattedNovelToken extends RealmObject {
     }
 
     public RealmFormattedNovelToken(FormattedNovelToken formattedNovelToken, Realm realm) {
-        id = formattedNovelToken.id;
+        id = (formattedNovelToken.id == null) ? UUID.randomUUID().toString() : formattedNovelToken.id;
         url = formattedNovelToken.url;
         content = formattedNovelToken.content;
         ordinal = formattedNovelToken.ordinal;
         chapter = realm.where(RealmChapter.class)
                 .equalTo("url", formattedNovelToken.chapter).findFirst();
         createdAt = formattedNovelToken.createdAt.toDate();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -64,14 +73,6 @@ public class RealmFormattedNovelToken extends RealmObject {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Date getCreatedAt() {

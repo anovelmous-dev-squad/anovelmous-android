@@ -2,18 +2,16 @@ package com.anovelmous.app.data.api.resource;
 
 import android.support.annotation.NonNull;
 
-import com.anovelmous.app.data.api.model.RestVerb;
-
 import static com.anovelmous.app.util.Preconditions.checkNotNull;
 
 /**
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class Group extends BaseResource {
+public class Guild extends BaseResource {
     @NonNull public final String name;
 
-    public Group(Builder builder) {
+    public Guild(Builder builder) {
         super(builder);
         this.name = checkNotNull(builder.name, "name == null");
     }
@@ -26,8 +24,8 @@ public class Group extends BaseResource {
             return this;
         }
 
-        public Group build() {
-            return new Group(this);
+        public Guild build() {
+            return new Guild(this);
         }
     }
 }

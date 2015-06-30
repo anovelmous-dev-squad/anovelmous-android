@@ -1,8 +1,9 @@
 package com.anovelmous.app.data.api.model;
 
-import com.anovelmous.app.data.api.resource.User;
+import com.anovelmous.app.data.api.resource.Contributor;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -14,12 +15,12 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class RealmUser extends RealmObject {
-    @PrimaryKey private long id;
+public class RealmContributor extends RealmObject {
+    @PrimaryKey private String id;
     private String url;
     private String username;
     @Index private String email;
-    private RealmList<RealmGroup> groups;
+    private RealmList<RealmGuild> groups;
     private Date dateJoined;
     private String authToken;
     private String fbAccessToken;
@@ -27,45 +28,53 @@ public class RealmUser extends RealmObject {
     private String restVerb;
     private boolean lastRequestFinished;
 
-    public RealmUser() {
+    public RealmContributor() {
 
     }
 
-    public RealmUser(RealmUser realmUser, User user, Realm realm) {
-        this(user, realm);
-        if (!realmUser.isLastRequestFinished() &&
-                RestVerb.getValueForString(realmUser.getRestVerb()) != RestVerb.GET)
+    public RealmContributor(RealmContributor realmContributor, Contributor contributor, Realm realm) {
+        this(contributor, realm);
+        if (!realmContributor.isLastRequestFinished() &&
+                RestVerb.getValueForString(realmContributor.getRestVerb()) != RestVerb.GET)
             this.lastRequestFinished = true;
 
-        if (realmUser.getFbAccessToken() != null && user.fbAccessToken == null)
-            this.fbAccessToken = realmUser.getFbAccessToken();
+        if (realmContributor.getFbAccessToken() != null && contributor.fbAccessToken == null)
+            this.fbAccessToken = realmContributor.getFbAccessToken();
         else
-            this.fbAccessToken = user.fbAccessToken;
+            this.fbAccessToken = contributor.fbAccessToken;
     }
 
-    public RealmUser(User user, Realm realm) {
-        id = user.id;
-        url = user.url;
-        username = user.username;
-        email = user.email;
+    public RealmContributor(Contributor contributor, Realm realm) {
+        id = (contributor.id == null) ? UUID.randomUUID().toString() : contributor.id;
+        url = contributor.url;
+        username = contributor.username;
+        email = contributor.email;
 
         groups = new RealmList<>();
-        for (String groupUrl : user.groups) {
-            groups.add(realm.where(RealmGroup.class)
+        for (String groupUrl : contributor.groups) {
+            groups.add(realm.where(RealmGuild.class)
                             .equalTo("url", groupUrl)
                             .findFirst());
         }
 
-        dateJoined = user.dateJoined.toDate();
-        restVerb = user.restVerb.toString();
-        lastRequestFinished = user.restVerb.equals(RestVerb.GET);
+        dateJoined = contributor.dateJoined.toDate();
+        restVerb = contributor.restVerb.toString();
+        lastRequestFinished = contributor.restVerb.equals(RestVerb.GET);
 
-        fbAccessToken = user.fbAccessToken;
+        fbAccessToken = contributor.fbAccessToken;
     }
 
-    public RealmUser(User user, Realm realm, String authToken) {
-        this(user, realm);
+    public RealmContributor(Contributor contributor, Realm realm, String authToken) {
+        this(contributor, realm);
         this.authToken = authToken;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -84,11 +93,11 @@ public class RealmUser extends RealmObject {
         this.email = email;
     }
 
-    public RealmList<RealmGroup> getGroups() {
+    public RealmList<RealmGuild> getGroups() {
         return groups;
     }
 
-    public void setGroups(RealmList<RealmGroup> groups) {
+    public void setGroups(RealmList<RealmGuild> groups) {
         this.groups = groups;
     }
 
@@ -98,14 +107,6 @@ public class RealmUser extends RealmObject {
 
     public void setDateJoined(Date dateJoined) {
         this.dateJoined = dateJoined;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUrl() {

@@ -14,7 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.anovelmous.app.R;
-import com.anovelmous.app.data.api.resource.User;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.ui.novels.NovelSelectFragment;
 import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -158,12 +158,12 @@ public final class LoggedOutActivity extends ToolbarControlBaseActivity<Observab
     }
 
     @Override
-    public void onSuccessfulLogin(User user) {
+    public void onSuccessfulLogin(Contributor contributor) {
         Fragment dialogFragment = getSupportFragmentManager().findFragmentByTag("dialog");
         getSupportFragmentManager().beginTransaction().remove(dialogFragment).commit();
 
         Intent intent = new Intent(this, LoggedInActivity.class);
-        intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, user.id);
+        intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, contributor.id);
         startActivity(intent);
     }
 }

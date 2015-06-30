@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api.model;
 import com.anovelmous.app.data.api.resource.Chapter;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -13,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
  * Author: Greg Ziegan on 6/7/15.
  */
 public class RealmChapter extends RealmObject {
-    @PrimaryKey private long id;
+    @PrimaryKey private String id;
     private String url;
     private String title;
     private boolean isCompleted;
@@ -26,13 +27,21 @@ public class RealmChapter extends RealmObject {
     }
 
     public RealmChapter(Chapter chapter, Realm realm) {
-        id = chapter.id;
+        id = (chapter.id == null) ? UUID.randomUUID().toString() : chapter.id;
         url = chapter.url;
         title = chapter.title;
         isCompleted = chapter.isCompleted;
         votingDuration = chapter.votingDuration;
         novel = realm.where(RealmNovel.class).equalTo("url", chapter.novel).findFirst();
         createdAt = chapter.createdAt.toDate();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -65,14 +74,6 @@ public class RealmChapter extends RealmObject {
 
     public void setNovel(RealmNovel novel) {
         this.novel = novel;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUrl() {

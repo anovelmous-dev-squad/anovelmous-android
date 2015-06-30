@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
-import com.anovelmous.app.data.api.resource.User;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 
@@ -45,26 +45,26 @@ public final class MainActivity extends BaseActivity {
             getUserSubject = PublishSubject.create();
             intent = new Intent(this, LoggedInActivity.class);
             subscriptions.add(getUserSubject
-                    .flatMap(new Func1<RestVerb, Observable<User>>() {
+                    .flatMap(new Func1<RestVerb, Observable<Contributor>>() {
                         @Override
-                        public Observable<User> call(RestVerb restVerb) {
-                            return restService.getUser(accessToken)
+                        public Observable<Contributor> call(RestVerb restVerb) {
+                            return restService.getContributor(accessToken)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribeOn(Schedulers.io())
                                     .doOnError(new Action1<Throwable>() {
                                         @Override
                                         public void call(Throwable throwable) {
-                                            Timber.e("Failed to get User from FB access token.");
+                                            Timber.e("Failed to get Contributor from FB access token.");
                                         }
                                     })
-                                    .onErrorResumeNext(Observable.<User>empty());
+                                    .onErrorResumeNext(Observable.<Contributor>empty());
                         }
                     })
-                    .subscribe(new Action1<User>() {
+                    .subscribe(new Action1<Contributor>() {
                         @Override
-                        public void call(User user) {
+                        public void call(Contributor contributor) {
                             Timber.d("Launching LoggedInActivity");
-                            intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, user.id);
+                            intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, contributor.id);
                             startActivity(intent);
                             finish();
                         }

@@ -1,6 +1,8 @@
 package com.anovelmous.app.data.api.model;
 
-import com.anovelmous.app.data.api.resource.Group;
+import com.anovelmous.app.data.api.resource.Guild;
+
+import java.util.UUID;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -9,24 +11,32 @@ import io.realm.annotations.PrimaryKey;
  * Created by IntelliJ
  * Author: Greg Ziegan on 6/7/15.
  */
-public class RealmGroup extends RealmObject {
-    @PrimaryKey private long id;
+public class RealmGuild extends RealmObject {
+    @PrimaryKey private String id;
     private String url;
     private String name;
 
     private String restVerb;
     private boolean lastRequestFinished;
 
-    public RealmGroup() {
+    public RealmGuild() {
 
     }
 
-    public RealmGroup(Group group) {
-        id = group.id;
-        url = group.url;
-        name = group.name;
-        restVerb = group.restVerb.toString();
-        lastRequestFinished = group.restVerb.equals(RestVerb.GET);
+    public RealmGuild(Guild guild) {
+        id = (guild.id == null) ? UUID.randomUUID().toString() : guild.id;
+        url = guild.url;
+        name = guild.name;
+        restVerb = guild.restVerb.toString();
+        lastRequestFinished = guild.restVerb.equals(RestVerb.GET);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -35,14 +45,6 @@ public class RealmGroup extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUrl() {

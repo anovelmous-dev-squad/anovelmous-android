@@ -1,12 +1,11 @@
 package com.anovelmous.app.data.api;
 
-import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
-import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.facebook.AccessToken;
 
@@ -23,13 +22,13 @@ public interface PersistenceService {
     Observable<ResourceCount> novelsCount();
     Observable<Novel> saveNovel(Novel novel);
 
-    Observable<Chapter> chapter(long chapterId);
-    Observable<List<Chapter>> chapters(long novelId);
+    Observable<Chapter> chapter(String chapterId);
+    Observable<List<Chapter>> chapters(String novelId);
     Observable<ResourceCount> chaptersCount();
     Observable<Chapter> saveChapter(Chapter chapter);
 
-    Observable<List<FormattedNovelToken>> chapterText(long chapterId);
-    Observable<ResourceCount> chapterTextTokenCount(long chapterId);
+    Observable<List<FormattedNovelToken>> chapterText(String chapterId);
+    Observable<ResourceCount> chapterTextTokenCount(String chapterId);
     Observable<FormattedNovelToken> saveFormattedNovelToken(FormattedNovelToken formattedNovelToken);
 
     Observable<List<Token>> tokens();
@@ -40,9 +39,8 @@ public interface PersistenceService {
 
     Observable<Vote> saveVote(Vote vote);
 
-    Observable<User> getUser(AccessToken accessToken);
-    Observable<User> getUser(String authToken);
-    Observable<User> getUser(long userId);
-    Observable<User> createUser(User user);
-    Observable<User> updateUser(User user);
+    Observable<Contributor> getContributor(AccessToken accessToken);
+    Observable<Contributor> getContributor(String contributorId);
+    Observable<Contributor> createContributor(Contributor contributor);
+    Observable<Contributor> updateContributor(Contributor contributor);
 }

@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api.model;
 import com.anovelmous.app.data.api.resource.Token;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
  * Author: Greg Ziegan on 6/7/15.
  */
 public class RealmToken extends RealmObject {
-    @PrimaryKey private long id;
+    @PrimaryKey private String id;
     private String url;
     private String content;
     private boolean isValid;
@@ -27,7 +28,7 @@ public class RealmToken extends RealmObject {
     }
 
     public RealmToken(Token token) {
-        id = token.id;
+        id = (token.id == null) ? UUID.randomUUID().toString() : token.id;
         url = token.url;
         content = token.content;
         isValid = token.isValid;
@@ -35,6 +36,14 @@ public class RealmToken extends RealmObject {
         createdAt = token.createdAt.toDate();
         restVerb = token.restVerb.toString();
         lastRequestFinished = token.restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -60,14 +69,6 @@ public class RealmToken extends RealmObject {
 
     public void setIsPunctuation(boolean isPunctuation) {
         this.isPunctuation = isPunctuation;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUrl() {

@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
  */
 final class MockChapters {
     static final Chapter PROLOGUE = new Chapter.Builder()
-            .id(10)
+            .id("10")
             .url("mock://chapters/10")
             .restVerb(RestVerb.GET)
             .title("Prologue")
@@ -21,7 +21,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusHours(2))
             .build();
     static final Chapter END = new Chapter.Builder()
-            .id(9)
+            .id("9")
             .url("mock://chapters/9")
             .restVerb(RestVerb.GET)
             .title("End")
@@ -31,7 +31,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(1))
             .build();
     static final Chapter ALMOST = new Chapter.Builder()
-            .id(8)
+            .id("8")
             .url("mock://chapters/8")
             .restVerb(RestVerb.GET)
             .title("Almost")
@@ -41,7 +41,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(2))
             .build();
     static final Chapter MIDDLE = new Chapter.Builder()
-            .id(7)
+            .id("7")
             .url("mock://chapters/7")
             .restVerb(RestVerb.GET)
             .title("Middle")
@@ -51,7 +51,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(2).minusHours(3))
             .build();
     static final Chapter BEGINNING = new Chapter.Builder()
-            .id(6)
+            .id("6")
             .url("mock://chapters/6")
             .restVerb(RestVerb.GET)
             .title("Beginning")
@@ -61,7 +61,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(2).minusHours(8))
             .build();
     static final Chapter INTRODUCTION = new Chapter.Builder()
-            .id(5)
+            .id("5")
             .url("mock://chapters/5")
             .restVerb(RestVerb.GET)
             .title("Introduction")
@@ -71,7 +71,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(2).minusHours(13))
             .build();
     static final Chapter FIN = new Chapter.Builder()
-            .id(4)
+            .id("4")
             .url("mock://chapters/4")
             .restVerb(RestVerb.GET)
             .title("Fin")
@@ -81,7 +81,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(7).minusHours(1))
             .build();
     static final Chapter LOSING = new Chapter.Builder()
-            .id(3)
+            .id("3")
             .url("mock://chapters/3")
             .restVerb(RestVerb.GET)
             .title("Losing")
@@ -91,7 +91,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(7).minusHours(3))
             .build();
     static final Chapter WINNING = new Chapter.Builder()
-            .id(2)
+            .id("2")
             .url("mock://chapters/2")
             .restVerb(RestVerb.GET)
             .title("Winning")
@@ -101,7 +101,7 @@ final class MockChapters {
             .createdAt(new DateTime().minusDays(7).minusHours(5))
             .build();
     static final Chapter OPENING = new Chapter.Builder()
-            .id(1)
+            .id("1")
             .url("mock://chapters/1")
             .restVerb(RestVerb.GET)
             .title("Opening")

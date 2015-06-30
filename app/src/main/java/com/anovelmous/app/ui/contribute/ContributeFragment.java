@@ -43,10 +43,10 @@ public class ContributeFragment extends BaseFragment {
     private boolean isRefreshing;
     private AutoCompleteAdapter autoCompleteAdapter;
     private PublishSubject<RestVerb> tokenFilterSubject;
-    private PublishSubject<Long> currentChapterSubject;
+    private PublishSubject<String> currentChapterSubject;
     private PublishSubject<String> voteSubject;
     private CompositeSubscription subscriptions = new CompositeSubscription();
-    private long currentChapterId;
+    private String currentChapterId;
     private Chapter currentChapter;
     private int pollingTime = 10;
 
@@ -66,7 +66,7 @@ public class ContributeFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            currentChapterId = getArguments().getLong(ReadingFragment.CUR_CHAPTER_ID, 1);
+            currentChapterId = getArguments().getString(ReadingFragment.CUR_CHAPTER_ID);
         }
     }
 
@@ -176,10 +176,10 @@ public class ContributeFragment extends BaseFragment {
         }
     };
 
-    private final Func1<Long, Observable<Chapter>> chapterRefresh = new Func1<Long, Observable<Chapter>>() {
+    private final Func1<String, Observable<Chapter>> chapterRefresh = new Func1<String, Observable<Chapter>>() {
         @Override
-        public Observable<Chapter> call(Long chapterId) {
-            return restService.getChapter(currentChapterId)
+        public Observable<Chapter> call(String chapterId) {
+            return restService.getChapter(chapterId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .doOnError(chapterLoadError)

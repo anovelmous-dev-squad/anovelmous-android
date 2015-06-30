@@ -46,7 +46,7 @@ public class ChapterSelectFragment extends BaseFragment implements Injector,
     @Inject RestService restService;
 
     private View inflatedView;
-    private long novelId;
+    private String novelId;
 
     @InjectView(R.id.chapters_animator) BetterViewAnimator animatorView;
     @InjectView(R.id.chapters_swipe_refresh) SwipeRefreshLayout swipeRefreshView;
@@ -54,7 +54,7 @@ public class ChapterSelectFragment extends BaseFragment implements Injector,
     @InjectView(R.id.chapters_loading_message) TextView loadingMessageView;
 
     private float dividerPaddingStart;
-    private PublishSubject<Long> novelIdSubject;
+    private PublishSubject<String> novelIdSubject;
     private ChapterSelectAdapter chapterSelectAdapter;
     private CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -74,7 +74,7 @@ public class ChapterSelectFragment extends BaseFragment implements Injector,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            novelId = getArguments().getLong(NovelSelectFragment.NOVEL_ID);
+            novelId = getArguments().getString(NovelSelectFragment.NOVEL_ID);
         }
     }
 
@@ -161,10 +161,10 @@ public class ChapterSelectFragment extends BaseFragment implements Injector,
         return inflatedView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    private final Func1<Long, Observable<List<Chapter>>> chaptersRequest =
-            new Func1<Long, Observable<List<Chapter>>>() {
+    private final Func1<String, Observable<List<Chapter>>> chaptersRequest =
+            new Func1<String, Observable<List<Chapter>>>() {
                 @Override
-                public Observable<List<Chapter>> call(Long novelId) {
+                public Observable<List<Chapter>> call(String novelId) {
                     return restService.getNovelChapters(novelId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())

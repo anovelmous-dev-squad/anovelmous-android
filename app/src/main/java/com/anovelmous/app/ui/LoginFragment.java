@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
-import com.anovelmous.app.data.api.resource.User;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -45,7 +45,7 @@ public class LoginFragment extends BaseDialogFragment {
     private OnFragmentInteractionListener mListener;
 
     public interface OnFragmentInteractionListener {
-        void onSuccessfulLogin(User user);
+        void onSuccessfulLogin(Contributor contributor);
     }
 
     @Inject RestService restService;
@@ -56,7 +56,7 @@ public class LoginFragment extends BaseDialogFragment {
     AccessToken accessToken;
     ProfileTracker profileTracker;
     Profile userProfile;
-    User me;
+    Contributor me;
 
     private String title;
 
@@ -192,7 +192,7 @@ public class LoginFragment extends BaseDialogFragment {
     }
 
     private void createAndPersistNewUser(String username, String email, String accessToken) {
-        me = new User.Builder()
+        me = new Contributor.Builder()
                 .restVerb(RestVerb.POST)
                 .fbAccessToken(accessToken)
                 .username(username)
@@ -202,11 +202,11 @@ public class LoginFragment extends BaseDialogFragment {
         restService.createUser(me)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .subscribe(new Action1<User>() {
+            .subscribe(new Action1<Contributor>() {
                 @Override
-                public void call(User user) {
-                    me = user;
-                    mListener.onSuccessfulLogin(user);
+                public void call(Contributor contributor) {
+                    me = contributor;
+                    mListener.onSuccessfulLogin(contributor);
                 }
             });
     }

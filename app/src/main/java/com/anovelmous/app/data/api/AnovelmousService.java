@@ -1,12 +1,12 @@
 package com.anovelmous.app.data.api;
 
 import com.anovelmous.app.data.api.resource.Chapter;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.data.api.resource.FormattedNovelToken;
 import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
-import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
@@ -76,12 +76,12 @@ public class AnovelmousService implements RestService {
     };
 
     @Override
-    public Observable<Chapter> getChapter(long chapterId) {
+    public Observable<Chapter> getChapter(String chapterId) {
         return persistenceService.chapter(chapterId); // TODO: check remote resource's "last_modified" timestamp (when it exists)
     }
 
     @Override
-    public Observable<List<Chapter>> getNovelChapters(final long novelId) {
+    public Observable<List<Chapter>> getNovelChapters(final String novelId) {
         return Observable.combineLatest(
                 networkService.chaptersCount(), persistenceService.chaptersCount(),
                 hasRemoteResourceCountChange)
@@ -114,7 +114,7 @@ public class AnovelmousService implements RestService {
         }
     };
 
-    public Observable<List<FormattedNovelToken>> getChapterText(final long chapterId) {
+    public Observable<List<FormattedNovelToken>> getChapterText(final String chapterId) {
         return Observable.combineLatest(
                 networkService.chapterTextTokenCount(chapterId),
                 persistenceService.chapterTextTokenCount(chapterId),
@@ -199,7 +199,7 @@ public class AnovelmousService implements RestService {
                 .flatMap(new Func1<Vote, Observable<Vote>>() {
                     @Override
                     public Observable<Vote> call(Vote vote) {
-                        return networkService.postVote(vote);
+                        return networkService.castVote(vote.id, vote);
                     }
                 });
     }
@@ -210,45 +210,33 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
-    public Observable<User> getUser(String authToken) {
-        return persistenceService.getUser(authToken).map(new Func1<User, User>() {
-            @Override
-            public User call(User user) {
-                if (user != null)
-                    return user;  // TODO: create lastModified field and refresh cache
-                return user; // TODO: either lookup user remotely or POST
-            }
-        });
+    public Observable<Contributor> getContributor(AccessToken accessToken) {
+        return persistenceService.getContributor(accessToken);
     }
 
     @Override
-    public Observable<User> getUser(AccessToken accessToken) {
-        return persistenceService.getUser(accessToken);
+    public Observable<Contributor> getContributor(String contributorId) {
+        return persistenceService.getContributor(contributorId); // TODO: finish implementation
     }
 
     @Override
-    public Observable<User> getUser(long userId) {
-        return persistenceService.getUser(userId); // TODO: finish implementation
-    }
-
-    @Override
-    public Observable<User> createUser(User user) {
-        return persistenceService.createUser(user)
-                .flatMap(new Func1<User, Observable<User>>() {
+    public Observable<Contributor> createUser(Contributor contributor) {
+        return persistenceService.createContributor(contributor)
+                .flatMap(new Func1<Contributor, Observable<Contributor>>() {
                     @Override
-                    public Observable<User> call(User user) {
-                        return networkService.createUser(user);
+                    public Observable<Contributor> call(Contributor contributor) {
+                        return networkService.createContributor(contributor.id, contributor);
                     }
-                }).flatMap(new Func1<User, Observable<User>>() {
+                }).flatMap(new Func1<Contributor, Observable<Contributor>>() {
                     @Override
-                    public Observable<User> call(User user) {
-                        return persistenceService.updateUser(user);
+                    public Observable<Contributor> call(Contributor contributor) {
+                        return persistenceService.updateContributor(contributor);
                     }
                 });
     }
 
     @Override
-    public Observable<NovelToken> getMostRecentNovelToken(long chapterId) {
+    public Observable<NovelToken> getMostRecentNovelToken(String chapterId) {
         return networkService.getMostRecentNovelToken(chapterId, Sort.CREATED_AT, Order.DESC); // TODO: maybe implement smart polling/caching?
     }
 }

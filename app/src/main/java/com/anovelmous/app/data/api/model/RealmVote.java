@@ -3,6 +3,7 @@ package com.anovelmous.app.data.api.model;
 import com.anovelmous.app.data.api.resource.Vote;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -12,13 +13,13 @@ import io.realm.annotations.PrimaryKey;
  * Created by Greg Ziegan on 6/13/15.
  */
 public class RealmVote extends RealmObject {
-    @PrimaryKey private long id;
+    @PrimaryKey private String id;
     private String url;
     private RealmToken token;
     private int ordinal;
     private boolean selected;
     private RealmChapter chapter;
-    private RealmUser user;
+    private RealmContributor user;
     private Date createdAt;
 
     private String restVerb;
@@ -29,22 +30,22 @@ public class RealmVote extends RealmObject {
     }
 
     public RealmVote(Vote vote, Realm realm) {
-        id = vote.id;
+        id = (vote.id == null) ? UUID.randomUUID().toString() : vote.id;
         url = vote.url;
         token = realm.where(RealmToken.class).equalTo("url", vote.token).findFirst();
         ordinal = vote.ordinal;
         selected = vote.selected;
         chapter = realm.where(RealmChapter.class).equalTo("url", vote.chapter).findFirst();
-        user = realm.where(RealmUser.class).equalTo("url", vote.user).findFirst();
+        user = realm.where(RealmContributor.class).equalTo("url", vote.user).findFirst();
         restVerb = vote.restVerb.toString();
         lastRequestFinished = vote.restVerb.equals(RestVerb.GET); // Does not matter if a GET finishes
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -88,11 +89,11 @@ public class RealmVote extends RealmObject {
         this.chapter = chapter;
     }
 
-    public RealmUser getUser() {
+    public RealmContributor getUser() {
         return user;
     }
 
-    public void setUser(RealmUser user) {
+    public void setUser(RealmContributor user) {
         this.user = user;
     }
 

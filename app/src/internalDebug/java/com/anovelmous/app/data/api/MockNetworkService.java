@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.model.RestVerb;
+import com.anovelmous.app.data.api.resource.Contributor;
 import com.anovelmous.app.data.api.resource.NovelToken;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
-import com.anovelmous.app.data.api.resource.User;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.response.ChapterTextResponse;
 import com.anovelmous.app.data.api.response.ChaptersResponse;
@@ -88,7 +88,7 @@ public final class MockNetworkService implements NetworkService {
         return Observable.just(new ResourceCount.Builder().count(NOVEL_COUNT).build());
     }
 
-    @Override public Observable<ChaptersResponse> chapters(@Query("novel") long novelId,
+    @Override public Observable<ChaptersResponse> chapters(@Query("novel") String novelId,
                                                            @Query("sort") Sort sort,
                                                            @Query("order") Order order) {
         ChaptersResponse response = getResponse(MockChaptersResponse.class).response;
@@ -102,7 +102,7 @@ public final class MockNetworkService implements NetworkService {
         return Observable.just(new ResourceCount.Builder().count(CHAPTER_COUNT).build());
     }
 
-    @Override public Observable<ChapterTextResponse> chapterText(@Query("chapter") long chapterId,
+    @Override public Observable<ChapterTextResponse> chapterText(@Query("chapter") String chapterId,
                                                                  @Query("sort") Sort sort,
                                                                  @Query("order") Order order) {
         ChapterTextResponse response = getResponse(MockChapterTextResponse.class).response;
@@ -112,14 +112,14 @@ public final class MockNetworkService implements NetworkService {
     }
 
     @Override
-    public Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") long chapterId) {
+    public Observable<ResourceCount> chapterTextTokenCount(@Query("chapter") String chapterId) {
         return Observable.just(new ResourceCount.Builder().count(CHAPTER_TEXT_TOKEN_COUNT).build());
     }
 
     @Override
     public Observable<Token> getTokenByContent(@Query("content") String content) {
         return Observable.just(new Token.Builder()
-                .id(1)
+                .id("1")
                 .url("mock://tokens/1")
                 .content(content)
                 .isPunctuation(false)
@@ -145,34 +145,34 @@ public final class MockNetworkService implements NetworkService {
     }
 
     @Override
-    public Observable<Vote> postVote(@Body Vote vote) {
+    public Observable<Vote> castVote(@Path("client_id") String clientId, @Body Vote vote) {
         return Observable.just(vote);
     }
 
     @Override
-    public Observable<User> getUser(@Path("id") long userId) {
-        return Observable.just(new User.Builder()
+    public Observable<Contributor> getContributor(@Path("id") String userId) {
+        return Observable.just(new Contributor.Builder()
                 .id(userId)
                 .url("mock://users/" + userId)
                 .restVerb(RestVerb.GET)
-                .username("Mock User")
-                .email("grz5@case.edu") // TODO: fix mock User building process
+                .username("Mock Contributor")
+                .email("grz5@case.edu") // TODO: fix mock Contributor building process
                 .groups(new ArrayList<String>())
                 .dateJoined(new DateTime())
                 .build());
     }
 
     @Override
-    public Observable<User> createUser(@Body User user) {
-        return getUser(1);
+    public Observable<Contributor> createContributor(@Path("client_id") String clientId, @Body Contributor contributor) {
+        return getContributor("1");
     }
 
     @Override
-    public Observable<NovelToken> getMostRecentNovelToken(@Query("chapter") long chapterId,
+    public Observable<NovelToken> getMostRecentNovelToken(@Query("chapter") String chapterId,
                                                           @Query("sort") Sort sort,
                                                           @Query("order") Order order) {
         return Observable.just(new NovelToken.Builder()
-                        .id(1)
+                        .id("1")
                         .url("mock://novel_tokens/1")
                         .restVerb(RestVerb.GET)
                         .chapter("mock://chapters/1")

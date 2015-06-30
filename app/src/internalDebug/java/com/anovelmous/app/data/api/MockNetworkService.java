@@ -164,7 +164,15 @@ public final class MockNetworkService implements NetworkService {
 
     @Override
     public Observable<Contributor> createContributor(@Path("client_id") String clientId, @Body Contributor contributor) {
-        return getContributor("1");
+        return Observable.just(new Contributor.Builder()
+                .id(clientId)
+                .url("mock://users/" + clientId)
+                .restVerb(RestVerb.POST)
+                .username("Mock Contributor")
+                .email("grz5@case.edu")
+                .groups(new ArrayList<String>())
+                .dateJoined(new DateTime())
+                .build());
     }
 
     @Override

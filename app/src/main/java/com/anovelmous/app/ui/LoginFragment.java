@@ -84,7 +84,6 @@ public class LoginFragment extends BaseDialogFragment {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-
                     }
 
                     @Override
@@ -199,7 +198,7 @@ public class LoginFragment extends BaseDialogFragment {
                 .email(email)
                 .groups(new ArrayList<String>())
                 .build();
-        restService.createUser(me)
+        restService.createContributor(me)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe(new Action1<Contributor>() {

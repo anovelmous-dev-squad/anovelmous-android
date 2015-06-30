@@ -220,7 +220,7 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
-    public Observable<Contributor> createUser(Contributor contributor) {
+    public Observable<Contributor> createContributor(Contributor contributor) {
         return persistenceService.createContributor(contributor)
                 .flatMap(new Func1<Contributor, Observable<Contributor>>() {
                     @Override

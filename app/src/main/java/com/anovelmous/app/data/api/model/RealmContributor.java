@@ -32,14 +32,14 @@ public class RealmContributor extends RealmObject {
 
     }
 
-    public RealmContributor(RealmContributor realmContributor, Contributor contributor, Realm realm) {
+    public RealmContributor(RealmContributor existingModel, Contributor contributor, Realm realm) {
         this(contributor, realm);
-        if (!realmContributor.isLastRequestFinished() &&
-                RestVerb.getValueForString(realmContributor.getRestVerb()) != RestVerb.GET)
+        if (!existingModel.isLastRequestFinished() &&
+                RestVerb.getValueForString(existingModel.getRestVerb()) != RestVerb.GET)
             this.lastRequestFinished = true;
 
-        if (realmContributor.getFbAccessToken() != null && contributor.fbAccessToken == null)
-            this.fbAccessToken = realmContributor.getFbAccessToken();
+        if (existingModel.getFbAccessToken() != null && contributor.fbAccessToken == null)
+            this.fbAccessToken = existingModel.getFbAccessToken();
         else
             this.fbAccessToken = contributor.fbAccessToken;
     }
@@ -62,11 +62,6 @@ public class RealmContributor extends RealmObject {
         lastRequestFinished = contributor.restVerb.equals(RestVerb.GET);
 
         fbAccessToken = contributor.fbAccessToken;
-    }
-
-    public RealmContributor(Contributor contributor, Realm realm, String authToken) {
-        this(contributor, realm);
-        this.authToken = authToken;
     }
 
     public String getId() {

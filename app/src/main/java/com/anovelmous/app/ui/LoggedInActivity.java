@@ -175,7 +175,7 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
         ReadingFragment readingFragment = (ReadingFragment) fragmentManager
                 .findFragmentById(R.id.scroll_container);
         Chapter currentChapter = readingFragment.getCurrentChapter();
-        ContributeFragment contributeFragment = ContributeFragment.newInstance(10); // TODO: finish implementing current Chapter lookup
+        ContributeFragment contributeFragment = ContributeFragment.newInstance("10"); // TODO: finish implementing current Chapter lookup
         fragmentManager.beginTransaction()
                 .replace(R.id.contribute_container, contributeFragment).commit();
         setTitle(menuItem.getTitle());

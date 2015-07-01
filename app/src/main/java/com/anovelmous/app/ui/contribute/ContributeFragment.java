@@ -50,10 +50,10 @@ public class ContributeFragment extends BaseFragment {
     private Chapter currentChapter;
     private int pollingTime = 10;
 
-    public static ContributeFragment newInstance(long currentChapterId) {
+    public static ContributeFragment newInstance(String currentChapterId) {
         ContributeFragment fragment = new ContributeFragment();
         Bundle args = new Bundle();
-        args.putLong(ReadingFragment.CUR_CHAPTER_ID, currentChapterId);
+        args.putString(ReadingFragment.CUR_CHAPTER_ID, currentChapterId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,6 +67,7 @@ public class ContributeFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             currentChapterId = getArguments().getString(ReadingFragment.CUR_CHAPTER_ID);
+            currentChapterSubject.onNext(currentChapterId);
         }
     }
 
@@ -132,8 +133,6 @@ public class ContributeFragment extends BaseFragment {
                         pollingTime = chapter.votingDuration;
                     }
                 }));
-
-        currentChapterSubject.onNext(currentChapterId);
 
         voteSubject = PublishSubject.create();
         subscriptions.add(voteSubject

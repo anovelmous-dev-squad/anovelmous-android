@@ -85,6 +85,7 @@ public class LoginFragment extends InjectingDialogFragment {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        accessToken = loginResult.getAccessToken();
                     }
 
                     @Override

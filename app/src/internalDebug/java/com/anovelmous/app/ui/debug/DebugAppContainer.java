@@ -45,10 +45,10 @@ import com.anovelmous.app.data.prefs.IntPreference;
 import com.anovelmous.app.data.prefs.NetworkProxyPreference;
 import com.anovelmous.app.data.prefs.StringPreference;
 import com.anovelmous.app.ui.AppContainer;
+import com.anovelmous.app.ui.MainActivity;
 import com.anovelmous.app.ui.bugreport.BugReportLens;
 import com.anovelmous.app.ui.logs.LogsDialog;
 import com.anovelmous.app.ui.misc.EnumAdapter;
-import com.anovelmous.app.ui.MainActivity;
 import com.anovelmous.app.util.Keyboards;
 import com.anovelmous.app.util.Strings;
 import com.jakewharton.madge.MadgeFrameLayout;
@@ -704,7 +704,7 @@ public final class DebugAppContainer implements AppContainer {
         Intent newApp = new Intent(app, MainActivity.class);
         newApp.setFlags(FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_NEW_TASK);
         app.startActivity(newApp);
-        AnovelmousApp.get(app).buildObjectGraphAndInject();
+        AnovelmousApp.get(app).onCreate();
     }
 
     /**

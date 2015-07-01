@@ -6,18 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.anovelmous.app.AnovelmousApp;
 import com.anovelmous.app.R;
-import com.fizzbuzz.android.dagger.InjectingActivityModule;
-import com.fizzbuzz.android.dagger.Injector;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fizzbuzz.android.dagger.InjectingActionBarActivity;
 
 import javax.inject.Inject;
 
@@ -25,12 +19,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import dagger.ObjectGraph;
 
-import static com.anovelmous.app.util.Preconditions.checkState;
-
 /**
  * Created by Greg Ziegan on 6/4/15.
  */
-public abstract class BaseActivity extends AppCompatActivity implements Injector {
+public abstract class BaseActivity extends InjectingActionBarActivity {
     @Inject AppContainer appContainer;
 
     @InjectView(R.id.main_drawer_layout) DrawerLayout drawerLayout;
@@ -40,21 +32,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ObjectGraph appGraph = AnovelmousApp.get(this).getObjectGraph();
-        List<Object> activityModules = getModules();
-        mObjectGraph = appGraph.plus(activityModules.toArray());
-
-        inject(this);
-
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Remove the status bar color. The DrawerLayout is responsible for drawing it from now on.
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-
-        AnovelmousApp app = AnovelmousApp.get(this);
-        app.inject(this);
 
         ViewGroup container = appContainer.get(this);
 
@@ -77,28 +60,5 @@ public abstract class BaseActivity extends AppCompatActivity implements Injector
 
     protected int getScreenHeight() {
         return findViewById(android.R.id.content).getHeight();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mObjectGraph = null;
-        super.onDestroy();
-    }
-
-    @Override
-    public final ObjectGraph getObjectGraph() {
-        return mObjectGraph;
-    }
-
-    @Override
-    public void inject(Object target) {
-        checkState(mObjectGraph != null, "object graph must be assigned prior to calling inject");
-        mObjectGraph.inject(target);
-    }
-
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
-        result.add(new InjectingActivityModule(this, this));
-        return result;
     }
 }

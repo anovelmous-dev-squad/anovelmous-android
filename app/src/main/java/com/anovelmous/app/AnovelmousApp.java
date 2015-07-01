@@ -5,19 +5,25 @@ import android.content.Context;
 
 import com.anovelmous.app.data.LumberYard;
 import com.anovelmous.app.ui.ActivityHierarchyServer;
+import com.fizzbuzz.android.dagger.Injector;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 import timber.log.Timber;
 
+import static com.fizzbuzz.android.dagger.Preconditions.checkState;
+
 /**
  * Created by Greg Ziegan on 5/31/15.
  */
-public final class AnovelmousApp extends Application {
-    private ObjectGraph objectGraph;
+public final class AnovelmousApp extends Application implements Injector {
+    private ObjectGraph mObjectGraph;
 
     @Inject ActivityHierarchyServer activityHierarchyServer;
     @Inject LumberYard lumberYard;
@@ -32,7 +38,8 @@ public final class AnovelmousApp extends Application {
 
         }
 
-        buildObjectGraphAndInject();
+        mObjectGraph = ObjectGraph.create(getModules().toArray());
+        mObjectGraph.inject(this);
 
         lumberYard.cleanUp();
         Timber.plant(lumberYard.tree());
@@ -40,20 +47,23 @@ public final class AnovelmousApp extends Application {
         registerActivityLifecycleCallbacks(activityHierarchyServer);
     }
 
+    @Override
     public ObjectGraph getObjectGraph() {
-        return objectGraph;
+        return mObjectGraph;
     }
 
-    public void buildObjectGraphAndInject() {
-        objectGraph = ObjectGraph.create(Modules.list(this));
-        objectGraph.inject(this);
-    }
-
-    public void inject(Object o) {
-        objectGraph.inject(o);
+    public void inject(Object target) {
+        checkState(mObjectGraph != null, "object graph must be initialized prior to calling inject");
+        mObjectGraph.inject(target);
     }
 
     public static AnovelmousApp get(Context context) {
         return (AnovelmousApp) context.getApplicationContext();
+    }
+
+    protected List<Object> getModules() {
+        List<Object> result = new ArrayList<>();
+        result.add(new AnovelmousModule(this, this));
+        return result;
     }
 }

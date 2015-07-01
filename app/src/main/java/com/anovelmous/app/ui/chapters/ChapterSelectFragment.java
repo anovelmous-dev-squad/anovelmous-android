@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Chapter;
@@ -39,8 +38,8 @@ import timber.log.Timber;
 
 import static com.anovelmous.app.ui.misc.DividerItemDecoration.VERTICAL_LIST;
 
-public class ChapterSelectFragment extends BaseFragment implements Injector,
-        SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {
+public class ChapterSelectFragment extends BaseFragment
+        implements SwipeRefreshLayout.OnRefreshListener, ChapterSelectAdapter.ChapterClickListener {
     public final static String CHAPTER_ID = "com.anovelmous.app.ui.chapters.CHAPTER_ID";
 
     @Inject RestService restService;

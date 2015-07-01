@@ -12,9 +12,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.anovelmous.app.AnovelmousApp;
-import com.anovelmous.app.InjectingActivityModule;
-import com.anovelmous.app.Injector;
 import com.anovelmous.app.R;
+import com.fizzbuzz.android.dagger.InjectingActivityModule;
+import com.fizzbuzz.android.dagger.Injector;
 
 import java.util.ArrayList;
 import java.util.List;

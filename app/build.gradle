@@ -88,6 +88,7 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.3.0'
     compile 'com.ms-square:etsyblur:0.1.1'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 def installAll = tasks.create('installAll')

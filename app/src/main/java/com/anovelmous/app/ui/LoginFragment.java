@@ -23,6 +23,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.fizzbuzz.android.dagger.InjectingDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class LoginFragment extends BaseDialogFragment {
+public class LoginFragment extends InjectingDialogFragment {
     private static final String DIALOG_TITLE = "com.anovelmous.app.ui.LoginFragment.DIALOG_TITLE";
 
     private OnFragmentInteractionListener mListener;

@@ -10,6 +10,7 @@ import com.fizzbuzz.android.dagger.Injector;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,7 +64,7 @@ public final class AnovelmousApp extends Application implements Injector {
 
     protected List<Object> getModules() {
         List<Object> result = new ArrayList<>();
-        result.add(new AnovelmousModule(this, this));
+        result.addAll(Arrays.asList(Modules.list(this)));
         return result;
     }
 }

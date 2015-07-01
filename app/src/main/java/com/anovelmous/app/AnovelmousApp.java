@@ -6,6 +6,7 @@ import android.content.Context;
 import com.anovelmous.app.data.LumberYard;
 import com.anovelmous.app.ui.ActivityHierarchyServer;
 import com.fizzbuzz.android.dagger.Injector;
+import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -32,6 +33,7 @@ public final class AnovelmousApp extends Application implements Injector {
     @Override public void onCreate() {
         super.onCreate();
         JodaTimeAndroid.init(this);
+        LeakCanary.install(this);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

@@ -45,7 +45,7 @@ public final class LoggedInActivity extends ToolbarControlBaseActivity<Observabl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contributorId = getIntent().getStringExtra(LoggedOutActivity.USER_LOGIN_ID);
-        restService.getContributor(contributorId)
+        restService.getContributorByFbToken(contributorId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Action1<Contributor>() {

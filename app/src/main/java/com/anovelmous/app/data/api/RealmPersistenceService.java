@@ -20,7 +20,6 @@ import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.rx.RealmObservable;
 import com.anovelmous.app.util.NotUniqueException;
-import com.facebook.AccessToken;
 
 import org.joda.time.DateTime;
 
@@ -411,11 +410,11 @@ public class RealmPersistenceService implements PersistenceService {
     }
 
     @Override
-    public Observable<Contributor> getContributor(final AccessToken accessToken) {
+    public Observable<Contributor> getContributorByFbToken(final String accessToken) {
         return RealmObservable.object(context, new Func1<Realm, RealmContributor>() {
             @Override
             public RealmContributor call(Realm realm) {
-                return realm.where(RealmContributor.class).equalTo("fbAccessToken", accessToken.getToken()).findFirst();
+                return realm.where(RealmContributor.class).equalTo("fbAccessToken", accessToken).findFirst();
             }
         }).map(new Func1<RealmContributor, Contributor>() {
             @Override

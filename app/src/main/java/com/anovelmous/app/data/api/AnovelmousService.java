@@ -11,7 +11,6 @@ import com.anovelmous.app.data.api.resource.Vote;
 import com.anovelmous.app.data.api.transforms.SearchResultToChapterList;
 import com.anovelmous.app.data.api.transforms.SearchResultToFormattedNovelTokenList;
 import com.anovelmous.app.data.api.transforms.SearchResultToNovelList;
-import com.facebook.AccessToken;
 
 import java.util.List;
 
@@ -210,8 +209,8 @@ public class AnovelmousService implements RestService {
     }
 
     @Override
-    public Observable<Contributor> getContributor(AccessToken accessToken) {
-        return persistenceService.getContributor(accessToken);
+    public Observable<Contributor> getContributorByFbToken(String accessToken) {
+        return persistenceService.getContributorByFbToken(accessToken);
     }
 
     @Override

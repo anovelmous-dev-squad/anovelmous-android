@@ -7,7 +7,6 @@ import com.anovelmous.app.data.api.resource.Novel;
 import com.anovelmous.app.data.api.resource.ResourceCount;
 import com.anovelmous.app.data.api.resource.Token;
 import com.anovelmous.app.data.api.resource.Vote;
-import com.facebook.AccessToken;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public interface PersistenceService {
 
     Observable<Vote> saveVote(Vote vote);
 
-    Observable<Contributor> getContributor(AccessToken accessToken);
+    Observable<Contributor> getContributorByFbToken(String accessToken);
     Observable<Contributor> getContributor(String contributorId);
     Observable<Contributor> createContributor(Contributor contributor);
     Observable<Contributor> updateContributor(Contributor contributor);

@@ -11,16 +11,11 @@ import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
 import com.anovelmous.app.data.api.resource.Contributor;
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fizzbuzz.android.dagger.InjectingDialogFragment;
@@ -53,10 +48,6 @@ public class LoginFragment extends InjectingDialogFragment {
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;
-    AccessTokenTracker accessTokenTracker;
-    AccessToken accessToken;
-    ProfileTracker profileTracker;
-    Profile userProfile;
     Contributor me;
 
     private String title;
@@ -79,43 +70,7 @@ public class LoginFragment extends InjectingDialogFragment {
         if (getArguments() != null) {
             title = getArguments().getString(DIALOG_TITLE);
         }
-
         callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        accessToken = loginResult.getAccessToken();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                    }
-                });
-
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                accessToken = currentAccessToken;
-            }
-        };
-
-        accessToken = AccessToken.getCurrentAccessToken();
-
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(
-                    Profile oldProfile,
-                    Profile currentProfile) {
-                userProfile = currentProfile;
-            }
-        };
     }
 
     @Override
@@ -130,14 +85,14 @@ public class LoginFragment extends InjectingDialogFragment {
         loginButton.setFragment(this);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            public void onSuccess(final LoginResult loginResult) {
+                GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
                         try {
                             String username = jsonObject.getString("id");
                             String email = jsonObject.getString("email");
-                            createAndPersistNewUser(username, email, AccessToken.getCurrentAccessToken().getToken());
+                            createAndPersistNewUser(username, email, loginResult.getAccessToken().getToken());
                         } catch (JSONException e) {
                             Timber.e(e.getMessage());
                         }
@@ -177,13 +132,6 @@ public class LoginFragment extends InjectingDialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        accessTokenTracker.stopTracking();
-        profileTracker.stopTracking();
     }
 
     @Override

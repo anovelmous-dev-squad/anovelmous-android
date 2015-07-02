@@ -4,8 +4,10 @@ package com.anovelmous.app.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.anovelmous.app.AnovelmousModule;
+import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.resource.Contributor;
 import com.facebook.AccessToken;
@@ -21,12 +23,11 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public final class MainActivity extends BaseActivity {
-
+    private static final long SPLASH_TIME_OUT = 1000;
     @Inject @AnovelmousModule.Application Context appContext;
     @Inject RestService restService;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
-    private AccessToken accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,30 +40,48 @@ public final class MainActivity extends BaseActivity {
             protected void onCurrentAccessTokenChanged(
                     AccessToken oldAccessToken,
                     AccessToken currentAccessToken) {
-                accessToken = currentAccessToken;
+                updateWithToken(currentAccessToken);
             }
         };
-        // If the access token is available already assign it.
-        accessToken = AccessToken.getCurrentAccessToken();
-
-        if (accessToken == null) {  // Check if logged in through Facebook
-            final Intent logoutIntent = new Intent(this, LoggedOutActivity.class);
-            startActivity(logoutIntent);
-        } else {
-            final Intent loginIntent = new Intent(this, LoggedInActivity.class);
-            restService.getContributor(accessToken.getToken())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Action1<Contributor>() {
-                        @Override
-                        public void call(Contributor contributor) {
-                            Timber.d("Launching LoggedInActivity");
-                            loginIntent.putExtra(LoggedOutActivity.USER_LOGIN_ID, contributor.id);
-                            startActivity(loginIntent);
-                        }
-                    });
-        }
+        setContentView(R.layout.login_loading);
+        updateWithToken(AccessToken.getCurrentAccessToken());
         // TODO: check if logged in w/o facebook
+    }
+
+    private void updateWithToken(final AccessToken currentAccessToken) {
+        final boolean isFbLoggedIn = currentAccessToken != null;
+        if (isFbLoggedIn) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    launchLoggedInActivity(currentAccessToken);
+                }
+            }, SPLASH_TIME_OUT);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Timber.i("launching LoggedOut Activity");
+                    final Intent logoutIntent = new Intent(MainActivity.this, LoggedOutActivity.class);
+                    startActivity(logoutIntent);
+                }
+            }, SPLASH_TIME_OUT);
+        }
+    }
+
+    private void launchLoggedInActivity(AccessToken accessToken) {
+        final Intent loginIntent = new Intent(this, LoggedInActivity.class);
+        restService.getContributorByFbToken(accessToken.getToken())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<Contributor>() {
+                    @Override
+                    public void call(Contributor contributor) {
+                        Timber.i("Launching LoggedInActivity");
+                        loginIntent.putExtra(LoggedOutActivity.USER_LOGIN_ID, contributor.id);
+                        startActivity(loginIntent);
+                    }
+                });
     }
 
     @Override

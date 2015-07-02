@@ -20,6 +20,8 @@ import com.anovelmous.app.ui.reading.ReadingFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.ms.square.android.etsyblur.EtsyActionBarDrawerToggle;
 
+import timber.log.Timber;
+
 /**
  * Created by Greg Ziegan on 6/28/15.
  */
@@ -162,6 +164,7 @@ public final class LoggedOutActivity extends ToolbarControlBaseActivity<Observab
         Fragment dialogFragment = getSupportFragmentManager().findFragmentByTag("dialog");
         getSupportFragmentManager().beginTransaction().remove(dialogFragment).commit();
 
+        Timber.i("Launching LoggedInActivity");
         Intent intent = new Intent(this, LoggedInActivity.class);
         intent.putExtra(LoggedOutActivity.USER_LOGIN_ID, contributor.id);
         startActivity(intent);

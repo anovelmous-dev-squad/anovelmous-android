@@ -1,12 +1,14 @@
 package com.anovelmous.app.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.anovelmous.app.AnovelmousModule;
 import com.anovelmous.app.R;
 import com.anovelmous.app.data.api.RestService;
 import com.anovelmous.app.data.api.model.RestVerb;
@@ -14,6 +16,7 @@ import com.anovelmous.app.data.api.resource.Contributor;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
@@ -45,6 +48,7 @@ public class LoginFragment extends InjectingDialogFragment {
     }
 
     @Inject RestService restService;
+    @Inject @AnovelmousModule.Application Context appContext;
 
     @InjectView(R.id.fb_login_button) LoginButton loginButton;
     CallbackManager callbackManager;
@@ -67,6 +71,7 @@ public class LoginFragment extends InjectingDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(appContext);
         if (getArguments() != null) {
             title = getArguments().getString(DIALOG_TITLE);
         }
@@ -142,7 +147,7 @@ public class LoginFragment extends InjectingDialogFragment {
 
     private void createAndPersistNewUser(String username, String email, String accessToken) {
         me = new Contributor.Builder()
-                .restVerb(RestVerb.POST)
+                .restVerb(RestVerb.PUT)
                 .fbAccessToken(accessToken)
                 .username(username)
                 .email(email)
